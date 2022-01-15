@@ -9,11 +9,5 @@ I hope you can find some fun here
 #### Project 3
 #### Project 4  
 
-[^_^]:
-    - Bulleted
-    - List
-    1. Numbered
-    2. List
-    **Bold** and _Italic_ and `Code` text
-    [Link](url) and ![Image](src)
+
 
