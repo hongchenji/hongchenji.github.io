@@ -54,7 +54,7 @@ The focus is on extracting useful insights rather than summarizing the paper its
 
 **Engineering**
 
-Notes on building open source training pipelines, evaluation systems, and simulation benchmarks for robot policies.
+Notes on building training pipelines, evaluation systems, and simulation benchmarks for robot policies.
 
 **Concepts**
 
@@ -64,19 +64,15 @@ Higher-level summaries and conceptual frameworks that help reason about robot le
 
 ## Author
 
-Hongchen Ji  
-AI engineer exploring scalable robot learning systems and Vision-Language-Action models.
+Hongchen Ji
 
 ## Contact
 
 hongchenji [at] gmail [dot] com  
-GitHub: https://github.com/hongchenji
-linkedin: https://www.linkedin.com/in/hongchenji
+GitHub: https://github.com/hongchenji  
+LinkedIn: https://www.linkedin.com/in/hongchenji
 
 ---
 
-All content on this site is based on public information and open-source research. No proprietary or confidential information from my employer is included.
-
----
-
-Sections from the site are listed below.
+All content on this site is based on public information and open-source research.  
+No proprietary or confidential information from my employer is included.

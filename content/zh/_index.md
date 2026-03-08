@@ -1,16 +1,16 @@
 ---
-title: "Home"
+title: "首页"
 ---
 
 # 构建更好的机器人学习系统
 
-我是一名从事 **机器人学习系统开发** 的 AI 工程师，目前主要探索：
+我是一名从事 **机器人学习系统开发** 的 AI 工程师，目前主要关注：
 
 - **Vision-Language-Action (VLA) 模型**
 - **机器人仿真评测系统**
 - **机器人策略训练与评估基础设施**
 
-这个网站记录我在尝试理解和构建 **机器人基础模型系统（Robot Foundation Models）** 过程中积累的一些笔记与思考。
+这个网站记录我在探索 **机器人基础模型系统（Robot Foundation Models）** 过程中积累的一些笔记与思考。
 
 ![banner](/images/img.png)
 
@@ -22,7 +22,7 @@ title: "Home"
 
 机器人领域也开始出现类似趋势，例如 **Vision-Language-Action (VLA) 模型**，试图将感知、语言理解和动作控制统一到同一个模型框架中。
 
-但构建真正可用的机器人学习系统，并不仅仅是训练模型。
+然而，构建真正可用的机器人学习系统，并不仅仅是训练模型。
 
 我目前比较关注的一些问题包括：
 
@@ -35,7 +35,7 @@ title: "Home"
 
 ## 关于这个网站
 
-这个网站更像是一个个人技术笔记本，用来记录在探索机器人学习系统过程中遇到的一些问题、想法和实验。
+这个网站更像是一个个人技术笔记本，用来整理在探索机器人学习系统过程中产生的一些问题、想法和实验。
 
 很多文章是在 **阅读论文、尝试开源实现或思考系统设计时写下的笔记**，而不是在完全理解之后的总结。
 
@@ -54,11 +54,11 @@ title: "Home"
 **Reading**
 
 机器人学习、Diffusion Policy、VLA 模型等相关论文阅读笔记。  
-重点是提炼对系统设计有启发的想法，而不是简单复述论文内容。
+重点是提炼对系统设计有启发的 insight，而不是简单复述论文内容。
 
 **Engineering**
 
-关于开源训练流程、评测系统和仿真环境的一些笔记。
+关于训练流程、评测系统以及仿真环境的一些工程笔记。
 
 **Concepts**
 
@@ -68,27 +68,20 @@ title: "Home"
 
 ## 作者
 
-Hongchen Ji  
-AI engineer exploring robot learning systems and Vision-Language-Action models.
+Hongchen Ji
 
 ---
 
 ## 联系方式
 
 hongchenji [at] gmail [dot] com  
-GitHub: https://github.com/hongchenji
-linkedin: https://www.linkedin.com/in/hongchenji
+GitHub: https://github.com/hongchenji  
+LinkedIn: https://www.linkedin.com/in/hongchenji
 
 ---
 
 ## 说明
 
-本网站内容基于公开论文、开源项目和个人研究笔记整理。
+本网站内容基于公开论文、开源项目以及个人研究笔记整理。
 
 不包含任何来自雇主的专有或保密信息。
-
----
-
-## 最近更新
-
-下面列出最近更新的文章。
