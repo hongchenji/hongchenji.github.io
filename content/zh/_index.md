@@ -66,6 +66,29 @@ title: "Home"
 
 ---
 
+## 作者
+
+Hongchen Ji  
+AI engineer exploring robot learning systems and Vision-Language-Action models.
+
+---
+
+## 联系方式
+
+hongchenji [at] gmail [dot] com  
+GitHub: https://github.com/hongchenji
+linkedin: https://www.linkedin.com/in/hongchenji
+
+---
+
+## 说明
+
+本网站内容基于公开论文、开源项目和个人研究笔记整理。
+
+不包含任何来自雇主的专有或保密信息。
+
+---
+
 ## 最近更新
 
 下面列出最近更新的文章。
