@@ -31,17 +31,17 @@ defaultContentLanguageInSubdir = false
 
     [[languages.en.menu.main]]
       name = "Reading"
-      url = "/en/reading/"
+      url = "/reading/"
       weight = 10
 
     [[languages.en.menu.main]]
       name = "Engineering"
-      url = "/en/engineering/"
+      url = "/engineering/"
       weight = 20
 
     [[languages.en.menu.main]]
       name = "Concepts"
-      url = "/en/concepts/"
+      url = "/concepts/"
       weight = 30
 
   [languages.zh]
