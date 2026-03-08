@@ -2,7 +2,7 @@ baseURL = "https://hongchenji.github.io/"
 title = "HC's Log"
 theme = "PaperMod"
 defaultContentLanguage = "en"
-defaultContentLanguageInSubdir = true
+defaultContentLanguageInSubdir = false
 
 [pagination]
   pagerSize = 3
