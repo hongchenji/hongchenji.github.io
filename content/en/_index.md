@@ -4,9 +4,7 @@ title: "Home"
 
 # Building better robot learning systems
 
-AI engineer exploring how to design and build **scalable robot learning systems**,  
-with a current focus on **Vision-Language-Action (VLA) models**, **simulation benchmarking**,  
-and **evaluation infrastructure for robot policies**.
+AI engineer exploring how to design and build **scalable robot learning systems**, with a current focus on **Vision-Language-Action (VLA) models**, **simulation benchmarking**, and **evaluation infrastructure for robot policies**.
 
 This site documents notes, experiments, and ideas encountered while exploring how robot foundation models might be built in practice.
 
