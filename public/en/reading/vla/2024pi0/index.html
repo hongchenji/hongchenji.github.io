@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>π0 | HC&#39;s Log</title>
 <meta name="keywords" content="">
 <meta name="description" content="π0: A Vision-Language-Action Flow Model for General Robot Control
@@ -28,17 +28,17 @@ continuous robot motion must be approximated using symbolic outputs
 
 In practice, robot control is inherently continuous and dynamic. Policies must generate smooth trajectories that respect physical constraints.">
 <meta name="author" content="map[name:Hongchen Ji]">
-<link rel="canonical" href="http://localhost:1313/en/reading/vla/2024pi0/">
+<link rel="canonical" href="https://hongchenji.github.io/en/reading/vla/2024pi0/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://hongchenji.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hongchenji.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hongchenji.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hongchenji.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hongchenji.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2024pi0/">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2024pi0/">
+<link rel="alternate" hreflang="en" href="https://hongchenji.github.io/en/reading/vla/2024pi0/">
+<link rel="alternate" hreflang="zh" href="https://hongchenji.github.io/zh/reading/vla/2024pi0/">
 <noscript>
     <style>
         #theme-toggle,
@@ -90,13 +90,108 @@ In practice, robot control is inherently continuous and dynamic. Policies must g
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://hongchenji.github.io/en/reading/vla/2024pi0/">
+  <meta property="og:site_name" content="HC&#39;s Log">
+  <meta property="og:title" content="π0">
+  <meta property="og:description" content="π0: A Vision-Language-Action Flow Model for General Robot Control Organization: Physical Intelligence Year: 2024 Paper: https://www.physicalintelligence.company/download/pi0.pdf
+Problem Most recent Vision-Language-Action (VLA) models treat robot actions as discrete tokens, similar to text tokens in language models.
+Examples include models such as:
+RT-2 OpenVLA Octo While tokenization simplifies modeling, it introduces several limitations for robot control:
+discretization can reduce control precision action tokens may produce jerky or unnatural trajectories continuous robot motion must be approximated using symbolic outputs In practice, robot control is inherently continuous and dynamic. Policies must generate smooth trajectories that respect physical constraints.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="reading">
+    <meta property="article:published_time" content="2026-03-04T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-04T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="π0">
+<meta name="twitter:description" content="π0: A Vision-Language-Action Flow Model for General Robot Control
+Organization: Physical Intelligence
+Year: 2024
+Paper: https://www.physicalintelligence.company/download/pi0.pdf
+
+Problem
+Most recent Vision-Language-Action (VLA) models treat robot actions as discrete tokens, similar to text tokens in language models.
+Examples include models such as:
+
+RT-2
+OpenVLA
+Octo
+
+While tokenization simplifies modeling, it introduces several limitations for robot control:
+
+discretization can reduce control precision
+action tokens may produce jerky or unnatural trajectories
+continuous robot motion must be approximated using symbolic outputs
+
+In practice, robot control is inherently continuous and dynamic. Policies must generate smooth trajectories that respect physical constraints.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Reading",
+      "item": "https://hongchenji.github.io/en/reading/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "VLA models",
+      "item": "https://hongchenji.github.io/en/reading/vla/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "π0",
+      "item": "https://hongchenji.github.io/en/reading/vla/2024pi0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "π0",
+  "name": "π0",
+  "description": "π0: A Vision-Language-Action Flow Model for General Robot Control Organization: Physical Intelligence Year: 2024 Paper: https://www.physicalintelligence.company/download/pi0.pdf\nProblem Most recent Vision-Language-Action (VLA) models treat robot actions as discrete tokens, similar to text tokens in language models.\nExamples include models such as:\nRT-2 OpenVLA Octo While tokenization simplifies modeling, it introduces several limitations for robot control:\ndiscretization can reduce control precision action tokens may produce jerky or unnatural trajectories continuous robot motion must be approximated using symbolic outputs In practice, robot control is inherently continuous and dynamic. Policies must generate smooth trajectories that respect physical constraints.\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "π0: A Vision-Language-Action Flow Model for General Robot Control Organization: Physical Intelligence Year: 2024 Paper: https://www.physicalintelligence.company/download/pi0.pdf\nProblem Most recent Vision-Language-Action (VLA) models treat robot actions as discrete tokens, similar to text tokens in language models.\nExamples include models such as:\nRT-2 OpenVLA Octo While tokenization simplifies modeling, it introduces several limitations for robot control:\ndiscretization can reduce control precision action tokens may produce jerky or unnatural trajectories continuous robot motion must be approximated using symbolic outputs In practice, robot control is inherently continuous and dynamic. Policies must generate smooth trajectories that respect physical constraints.\nTherefore, a key question emerges:\nCan VLA models generate continuous robot actions while still benefiting from large vision-language models?\nWhy it matters General robot control requires three capabilities simultaneously:\nSemantic understanding of tasks and objects Continuous motor control for manipulation Generalization across robots and environments Large Vision-Language Models (VLMs) provide strong semantic reasoning abilities but are not designed for continuous control.\nConversely, traditional robot policies can generate continuous actions but often lack semantic understanding.\nA unified system that combines:\ninternet-scale semantic knowledge continuous control generation cross-embodiment learning would move robotics closer to generalist robot policies.\nAttempt π0 proposes a new approach:\nmodel robot actions as continuous trajectories using flow matching.\nInstead of predicting discrete action tokens, the model generates actions through a continuous denoising / flow process.\nThe system combines three components:\na pretrained Vision-Language Model (VLM) for perception and reasoning a robotics-specific action expert for control flow matching for continuous action trajectory generation This allows semantic reasoning and low-level control to coexist within a single architecture.\nModel VLM Backbone The semantic backbone is based on PaliGemma, which itself builds on Gemma.\nArchitecture characteristics noted in the paper include:\nmulti-query attention width: 2048 depth: 18 MLP dimension: 16384 attention heads: 18 KV heads: 1 head dimension: 256 The π0 configuration uses a smaller model:\nwidth: 1024 MLP dimension: 4096 roughly 3B parameters Conceptually, the VLM can be viewed as:\nSigLIP (vision encoder) + Gemma (language model)\nImages are processed by a ViT-style encoder to produce visual embeddings, which are then combined with language tokens.\nInputs The model receives three main inputs:\nimage observations (I_i^t) from multiple cameras language instruction (l_t) robot proprioceptive state (q_t) For one example embodiment, the proprioceptive state has 18 dimensions, including:\ntwo 6-DoF robot arms two grippers an AGV a vertical moving body Robot states are projected into the same embedding space as language tokens.\nAction Expert π0 introduces a robotics-specific module called the action expert.\nThe model separates parameters into two groups:\nVLM weights for vision and language reasoning action-expert weights for robot states and action generation Both branches share a single Transformer but use different parameter subsets.\nThis design allows the system to:\nreuse large VLM knowledge maintain specialized control modules for robotics. Action Horizon The model predicts an action trajectory rather than a single action.\nAction horizon:\n[ At = [a_t, …, a{t+H-1}] ]\nwhere:\n(H = 50) During training, the model predicts noisy action trajectories that will later be denoised through the flow process.\nFlow Matching π0 uses conditional flow matching to generate continuous actions.\nThe model learns a velocity field that transforms noise into valid robot action trajectories.\nAn MLP injects the flow timestep (\\tau) into the network:\n[ W_3 \\cdot \\mathrm{swish}(W_2 \\cdot \\mathrm{concat}(W_1 \\cdot a’_{t,\\tau}, \\phi(\\tau))) ]\nThis mechanism conditions the action expert on both the noisy action and the diffusion timestep.\nAttention Mask π0 uses a blockwise causal attention mask.\nToken ordering:\nimage / language tokens robot state tokens action tokens Attention behavior:\nbidirectional attention within the current block access to previous blocks no attention to future blocks This maintains causal structure while enabling strong conditioning on recent observations.\nFailure / Limitation Despite its promising design, several open challenges remain.\nData requirements remain unclear The exact amount of data required per task for reliable performance is still uncertain.\nLarge-scale cross-embodiment datasets are difficult and expensive to collect.\nCross-embodiment generalization is still limited Although π0 is trained on multiple robot embodiments, true universal policies remain challenging.\nDifferent robots may have:\ndifferent kinematics different control interfaces different observation spaces Flow-based control increases computational cost Flow matching requires multiple denoising steps during inference, which may increase latency compared to single-step token prediction.\nFix / Key Idea The central insight of π0 is that continuous action generation is better suited for robot control than discrete token prediction.\nInstead of representing actions as symbols, π0 models them as trajectories generated by a flow process.\nThis architecture combines three complementary components:\nVLM reasoning for semantic understanding action expert for robotics control flow matching for smooth continuous trajectories Together these components form a new type of Vision-Language-Action flow model.\nResults Key observations from the paper include:\nthe model can perform long-horizon tasks, sometimes lasting up to 10 minutes flow-based generation produces smoother trajectories evaluation uses partial success scores (0-1) instead of binary success Training data includes multiple sources:\nOpen-X Embodiment DROID Bridge internal cross-embodiment datasets The training corpus covers:\n7 robot embodiments 68 tasks Takeaway π0 suggests a new direction for VLA systems:\nrobot actions should be modeled as continuous trajectories rather than discrete tokens.\nIn this framework:\nthe VLM provides semantic context the action expert handles robot-specific control flow matching generates smooth continuous trajectories This design moves VLA models closer to general robot control policies.\n",
+  "wordCount" : "884",
+  "inLanguage": "en",
+  "datePublished": "2026-03-04T00:00:00Z",
+  "dateModified": "2026-03-04T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": {"name":"Hongchen Ji"}
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hongchenji.github.io/en/reading/vla/2024pi0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HC's Log",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hongchenji.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <a href="https://hongchenji.github.io/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -120,7 +215,7 @@ In practice, robot control is inherently continuous and dynamic. Policies must g
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/zh/" title="中文"
+                            <a href="https://hongchenji.github.io/zh/" title="中文"
                                 aria-label="中文">Zh</a>
                         </li>
                     </ul>
@@ -128,17 +223,17 @@ In practice, robot control is inherently continuous and dynamic. Policies must g
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/en/reading/" title="Reading">
+                <a href="https://hongchenji.github.io/en/reading/" title="Reading">
                     <span>Reading</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                <a href="https://hongchenji.github.io/en/engineering/" title="Engineering">
                     <span>Engineering</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                <a href="https://hongchenji.github.io/en/concepts/" title="Concepts">
                     <span>Concepts</span>
                 </a>
             </li>
@@ -149,14 +244,14 @@ In practice, robot control is inherently continuous and dynamic. Policies must g
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/vla/">VLA models</a></div>
+    <div class="breadcrumbs"><a href="https://hongchenji.github.io/en/">Home</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/en/reading/vla/">VLA models</a></div>
     <h1 class="post-title entry-hint-parent">
       π0
     </h1>
     <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>5 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
 <ul class="i18n_list">
     <li>
-        <a href="http://localhost:1313/zh/reading/vla/2024pi0/">Zh</a>
+        <a href="https://hongchenji.github.io/zh/reading/vla/2024pi0/">Zh</a>
     </li>
 </ul>
 
@@ -377,12 +472,12 @@ W_3 \cdot \mathrm{swish}(W_2 \cdot \mathrm{concat}(W_1 \cdot a&rsquo;_{t,\tau}, 
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/en/reading/vla/2023rt2/">
+  <a class="prev" href="https://hongchenji.github.io/en/reading/vla/2023rt2/">
     <span class="title">« Prev</span>
     <br>
     <span>RT-2</span>
   </a>
-  <a class="next" href="http://localhost:1313/en/reading/vla/2025pi0_5/">
+  <a class="next" href="https://hongchenji.github.io/en/reading/vla/2025pi0_5/">
     <span class="title">Next »</span>
     <br>
     <span>π0.5</span>
@@ -394,7 +489,7 @@ W_3 \cdot \mathrm{swish}(W_2 \cdot \mathrm{concat}(W_1 \cdot a&rsquo;_{t,\tau}, 
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+        <span>&copy; 2026 <a href="https://hongchenji.github.io/en/">HC&#39;s Log</a></span> · 
 
     <span>
         Powered by

@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Modeling Pre-VLA Robots on HC&#39;s Log</title>
-    <link>http://localhost:1313/en/reading/pre-vla/</link>
+    <link>https://hongchenji.github.io/en/reading/pre-vla/</link>
     <description>Recent content in Modeling Pre-VLA Robots on HC&#39;s Log</description>
     <generator>Hugo -- 0.157.0</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 04 Mar 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/en/reading/pre-vla/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://hongchenji.github.io/en/reading/pre-vla/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Basics</title>
-      <link>http://localhost:1313/en/reading/pre-vla/2022basics/</link>
+      <link>https://hongchenji.github.io/en/reading/pre-vla/2022basics/</link>
       <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/en/reading/pre-vla/2022basics/</guid>
+      <guid>https://hongchenji.github.io/en/reading/pre-vla/2022basics/</guid>
       <description>&lt;script&gt;
   window.MathJax = {
     tex: {
@@ -40,35 +40,6 @@
 &lt;p&gt;The central question is:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;How can a model learn to transform a simple noise distribution into a complex structured data distribution?&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</title>
-      <link>http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/</link>
-      <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/</guid>
-      <description>&lt;h2 id=&#34;paper-information&#34;&gt;Paper Information&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;Authors&lt;/strong&gt;&lt;br&gt;
-Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun Du,&lt;br&gt;
-Benjamin Burchfiel, Russ Tedrake, Shuran Song&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Conference&lt;/strong&gt;&lt;br&gt;
-Robotics: Science and Systems (RSS)&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Year&lt;/strong&gt;&lt;br&gt;
-2023&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Paper&lt;/strong&gt;&lt;br&gt;
-&lt;a href=&#34;https://diffusion-policy.cs.columbia.edu/diffusion_policy_2023.pdf&#34;&gt;https://diffusion-policy.cs.columbia.edu/diffusion_policy_2023.pdf&lt;/a&gt;&lt;/p&gt;
-&lt;hr&gt;
-&lt;h1 id=&#34;1-background-and-problem&#34;&gt;1. Background and Problem&lt;/h1&gt;
-&lt;p&gt;&lt;strong&gt;Research area&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Robot learning / visuomotor policy learning.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Core problem&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Learning policies that map observations (e.g., images and robot states) to robot actions.&lt;/p&gt;
-&lt;p&gt;This is challenging because:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;The action distribution can be &lt;strong&gt;multi-modal&lt;/strong&gt; (multiple valid ways to complete a task).&lt;/li&gt;
-&lt;li&gt;Actions across time are &lt;strong&gt;sequentially correlated&lt;/strong&gt;.&lt;/li&gt;
-&lt;li&gt;Manipulation tasks often require &lt;strong&gt;high precision&lt;/strong&gt; and stable control.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;strong&gt;Limitations of previous approaches&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

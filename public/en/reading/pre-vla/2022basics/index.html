@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>Basics | HC&#39;s Log</title>
 <meta name="keywords" content="">
 <meta name="description" content="
@@ -16,17 +16,17 @@ The central question is:
 
 How can a model learn to transform a simple noise distribution into a complex structured data distribution?">
 <meta name="author" content="map[name:Hongchen Ji]">
-<link rel="canonical" href="http://localhost:1313/en/reading/pre-vla/2022basics/">
+<link rel="canonical" href="https://hongchenji.github.io/en/reading/pre-vla/2022basics/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://hongchenji.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hongchenji.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hongchenji.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hongchenji.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hongchenji.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/pre-vla/2022basics/">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/pre-vla/2022basics/">
+<link rel="alternate" hreflang="en" href="https://hongchenji.github.io/en/reading/pre-vla/2022basics/">
+<link rel="alternate" hreflang="zh" href="https://hongchenji.github.io/zh/reading/pre-vla/2022basics/">
 <noscript>
     <style>
         #theme-toggle,
@@ -78,13 +78,94 @@ How can a model learn to transform a simple noise distribution into a complex st
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://hongchenji.github.io/en/reading/pre-vla/2022basics/">
+  <meta property="og:site_name" content="HC&#39;s Log">
+  <meta property="og:title" content="Basics">
+  <meta property="og:description" content=" Diffusion Policy and Flow Matching: Foundations This note summarizes the foundations of diffusion models, diffusion policy, and flow matching, with an emphasis on both the formal derivation and the intuition behind them.
+The central question is:
+How can a model learn to transform a simple noise distribution into a complex structured data distribution?">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="reading">
+    <meta property="article:published_time" content="2026-03-04T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-04T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Basics">
+<meta name="twitter:description" content="
+
+
+Diffusion Policy and Flow Matching: Foundations
+This note summarizes the foundations of diffusion models, diffusion policy, and flow matching, with an emphasis on both the formal derivation and the intuition behind them.
+The central question is:
+
+How can a model learn to transform a simple noise distribution into a complex structured data distribution?">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Reading",
+      "item": "https://hongchenji.github.io/en/reading/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Modeling Pre-VLA Robots",
+      "item": "https://hongchenji.github.io/en/reading/pre-vla/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "Basics",
+      "item": "https://hongchenji.github.io/en/reading/pre-vla/2022basics/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Basics",
+  "name": "Basics",
+  "description": " Diffusion Policy and Flow Matching: Foundations This note summarizes the foundations of diffusion models, diffusion policy, and flow matching, with an emphasis on both the formal derivation and the intuition behind them.\nThe central question is:\nHow can a model learn to transform a simple noise distribution into a complex structured data distribution?\n",
+  "keywords": [
+    
+  ],
+  "articleBody": " Diffusion Policy and Flow Matching: Foundations This note summarizes the foundations of diffusion models, diffusion policy, and flow matching, with an emphasis on both the formal derivation and the intuition behind them.\nThe central question is:\nHow can a model learn to transform a simple noise distribution into a complex structured data distribution?\nThis question appears in image generation, video generation, and increasingly in robot policy learning.\n1. Background Concepts Before discussing diffusion and flow matching, a few background ideas are useful.\nKL Divergence KL divergence measures the difference between two probability distributions.\n$$ KL(q(x)|p(x)) = \\int q(x)\\log\\frac{q(x)}{p(x)}dx $$\nIn expectation form:\n$$ KL(q|p) = \\mathbb{E}_{q(x)}[\\log q(x) - \\log p(x)] $$\nIntuition KL divergence measures how well distribution p approximates q KL is always non-negative KL is zero only when the two distributions are identical In many generative models, KL divergence appears because we want a learned distribution to match either:\nthe true posterior, or a simple prior such as a Gaussian Maximum Likelihood Maximum likelihood estimation (MLE) learns parameters by maximizing\n$$ \\log p_\\theta(x) $$\nEquivalently, it minimizes the negative log-likelihood.\nThis is the ideal objective for generative modeling, but for latent-variable models it is often hard to compute directly.\nVariational Inference and ELBO Suppose we have a latent-variable model\n$$ p_\\theta(x) = \\int p_\\theta(x|z)p(z),dz $$\nThe integral is often intractable, so we introduce an approximate posterior\n$$ q_\\phi(z|x) $$\nThen the log-likelihood can be decomposed as\n$$ \\log p_\\theta(x) = ELBO + KL(q_\\phi(z|x)|p_\\theta(z|x)) $$\nwhere\n$$ ELBO = \\mathbb{E}{q\\phi(z|x)}[\\log p_\\theta(x|z)] - KL(q_\\phi(z|x)|p(z)) $$\nSince KL divergence is non-negative\n$$ \\log p_\\theta(x) \\ge ELBO $$\nSo instead of directly maximizing $\\log p_\\theta(x)$ we maximize the ELBO.\nELBO components $$ ELBO = \\mathbb{E}{q\\phi(z|x)}[\\log p_\\theta(x|z)] - KL(q_\\phi(z|x)|p(z)) $$\nThis has two parts.\n1. Reconstruction term\n$$ \\mathbb{E}{q\\phi(z|x)}[\\log p_\\theta(x|z)] $$\nThis encourages the decoder to reconstruct $x$ well from $z$.\n2. KL regularization term\n$$ KL(q_\\phi(z|x)|p(z)) $$\nThis pushes the latent distribution toward the prior.\nWhy variational inference appears The original goal is to match\n$$ q_\\phi(z|x) \\approx p_\\theta(z|x) $$\nBut the true posterior\n$$ p_\\theta(z|x)=\\frac{p_\\theta(x|z)p(z)}{p_\\theta(x)} $$\ndepends on\n$$ p_\\theta(x)=\\int p_\\theta(x|z)p(z),dz $$\nwhich is hard to compute. So we optimize the ELBO instead.\nReparameterization Trick To sample from\n$$ z \\sim \\mathcal{N}(\\mu,\\sigma^2) $$\nwe rewrite it as\n$$ z = \\mu + \\sigma\\epsilon, \\qquad \\epsilon \\sim \\mathcal{N}(0,1) $$\nThis separates the randomness from the learnable parameters and allows gradients to flow through sampling.\nU-Net A U-Net is a common neural architecture used in diffusion models.\nIts main features are\na downsampling path for extracting coarse features an upsampling path for reconstructing details skip connections between matching resolution levels In diffusion models, the U-Net receives\na noisy input a timestep optionally a conditioning signal such as text and predicts either\nthe noise the clean signal or a velocity-like target depending on the formulation 2. Diffusion Models A diffusion model learns to generate data by reversing a gradual noising process.\nThere are two processes\nforward diffusion: gradually destroy structure by adding Gaussian noise reverse diffusion: learn how to reconstruct structure from noise The key idea is that while the data distribution may be complicated, a standard Gaussian is simple. Instead of modeling the data distribution directly, we learn how to move from Gaussian noise back to data.\n3. Forward Diffusion Process The forward process gradually adds independent Gaussian noise to a data sample.\nAt timestep $t$\n$$ x_t = \\sqrt{\\bar{\\alpha}_t}x_0 + \\sqrt{1-\\bar{\\alpha}_t},\\epsilon $$\nwhere\n$$ \\epsilon \\sim \\mathcal{N}(0,I) $$\nand\n$$ \\bar{\\alpha}t = \\prod{s=1}^t \\alpha_s $$\nwith $\\alpha_t = 1-\\beta_t$.\nIntuition $\\sqrt{\\bar{\\alpha}_t}$ preserves the original signal $\\sqrt{1-\\bar{\\alpha}_t}$ controls the noise level as $t$ increases the signal is gradually destroyed For sufficiently large $T$\n$$ x_T \\approx \\mathcal{N}(0,I) $$\nregardless of the original sample.\nWhy this happens Repeatedly adding independent Gaussian noise drives the distribution toward a Gaussian. Intuitively the original information is gradually washed out and the result becomes dominated by noise.\nWhy the process is stochastic Given the same $x_0$, sampling different noise values produces different $x_t$. Therefore the forward process defines a distribution over states, not a deterministic mapping.\n4. Reverse Diffusion Process The reverse process learns how to remove noise.\nInstead of predicting $x_{t-1}$ directly we train a network\n$$ \\epsilon_\\theta(x_t,t) $$\nto predict the noise that was added.\nThe training loss is\n$$ L = \\mathbb{E}{x_0,\\epsilon,t}\\left[|\\epsilon - \\epsilon\\theta(x_t,t)|^2\\right] $$\nwhich is simply mean squared error between the true noise and the predicted noise.\nWhy predicting noise works The variational objective of diffusion can be decomposed into several terms. In practice the dominant learning signal comes from the denoising term. Because the forward process is Gaussian, the reverse conditional distribution can also be written in Gaussian form. Estimating its mean becomes equivalent to predicting the noise.\nSampling Generation proceeds as follows.\nSample Gaussian noise $$ x_T \\sim \\mathcal{N}(0,I) $$\nApply the reverse process iteratively $$ x_T \\rightarrow x_{T-1} \\rightarrow \\dots \\rightarrow x_0 $$\n5. Diffusion Model Architecture A text-conditioned diffusion system often contains three components.\nText Encoder The text encoder converts prompts into embeddings. Typical choices include\nCLIP BERT GPT-style encoders T5 A strong text encoder usually improves semantic alignment and generation quality.\nGeneration Model The core generation network is typically a U-Net.\nInputs\nnoisy sample timestep text embedding Output\npredicted noise (or an equivalent target) Decoder If diffusion operates in latent space a decoder converts latent representations back to the final output.\nimage → encoder → latent latent → diffusion latent → decoder → image 6. Evaluation Metrics FID Score Fréchet Inception Distance measures the difference between generated images and real images.\nTypical procedure\ngenerate many images extract features using a CNN approximate both feature distributions as Gaussians compute the Fréchet distance Lower FID indicates better generation quality.\nCLIP Score CLIP score measures semantic alignment between text and image by comparing their embeddings in a shared representation space.\n7. Diffusion Policy in Robotics Diffusion models can generate robot action trajectories instead of images.\nIn Diffusion Policy\nthe forward process adds Gaussian noise to action sequences the reverse process reconstructs the clean actions This formulation is useful because robot policies are often multimodal and temporally smooth. Diffusion models naturally represent multiple valid behaviors and produce smooth trajectories.\n8. Flow Matching Flow Matching is a continuous-time formulation of generative modeling.\nInstead of learning discrete denoising steps it learns a vector field that continuously transports samples from noise to data.\nCore idea Let\n$$ x_0 \\sim p_{data} $$\nand\n$$ x_1 \\sim \\mathcal{N}(0,I) $$\nDefine an interpolation path\n$$ x_t = (1-t)x_0 + tx_1 $$\nWe learn a velocity field\n$$ v_\\theta(x_t,t) $$\nsuch that\n$$ \\frac{dx_t}{dt} = v_\\theta(x_t,t) $$\nThe training objective is\n$$ \\mathbb{E}|v_\\theta(x_t,t) - v^*(x_t,t)|^2 $$\nIntuition Diffusion\nnoise → many denoising steps → data Flow matching\nnoise → continuous flow → data Advantages Flow matching can offer\nfewer sampling steps continuous-time modeling simpler regression targets faster generation 9. Personal Understanding Both diffusion and flow matching address the same fundamental problem: transforming a simple noise distribution into a complex data distribution.\nDiffusion can be viewed as\nnoise → iterative denoising → data Flow matching can be viewed as\nnoise → continuous vector field → data For robotics both approaches are attractive because they can generate smooth action trajectories, which are essential for manipulation and continuous control.\n",
+  "wordCount" : "1207",
+  "inLanguage": "en",
+  "datePublished": "2026-03-04T00:00:00Z",
+  "dateModified": "2026-03-04T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": {"name":"Hongchen Ji"}
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hongchenji.github.io/en/reading/pre-vla/2022basics/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HC's Log",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hongchenji.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <a href="https://hongchenji.github.io/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -108,7 +189,7 @@ How can a model learn to transform a simple noise distribution into a complex st
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/zh/" title="中文"
+                            <a href="https://hongchenji.github.io/zh/" title="中文"
                                 aria-label="中文">Zh</a>
                         </li>
                     </ul>
@@ -116,17 +197,17 @@ How can a model learn to transform a simple noise distribution into a complex st
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/en/reading/" title="Reading">
+                <a href="https://hongchenji.github.io/en/reading/" title="Reading">
                     <span>Reading</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                <a href="https://hongchenji.github.io/en/engineering/" title="Engineering">
                     <span>Engineering</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                <a href="https://hongchenji.github.io/en/concepts/" title="Concepts">
                     <span>Concepts</span>
                 </a>
             </li>
@@ -137,14 +218,14 @@ How can a model learn to transform a simple noise distribution into a complex st
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
+    <div class="breadcrumbs"><a href="https://hongchenji.github.io/en/">Home</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/en/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
     <h1 class="post-title entry-hint-parent">
       Basics
     </h1>
     <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>6 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
 <ul class="i18n_list">
     <li>
-        <a href="http://localhost:1313/zh/reading/pre-vla/2022basics/">Zh</a>
+        <a href="https://hongchenji.github.io/zh/reading/pre-vla/2022basics/">Zh</a>
     </li>
 </ul>
 
@@ -474,10 +555,10 @@ $$</p>
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
-  <a class="next" href="http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/">
+  <a class="next" href="https://hongchenji.github.io/en/reading/vla/2023rt2/">
     <span class="title">Next »</span>
     <br>
-    <span>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</span>
+    <span>RT-2</span>
   </a>
 </nav>
 
@@ -486,7 +567,7 @@ $$</p>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+        <span>&copy; 2026 <a href="https://hongchenji.github.io/en/">HC&#39;s Log</a></span> · 
 
     <span>
         Powered by

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>RT-2 | HC 的笔记</title>
 <meta name="keywords" content="">
 <meta name="description" content="RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型
@@ -69,17 +69,17 @@ Vision-Language Model
 ↓
 action tokens">
 <meta name="author" content="map[name:Hongchen Ji]">
-<link rel="canonical" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+<link rel="canonical" href="https://hongchenji.github.io/zh/reading/vla/2023rt2/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://hongchenji.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hongchenji.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hongchenji.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hongchenji.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hongchenji.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2023rt2/">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+<link rel="alternate" hreflang="en" href="https://hongchenji.github.io/en/reading/vla/2023rt2/">
+<link rel="alternate" hreflang="zh" href="https://hongchenji.github.io/zh/reading/vla/2023rt2/">
 <noscript>
     <style>
         #theme-toggle,
@@ -131,13 +131,162 @@ action tokens">
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://hongchenji.github.io/zh/reading/vla/2023rt2/">
+  <meta property="og:site_name" content="HC 的笔记">
+  <meta property="og:title" content="RT-2">
+  <meta property="og:description" content="RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型 作者：Anthony Brohan 等 机构：Google DeepMind 年份：2023
+论文 / 博客 https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+Problem 传统机器人策略通常只依赖 机器人交互数据（demonstrations 或 RL 数据）。
+但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：
+具体任务的操作模式 局部的动作策略 而缺乏：
+语义知识 常识推理 对新任务的泛化能力 例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：
+遇到新的物体类别 接收到新的语言指令 需要理解物体用途（affordance） 换句话说：
+传统机器人策略擅长学习 运动技能，但缺乏 世界知识（world knowledge）。
+Why it matters 大型视觉语言模型（VLM）已经在 互联网规模数据 上训练，并学习到了大量语义知识，例如：
+物体类别 语言描述 物体之间的语义关系 常识推理模式 如果这些知识能够被迁移到机器人系统中，机器人可能可以：
+理解新的自然语言指令 识别未见过的物体 根据语义推理完成任务 然而传统机器人系统通常将以下模块 分开设计：
+perception → language → control
+这种结构使机器人策略无法直接利用 互联网规模的语义知识。
+Attempt RT-2 提出了一个非常简单但影响深远的想法：
+直接使用 Vision-Language Model 作为机器人策略模型。
+作者没有设计新的机器人网络结构，而是让模型直接生成 机器人动作 token。
+整体 pipeline：
+image &#43; language instruction ↓ Vision-Language Model ↓ action tokens">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="reading">
+    <meta property="article:published_time" content="2026-03-04T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-04T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RT-2">
+<meta name="twitter:description" content="RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型
+作者：Anthony Brohan 等
+机构：Google DeepMind
+年份：2023
+论文 / 博客
+https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+
+Problem
+传统机器人策略通常只依赖 机器人交互数据（demonstrations 或 RL 数据）。
+但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：
+
+具体任务的操作模式
+局部的动作策略
+
+而缺乏：
+
+语义知识
+常识推理
+对新任务的泛化能力
+
+例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：
+
+遇到新的物体类别
+接收到新的语言指令
+需要理解物体用途（affordance）
+
+换句话说：
+
+传统机器人策略擅长学习 运动技能，但缺乏 世界知识（world knowledge）。
+
+
+Why it matters
+大型视觉语言模型（VLM）已经在 互联网规模数据 上训练，并学习到了大量语义知识，例如：
+
+物体类别
+语言描述
+物体之间的语义关系
+常识推理模式
+
+如果这些知识能够被迁移到机器人系统中，机器人可能可以：
+
+理解新的自然语言指令
+识别未见过的物体
+根据语义推理完成任务
+
+然而传统机器人系统通常将以下模块 分开设计：
+perception → language → control
+这种结构使机器人策略无法直接利用 互联网规模的语义知识。
+
+Attempt
+RT-2 提出了一个非常简单但影响深远的想法：
+
+直接使用 Vision-Language Model 作为机器人策略模型。
+
+作者没有设计新的机器人网络结构，而是让模型直接生成 机器人动作 token。
+整体 pipeline：
+image &#43; language instruction
+↓
+Vision-Language Model
+↓
+action tokens">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Reading",
+      "item": "https://hongchenji.github.io/zh/reading/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "VLA models",
+      "item": "https://hongchenji.github.io/zh/reading/vla/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "RT-2",
+      "item": "https://hongchenji.github.io/zh/reading/vla/2023rt2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "RT-2",
+  "name": "RT-2",
+  "description": "RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型 作者：Anthony Brohan 等 机构：Google DeepMind 年份：2023\n论文 / 博客 https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/\nProblem 传统机器人策略通常只依赖 机器人交互数据（demonstrations 或 RL 数据）。\n但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：\n具体任务的操作模式 局部的动作策略 而缺乏：\n语义知识 常识推理 对新任务的泛化能力 例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：\n遇到新的物体类别 接收到新的语言指令 需要理解物体用途（affordance） 换句话说：\n传统机器人策略擅长学习 运动技能，但缺乏 世界知识（world knowledge）。\nWhy it matters 大型视觉语言模型（VLM）已经在 互联网规模数据 上训练，并学习到了大量语义知识，例如：\n物体类别 语言描述 物体之间的语义关系 常识推理模式 如果这些知识能够被迁移到机器人系统中，机器人可能可以：\n理解新的自然语言指令 识别未见过的物体 根据语义推理完成任务 然而传统机器人系统通常将以下模块 分开设计：\nperception → language → control\n这种结构使机器人策略无法直接利用 互联网规模的语义知识。\nAttempt RT-2 提出了一个非常简单但影响深远的想法：\n直接使用 Vision-Language Model 作为机器人策略模型。\n作者没有设计新的机器人网络结构，而是让模型直接生成 机器人动作 token。\n整体 pipeline：\nimage + language instruction ↓ Vision-Language Model ↓ action tokens\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型 作者：Anthony Brohan 等 机构：Google DeepMind 年份：2023\n论文 / 博客 https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/\nProblem 传统机器人策略通常只依赖 机器人交互数据（demonstrations 或 RL 数据）。\n但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：\n具体任务的操作模式 局部的动作策略 而缺乏：\n语义知识 常识推理 对新任务的泛化能力 例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：\n遇到新的物体类别 接收到新的语言指令 需要理解物体用途（affordance） 换句话说：\n传统机器人策略擅长学习 运动技能，但缺乏 世界知识（world knowledge）。\nWhy it matters 大型视觉语言模型（VLM）已经在 互联网规模数据 上训练，并学习到了大量语义知识，例如：\n物体类别 语言描述 物体之间的语义关系 常识推理模式 如果这些知识能够被迁移到机器人系统中，机器人可能可以：\n理解新的自然语言指令 识别未见过的物体 根据语义推理完成任务 然而传统机器人系统通常将以下模块 分开设计：\nperception → language → control\n这种结构使机器人策略无法直接利用 互联网规模的语义知识。\nAttempt RT-2 提出了一个非常简单但影响深远的想法：\n直接使用 Vision-Language Model 作为机器人策略模型。\n作者没有设计新的机器人网络结构，而是让模型直接生成 机器人动作 token。\n整体 pipeline：\nimage + language instruction ↓ Vision-Language Model ↓ action tokens\n例如模型输出：\n132 114 128 5 25 156\n这些 token 表示离散化后的机器人控制指令，例如：\n末端执行器位置 旋转角度 夹爪开合 因此机器人控制问题被重新表述为：\n在视觉和语言条件下的 token 预测问题。\nModel Vision-Language Backbone RT-2 构建在大型视觉语言模型之上：\nPaLM-E（12B 参数） PaLI-X（5B / 55B 参数） 这些模型通常由两部分组成：\nVision Transformer（ViT）\nLarge Language Model（LLM）\n组合后形成一个能够同时处理 图像 + 文本 的 Vision-Language Model。\nAction Tokenization RT-2 不再使用单独的机器人策略网络，而是：\n直接使用语言模型的输出头生成机器人动作 token。\n动作被离散化为 token，并与文本 token 共享生成机制。\n因此机器人控制被统一为：\n条件序列生成问题（conditional sequence generation）。\nRobot Dataset RT-2 使用的机器人训练数据来自 RT-1 数据集。\n数据规模包括：\n13 台机器人 约 130k demonstrations 17 个月数据采集 需要注意：\nRT-1 模型本身并没有被复用，RT-2 只使用了 RT-1 的数据。\nCo-Fine-Tuning RT-2 训练中的关键技术之一是 co-fine-tuning（联合微调）。\n模型在训练时同时使用两种数据：\n机器人交互数据 原始视觉语言数据 原因是：\n机器人数据规模较小，如果只用机器人数据训练，模型会：\n过拟合 丢失原有的语义知识 论文中的 ablation 结果表明：\n只使用机器人数据训练 → 泛化性能明显下降 使用 co-fine-tuning → 能够保留语义推理能力 Chain-of-Thought 推理 RT-2 还继承了底层语言模型的 推理能力。\n通过 chain-of-thought prompting，模型可以：\n先对任务进行语义推理 推断物体属性 再生成最终动作 例如：\nInstruction: “pick up the object that can hold liquid”\n推理：\ncup → 可以装液体\n动作：\n移动夹爪抓取杯子\n说明语义推理可以影响机器人动作决策。\nFailure / Limitation 尽管 RT-2 展示了更好的泛化能力，但仍然存在一些限制。\n运动技能仍依赖机器人数据 互联网数据能够提供语义知识，但 无法直接提供新的操作技能。\n机器人仍然需要：\ndemonstration 数据 真实机器人交互 来学习：\nmanipulation dynamics 接触控制 空间与物理理解仍然有限 RT-2 在语义理解方面提升明显，但在以下方面仍然较弱：\n三维空间理解 物理交互建模 复杂 manipulation 动作离散化问题 动作 tokenization 简化了建模，但也可能带来：\n控制精度降低 离散化误差 Fix / Key Idea RT-2 的核心创新是：\n将视觉-语言推理与机器人控制统一到同一个模型中。\n从系统角度看，RT-2 相当于把两个系统合并：\nPaLM-E → 语义推理\nRT-1 → 机器人策略\n最终形成一个 Vision-Language-Action（VLA）模型。\n核心思想可以总结为：\n机器人控制可以被视为多模态模型中的序列生成问题。\nResults RT-2 在 未见任务泛化能力 上取得了显著提升。\n主要结果包括：\n平均泛化性能提升约 2× 在完全 OOD 任务 上 PaLI-X 版本的 RT-2 比最佳 baseline 提升约 3× 提升能力包括：\n识别未见过的物体 理解自然语言指令 利用互联网语义知识完成任务 Takeaway RT-2 展示了一个非常重要的方向：\n机器人策略可以被建模为 Vision-Language 模型中的 token 预测问题。\n通过这种方式，机器人可以直接利用互联网规模模型中的语义知识。\n这一思想也影响了后续许多 VLA 模型，例如：\nOcto OpenVLA π0 ",
+  "wordCount" : "291",
+  "inLanguage": "zh",
+  "datePublished": "2026-03-04T00:00:00Z",
+  "dateModified": "2026-03-04T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": {"name":"Hongchen Ji"}
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hongchenji.github.io/zh/reading/vla/2023rt2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HC 的笔记",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hongchenji.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <a href="https://hongchenji.github.io/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -161,7 +310,7 @@ action tokens">
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/en/" title="English"
+                            <a href="https://hongchenji.github.io/en/" title="English"
                                 aria-label="English">En</a>
                         </li>
                     </ul>
@@ -169,17 +318,17 @@ action tokens">
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                <a href="https://hongchenji.github.io/zh/reading/" title="阅读">
                     <span>阅读</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                <a href="https://hongchenji.github.io/zh/engineering/" title="工程">
                     <span>工程</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                <a href="https://hongchenji.github.io/zh/concepts/" title="概念">
                     <span>概念</span>
                 </a>
             </li>
@@ -190,14 +339,14 @@ action tokens">
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/vla/">VLA models</a></div>
+    <div class="breadcrumbs"><a href="https://hongchenji.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/vla/">VLA models</a></div>
     <h1 class="post-title entry-hint-parent">
       RT-2
     </h1>
     <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
 <ul class="i18n_list">
     <li>
-        <a href="http://localhost:1313/en/reading/vla/2023rt2/">En</a>
+        <a href="https://hongchenji.github.io/en/reading/vla/2023rt2/">En</a>
     </li>
 </ul>
 
@@ -424,12 +573,12 @@ PaLI-X 版本的 RT-2 比最佳 baseline <strong>提升约 3×</strong></li>
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">
+  <a class="prev" href="https://hongchenji.github.io/zh/reading/pre-vla/2022rt1/">
     <span class="title">« 上一页</span>
     <br>
     <span>RT-1</span>
   </a>
-  <a class="next" href="http://localhost:1313/zh/reading/vla/2024pi0/">
+  <a class="next" href="https://hongchenji.github.io/zh/reading/vla/2024pi0/">
     <span class="title">下一页 »</span>
     <br>
     <span>π0</span>
@@ -441,7 +590,7 @@ PaLI-X 版本的 RT-2 比最佳 baseline <strong>提升约 3×</strong></li>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+        <span>&copy; 2026 <a href="https://hongchenji.github.io/zh/">HC 的笔记</a></span> · 
 
     <span>
         Powered by

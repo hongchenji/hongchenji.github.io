@@ -2,165 +2,195 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/zh/reading/pre-vla/2023actiondiffusioin/</loc>
+    <loc>https://hongchenji.github.io/zh/</loc>
+    <lastmod>2026-03-04T22:26:49+01:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-us"
+                href="https://hongchenji.github.io/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://hongchenji.github.io/zh/"
+                />
+  </url><url>
+    <loc>https://hongchenji.github.io/zh/reading/pre-vla/</loc>
+    <lastmod>2026-03-04T22:26:49+01:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-us"
+                href="https://hongchenji.github.io/en/reading/pre-vla/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://hongchenji.github.io/zh/reading/pre-vla/"
+                />
+  </url><url>
+    <loc>https://hongchenji.github.io/zh/reading/</loc>
+    <lastmod>2026-03-04T22:26:49+01:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en-us"
+                href="https://hongchenji.github.io/en/reading/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://hongchenji.github.io/zh/reading/"
+                />
+  </url><url>
+    <loc>https://hongchenji.github.io/zh/reading/pre-vla/2022rt1/</loc>
+    <lastmod>2026-03-04T22:26:49+01:00</lastmod>
+  </url><url>
+    <loc>https://hongchenji.github.io/zh/reading/vla/2023rt2/</loc>
     <lastmod>2026-03-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/"
+                href="https://hongchenji.github.io/en/reading/vla/2023rt2/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/pre-vla/2023actiondiffusioin/"
+                href="https://hongchenji.github.io/zh/reading/vla/2023rt2/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/</loc>
+    <loc>https://hongchenji.github.io/zh/reading/vla/</loc>
     <lastmod>2026-03-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/"
+                href="https://hongchenji.github.io/en/reading/vla/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/"
+                href="https://hongchenji.github.io/zh/reading/vla/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/reading/pre-vla/</loc>
+    <loc>https://hongchenji.github.io/zh/reading/vla/2024pi0/</loc>
     <lastmod>2026-03-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/reading/pre-vla/"
+                href="https://hongchenji.github.io/en/reading/vla/2024pi0/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/pre-vla/"
+                href="https://hongchenji.github.io/zh/reading/vla/2024pi0/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/reading/</loc>
+    <loc>https://hongchenji.github.io/zh/reading/vla/2025pi0_5/</loc>
     <lastmod>2026-03-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/reading/"
+                href="https://hongchenji.github.io/en/reading/vla/2025pi0_5/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/"
+                href="https://hongchenji.github.io/zh/reading/vla/2025pi0_5/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/reading/pre-vla/2022basics/</loc>
+    <loc>https://hongchenji.github.io/zh/reading/pre-vla/2022basics/</loc>
     <lastmod>2026-03-04T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/reading/pre-vla/2022basics/"
+                href="https://hongchenji.github.io/en/reading/pre-vla/2022basics/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/pre-vla/2022basics/"
+                href="https://hongchenji.github.io/zh/reading/pre-vla/2022basics/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/categories/</loc>
+    <loc>https://hongchenji.github.io/zh/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/categories/"
+                href="https://hongchenji.github.io/en/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/categories/"
+                href="https://hongchenji.github.io/zh/categories/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/concepts/</loc>
+    <loc>https://hongchenji.github.io/zh/concepts/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/concepts/"
+                href="https://hongchenji.github.io/en/concepts/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/concepts/"
+                href="https://hongchenji.github.io/zh/concepts/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/reading/data/</loc>
+    <loc>https://hongchenji.github.io/zh/reading/data/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/reading/data/"
+                href="https://hongchenji.github.io/en/reading/data/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/data/"
+                href="https://hongchenji.github.io/zh/reading/data/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/engineering/</loc>
+    <loc>https://hongchenji.github.io/zh/engineering/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/engineering/"
+                href="https://hongchenji.github.io/en/engineering/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/engineering/"
+                href="https://hongchenji.github.io/zh/engineering/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/reading/benchmark/</loc>
+    <loc>https://hongchenji.github.io/zh/reading/benchmark/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/reading/benchmark/"
+                href="https://hongchenji.github.io/en/reading/benchmark/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/benchmark/"
+                href="https://hongchenji.github.io/zh/reading/benchmark/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/tags/</loc>
+    <loc>https://hongchenji.github.io/zh/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/tags/"
+                href="https://hongchenji.github.io/en/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/tags/"
+                href="https://hongchenji.github.io/zh/tags/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/reading/tricks/</loc>
+    <loc>https://hongchenji.github.io/zh/reading/tricks/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en-us"
-                href="http://localhost:1313/en/reading/tricks/"
+                href="https://hongchenji.github.io/en/reading/tricks/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/tricks/"
-                />
-  </url><url>
-    <loc>http://localhost:1313/zh/reading/vla/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en-us"
-                href="http://localhost:1313/en/reading/vla/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="http://localhost:1313/zh/reading/vla/"
+                href="https://hongchenji.github.io/zh/reading/tricks/"
                 />
   </url>
 </urlset>

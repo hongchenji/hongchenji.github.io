@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>RT-1 | HC 的笔记</title>
 <meta name="keywords" content="">
 <meta name="description" content="RT-1：用于大规模真实世界控制的机器人 Transformer
@@ -80,16 +80,16 @@ Transformer policy
 ↓
 action tokens">
 <meta name="author" content="map[name:Hongchen Ji]">
-<link rel="canonical" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">
+<link rel="canonical" href="https://hongchenji.github.io/zh/reading/pre-vla/2022rt1/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://hongchenji.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hongchenji.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hongchenji.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hongchenji.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hongchenji.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">
+<link rel="alternate" hreflang="zh" href="https://hongchenji.github.io/zh/reading/pre-vla/2022rt1/">
 <noscript>
     <style>
         #theme-toggle,
@@ -141,13 +141,173 @@ action tokens">
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://hongchenji.github.io/zh/reading/pre-vla/2022rt1/">
+  <meta property="og:site_name" content="HC 的笔记">
+  <meta property="og:title" content="RT-1">
+  <meta property="og:description" content="RT-1：用于大规模真实世界控制的机器人 Transformer 机构：Google Robotics 年份：2022 论文：https://robotics-transformer1.github.io/assets/rt1.pdf
+Problem 传统机器人策略通常针对 单一任务 进行训练，例如：
+Behavioral Cloning Reinforcement Learning task‑specific policy networks 这些方法往往存在几个问题：
+训练数据规模小 模型只针对特定任务 对新物体或新环境的泛化能力较差 与此同时，在 NLP 和计算机视觉领域已经证明：
+模型规模 &#43; 数据规模 可以显著提升能力。
+因此一个关键问题是：
+是否可以像语言模型一样训练 大规模多任务机器人策略模型？
+Why it matters 如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：
+通用机器人策略（generalist policy） 能执行多种任务 可以复用跨任务知识 这样的系统可能：
+减少任务特定工程 提高泛化能力 使机器人策略更接近 foundation model 但机器人系统仍然面临挑战：
+图像输入维度高 控制必须实时执行 数据规模远小于互联网数据 因此模型需要在以下方面取得平衡：
+表达能力 计算效率 实时控制 Attempt RT-1 提出使用 Transformer 架构来学习机器人策略。
+核心思想是：
+将机器人控制问题转化为序列建模问题。
+模型输入：
+一段 图像历史 一个 自然语言指令 模型输出：
+离散化的机器人动作 token Pipeline：
+image observations &#43; instruction ↓ vision‑language encoding ↓ Transformer policy ↓ action tokens">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="reading">
+    <meta property="article:published_time" content="2026-03-04T22:26:49+01:00">
+    <meta property="article:modified_time" content="2026-03-04T22:26:49+01:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RT-1">
+<meta name="twitter:description" content="RT-1：用于大规模真实世界控制的机器人 Transformer
+机构：Google Robotics
+年份：2022
+论文：https://robotics-transformer1.github.io/assets/rt1.pdf
+
+Problem
+传统机器人策略通常针对 单一任务 进行训练，例如：
+
+Behavioral Cloning
+Reinforcement Learning
+task‑specific policy networks
+
+这些方法往往存在几个问题：
+
+训练数据规模小
+模型只针对特定任务
+对新物体或新环境的泛化能力较差
+
+与此同时，在 NLP 和计算机视觉领域已经证明：
+模型规模 &#43; 数据规模 可以显著提升能力。
+因此一个关键问题是：
+
+是否可以像语言模型一样训练 大规模多任务机器人策略模型？
+
+
+Why it matters
+如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：
+
+通用机器人策略（generalist policy）
+能执行多种任务
+可以复用跨任务知识
+
+这样的系统可能：
+
+减少任务特定工程
+提高泛化能力
+使机器人策略更接近 foundation model
+
+但机器人系统仍然面临挑战：
+
+图像输入维度高
+控制必须实时执行
+数据规模远小于互联网数据
+
+因此模型需要在以下方面取得平衡：
+
+表达能力
+计算效率
+实时控制
+
+
+Attempt
+RT-1 提出使用 Transformer 架构来学习机器人策略。
+核心思想是：
+将机器人控制问题转化为序列建模问题。
+模型输入：
+
+一段 图像历史
+一个 自然语言指令
+
+模型输出：
+
+离散化的机器人动作 token
+
+Pipeline：
+image observations &#43; instruction
+↓
+vision‑language encoding
+↓
+Transformer policy
+↓
+action tokens">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Reading",
+      "item": "https://hongchenji.github.io/zh/reading/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Modeling Pre-VLA Robots",
+      "item": "https://hongchenji.github.io/zh/reading/pre-vla/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "RT-1",
+      "item": "https://hongchenji.github.io/zh/reading/pre-vla/2022rt1/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "RT-1",
+  "name": "RT-1",
+  "description": "RT-1：用于大规模真实世界控制的机器人 Transformer 机构：Google Robotics 年份：2022 论文：https://robotics-transformer1.github.io/assets/rt1.pdf\nProblem 传统机器人策略通常针对 单一任务 进行训练，例如：\nBehavioral Cloning Reinforcement Learning task‑specific policy networks 这些方法往往存在几个问题：\n训练数据规模小 模型只针对特定任务 对新物体或新环境的泛化能力较差 与此同时，在 NLP 和计算机视觉领域已经证明：\n模型规模 + 数据规模 可以显著提升能力。\n因此一个关键问题是：\n是否可以像语言模型一样训练 大规模多任务机器人策略模型？\nWhy it matters 如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：\n通用机器人策略（generalist policy） 能执行多种任务 可以复用跨任务知识 这样的系统可能：\n减少任务特定工程 提高泛化能力 使机器人策略更接近 foundation model 但机器人系统仍然面临挑战：\n图像输入维度高 控制必须实时执行 数据规模远小于互联网数据 因此模型需要在以下方面取得平衡：\n表达能力 计算效率 实时控制 Attempt RT-1 提出使用 Transformer 架构来学习机器人策略。\n核心思想是：\n将机器人控制问题转化为序列建模问题。\n模型输入：\n一段 图像历史 一个 自然语言指令 模型输出：\n离散化的机器人动作 token Pipeline：\nimage observations + instruction ↓ vision‑language encoding ↓ Transformer policy ↓ action tokens\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "RT-1：用于大规模真实世界控制的机器人 Transformer 机构：Google Robotics 年份：2022 论文：https://robotics-transformer1.github.io/assets/rt1.pdf\nProblem 传统机器人策略通常针对 单一任务 进行训练，例如：\nBehavioral Cloning Reinforcement Learning task‑specific policy networks 这些方法往往存在几个问题：\n训练数据规模小 模型只针对特定任务 对新物体或新环境的泛化能力较差 与此同时，在 NLP 和计算机视觉领域已经证明：\n模型规模 + 数据规模 可以显著提升能力。\n因此一个关键问题是：\n是否可以像语言模型一样训练 大规模多任务机器人策略模型？\nWhy it matters 如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：\n通用机器人策略（generalist policy） 能执行多种任务 可以复用跨任务知识 这样的系统可能：\n减少任务特定工程 提高泛化能力 使机器人策略更接近 foundation model 但机器人系统仍然面临挑战：\n图像输入维度高 控制必须实时执行 数据规模远小于互联网数据 因此模型需要在以下方面取得平衡：\n表达能力 计算效率 实时控制 Attempt RT-1 提出使用 Transformer 架构来学习机器人策略。\n核心思想是：\n将机器人控制问题转化为序列建模问题。\n模型输入：\n一段 图像历史 一个 自然语言指令 模型输出：\n离散化的机器人动作 token Pipeline：\nimage observations + instruction ↓ vision‑language encoding ↓ Transformer policy ↓ action tokens\nModel Vision‑Language Encoding RT‑1 使用 FiLM‑conditioned EfficientNet‑B3 处理图像。\n关键参数：\n输入分辨率：300 × 300 输出特征图：9 × 9 × 512 展平后得到：\n81 个视觉 tokens。\n语言信息通过 FiLM conditioning 注入：\n指令由 Universal Sentence Encoder (USE) 编码 embedding 输入 FiLM 层 调制 EfficientNet 的视觉特征 这样视觉特征可以根据语言指令进行调整。\nToken Compression 直接处理 81 个 token 计算成本较高。\nRT‑1 使用 TokenLearner 模块进行压缩。\nTokenLearner：\n输入 81 个视觉 tokens 使用 element‑wise attention 压缩为 8 个 tokens 这样可以显著减少 Transformer 的计算量。\nAction Transformer 压缩后的 tokens 输入 decoder‑only Transformer。\n模型结构：\n8 层 self‑attention 约 19M 参数 整个 RT‑1 系统：\n约 35M 参数 实际控制频率 3Hz Action Representation RT‑1 将连续控制 离散化为 tokens。\n动作空间包括：\n机械臂控制 7 维：\nx y z roll pitch yaw gripper 底盘控制 3 维：\nx y yaw 模式变量 用于切换：\n机械臂控制 底盘控制 任务终止 每个维度被离散化为：\n256 bins。\n因此连续控制被转换为：\ntoken prediction problem。\nFailure / Limitation RT‑1 仍然存在一些限制。\n动作离散化 离散化简化训练，但可能降低控制精度。\nBehavior Cloning RT‑1 本质上属于 imitation learning。\n因此：\nrecovery 能力有限 exploration 不足 控制频率 RT‑1 控制频率为 3Hz。\n对于很多 manipulation 任务可以接受，但对高速控制仍然较慢。\n机器人形态 虽然任务多样，但模型仍依赖特定机器人平台。\n跨机器人泛化仍然困难。\nResults RT‑1 使用大规模真实机器人数据训练：\n130k demonstrations 17 个月采集 13 台机器人 任务包括：\npick place open drawers close drawers 从抽屉取物 实验表明 RT‑1 在以下方面表现良好：\n多任务性能 对干扰的鲁棒性 新环境泛化 Key Idea RT‑1 的核心思想是：\n机器人策略可以被建模为 vision‑language‑action tokens 的序列模型。\n通过将动作离散化并使用 Transformer，机器人策略可以像语言模型一样进行规模化训练。\nTakeaway RT‑1 是最早展示以下趋势的工作之一：\n机器人策略也可能通过规模扩展获得能力提升。\n它提出了一种新的范式：\nrobot control = sequence modeling\n这一思想后来影响了：\nRT‑2 OpenVLA Octo 以及后续的 Vision‑Language‑Action (VLA) 模型。\n",
+  "wordCount" : "283",
+  "inLanguage": "zh",
+  "datePublished": "2026-03-04T22:26:49+01:00",
+  "dateModified": "2026-03-04T22:26:49+01:00",
+  "author":{
+    "@type": "Person",
+    "name": {"name":"Hongchen Ji"}
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hongchenji.github.io/zh/reading/pre-vla/2022rt1/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HC 的笔记",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hongchenji.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <a href="https://hongchenji.github.io/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -171,7 +331,7 @@ action tokens">
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/en/" title="English"
+                            <a href="https://hongchenji.github.io/en/" title="English"
                                 aria-label="English">En</a>
                         </li>
                     </ul>
@@ -179,17 +339,17 @@ action tokens">
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                <a href="https://hongchenji.github.io/zh/reading/" title="阅读">
                     <span>阅读</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                <a href="https://hongchenji.github.io/zh/engineering/" title="工程">
                     <span>工程</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                <a href="https://hongchenji.github.io/zh/concepts/" title="概念">
                     <span>概念</span>
                 </a>
             </li>
@@ -200,7 +360,7 @@ action tokens">
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
+    <div class="breadcrumbs"><a href="https://hongchenji.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
     <h1 class="post-title entry-hint-parent">
       RT-1
     </h1>
@@ -423,7 +583,7 @@ action tokens</p>
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
-  <a class="next" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+  <a class="next" href="https://hongchenji.github.io/zh/reading/vla/2023rt2/">
     <span class="title">下一页 »</span>
     <br>
     <span>RT-2</span>
@@ -435,7 +595,7 @@ action tokens</p>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+        <span>&copy; 2026 <a href="https://hongchenji.github.io/zh/">HC 的笔记</a></span> · 
 
     <span>
         Powered by

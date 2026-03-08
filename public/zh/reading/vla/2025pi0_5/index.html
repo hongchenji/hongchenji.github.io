@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>π0.5 | HC 的笔记</title>
 <meta name="keywords" content="">
 <meta name="description" content="π0.5：层级式 Vision-Language-Action Flow 模型
@@ -63,17 +63,17 @@ Why it matters
 Attempt
 π0.5 在 π0 的基础上引入 层级式结构（hierarchical architecture）。">
 <meta name="author" content="map[name:Hongchen Ji]">
-<link rel="canonical" href="http://localhost:1313/zh/reading/vla/2025pi0_5/">
+<link rel="canonical" href="https://hongchenji.github.io/zh/reading/vla/2025pi0_5/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://hongchenji.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hongchenji.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hongchenji.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hongchenji.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hongchenji.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2025pi0_5/">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2025pi0_5/">
+<link rel="alternate" hreflang="en" href="https://hongchenji.github.io/en/reading/vla/2025pi0_5/">
+<link rel="alternate" hreflang="zh" href="https://hongchenji.github.io/zh/reading/vla/2025pi0_5/">
 <noscript>
     <style>
         #theme-toggle,
@@ -125,13 +125,156 @@ Attempt
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://hongchenji.github.io/zh/reading/vla/2025pi0_5/">
+  <meta property="og:site_name" content="HC 的笔记">
+  <meta property="og:title" content="π0.5">
+  <meta property="og:description" content="π0.5：层级式 Vision-Language-Action Flow 模型 机构：Physical Intelligence 年份：2025
+Problem 早期的 Vision-Language-Action（VLA）模型（例如 RT‑1、RT‑2 和 π0）证明：
+机器人策略可以通过 Transformer 架构学习 多模态输入（视觉 &#43; 语言）可以直接映射到动作 大规模数据可以显著提升泛化能力 然而这些系统在 长时序任务（long‑horizon tasks） 上仍然存在明显困难。
+典型问题包括：
+任务需要很多连续步骤 家庭环境复杂且变化多 在新场景中泛化能力有限 难以保持长期一致的任务规划 原因在于：
+这些模型通常直接学习
+observation → action
+而没有显式建模 任务结构。
+因此一个关键问题是：
+是否可以将 高层规划 与 低层连续控制 结合，从而提升长时序机器人任务能力？
+Why it matters 现实中的机器人任务通常具有明显的层级结构。
+例如：
+做咖啡
+可能包含以下子步骤：
+找到杯子 将杯子放在咖啡机下 按下按钮 等待咖啡完成 如果策略没有显式的子任务结构，模型必须隐式学习整条动作链。
+这会导致：
+训练难度增大 长时序任务不稳定 泛化能力下降 如果模型能够预测 高层子任务（subtask）：
+长时序规划会更稳定 新场景泛化能力更好 任务结构更加清晰 Attempt π0.5 在 π0 的基础上引入 层级式结构（hierarchical architecture）。">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="reading">
+    <meta property="article:published_time" content="2026-03-04T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-04T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="π0.5">
+<meta name="twitter:description" content="π0.5：层级式 Vision-Language-Action Flow 模型
+机构：Physical Intelligence
+年份：2025
+
+Problem
+早期的 Vision-Language-Action（VLA）模型（例如 RT‑1、RT‑2 和 π0）证明：
+
+机器人策略可以通过 Transformer 架构学习
+多模态输入（视觉 &#43; 语言）可以直接映射到动作
+大规模数据可以显著提升泛化能力
+
+然而这些系统在 长时序任务（long‑horizon tasks） 上仍然存在明显困难。
+典型问题包括：
+
+任务需要很多连续步骤
+家庭环境复杂且变化多
+在新场景中泛化能力有限
+难以保持长期一致的任务规划
+
+原因在于：
+这些模型通常直接学习
+observation → action
+而没有显式建模 任务结构。
+因此一个关键问题是：
+
+是否可以将 高层规划 与 低层连续控制 结合，从而提升长时序机器人任务能力？
+
+
+Why it matters
+现实中的机器人任务通常具有明显的层级结构。
+例如：
+做咖啡
+可能包含以下子步骤：
+
+找到杯子
+将杯子放在咖啡机下
+按下按钮
+等待咖啡完成
+
+如果策略没有显式的子任务结构，模型必须隐式学习整条动作链。
+这会导致：
+
+训练难度增大
+长时序任务不稳定
+泛化能力下降
+
+如果模型能够预测 高层子任务（subtask）：
+
+长时序规划会更稳定
+新场景泛化能力更好
+任务结构更加清晰
+
+
+Attempt
+π0.5 在 π0 的基础上引入 层级式结构（hierarchical architecture）。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Reading",
+      "item": "https://hongchenji.github.io/zh/reading/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "VLA models",
+      "item": "https://hongchenji.github.io/zh/reading/vla/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "π0.5",
+      "item": "https://hongchenji.github.io/zh/reading/vla/2025pi0_5/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "π0.5",
+  "name": "π0.5",
+  "description": "π0.5：层级式 Vision-Language-Action Flow 模型 机构：Physical Intelligence 年份：2025\nProblem 早期的 Vision-Language-Action（VLA）模型（例如 RT‑1、RT‑2 和 π0）证明：\n机器人策略可以通过 Transformer 架构学习 多模态输入（视觉 + 语言）可以直接映射到动作 大规模数据可以显著提升泛化能力 然而这些系统在 长时序任务（long‑horizon tasks） 上仍然存在明显困难。\n典型问题包括：\n任务需要很多连续步骤 家庭环境复杂且变化多 在新场景中泛化能力有限 难以保持长期一致的任务规划 原因在于：\n这些模型通常直接学习\nobservation → action\n而没有显式建模 任务结构。\n因此一个关键问题是：\n是否可以将 高层规划 与 低层连续控制 结合，从而提升长时序机器人任务能力？\nWhy it matters 现实中的机器人任务通常具有明显的层级结构。\n例如：\n做咖啡\n可能包含以下子步骤：\n找到杯子 将杯子放在咖啡机下 按下按钮 等待咖啡完成 如果策略没有显式的子任务结构，模型必须隐式学习整条动作链。\n这会导致：\n训练难度增大 长时序任务不稳定 泛化能力下降 如果模型能够预测 高层子任务（subtask）：\n长时序规划会更稳定 新场景泛化能力更好 任务结构更加清晰 Attempt π0.5 在 π0 的基础上引入 层级式结构（hierarchical architecture）。\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "π0.5：层级式 Vision-Language-Action Flow 模型 机构：Physical Intelligence 年份：2025\nProblem 早期的 Vision-Language-Action（VLA）模型（例如 RT‑1、RT‑2 和 π0）证明：\n机器人策略可以通过 Transformer 架构学习 多模态输入（视觉 + 语言）可以直接映射到动作 大规模数据可以显著提升泛化能力 然而这些系统在 长时序任务（long‑horizon tasks） 上仍然存在明显困难。\n典型问题包括：\n任务需要很多连续步骤 家庭环境复杂且变化多 在新场景中泛化能力有限 难以保持长期一致的任务规划 原因在于：\n这些模型通常直接学习\nobservation → action\n而没有显式建模 任务结构。\n因此一个关键问题是：\n是否可以将 高层规划 与 低层连续控制 结合，从而提升长时序机器人任务能力？\nWhy it matters 现实中的机器人任务通常具有明显的层级结构。\n例如：\n做咖啡\n可能包含以下子步骤：\n找到杯子 将杯子放在咖啡机下 按下按钮 等待咖啡完成 如果策略没有显式的子任务结构，模型必须隐式学习整条动作链。\n这会导致：\n训练难度增大 长时序任务不稳定 泛化能力下降 如果模型能够预测 高层子任务（subtask）：\n长时序规划会更稳定 新场景泛化能力更好 任务结构更加清晰 Attempt π0.5 在 π0 的基础上引入 层级式结构（hierarchical architecture）。\n核心思想是：\n将机器人行为分为两个层次：\n1️⃣ 高层子任务预测（language‑like planning） 2️⃣ 低层连续动作生成（flow‑based control）\n同时引入：\nFAST action tokenization（用于预训练） 两阶段训练流程 多模态 token routing 因此 π0.5 同时结合了：\n语言生成 动作 token 预训练 连续动作 flow matching 层级式任务规划 Model 多模态输入 Token 模型处理一系列 多模态 token。\n每个 token (x_i) 可以表示：\n文本 token 图像 patch 机器人状态 flow matching 中的噪声动作 具体包括：\n文本 token (x_i^w) 图像 patch (x_i^I) 动作值 (x_i^a) 观测 (o_t) 和语言指令 (l) 构成 token 序列的前缀。\nToken 类型路由 函数 (\\rho(x_i)) 表示 token 类型。\n它决定：\ntoken 进入哪个 encoder Transformer 中使用哪组 expert 权重 例如：\ntext token → embedding matrix image token → vision encoder action token → robotics action expert 这种设计可以复用视觉语言模型能力，同时加入机器人专用模块。\n两阶段输出结构 π0.5 同时预测 语言计划 与 连续动作。\n输出被划分为两部分：\n前 (M) 个输出：文本 token logits 后 (H) 个输出：动作输出 文本 token 可以被采样为 高层子任务计划。\n这些计划随后用于条件化生成连续机器人动作。\nFlow Matching 连续动作生成 与 π0 一样，π0.5 使用 conditional flow matching 生成连续动作。\n推理阶段需要执行：\n大约 10 次去噪步骤 从而得到平滑的动作轨迹。\nFAST Action Tokenization π0.5 引入 FAST 来加速预训练。\n目标是将连续动作轨迹转换为离散 token。\n流程如下：\n将动作维度归一化到 [-1,1] 对每个维度应用 DCT（离散余弦变换） 将结果展平 使用 BPE（Byte Pair Encoding） 压缩表示 这样可以得到可用于自回归预测的动作 token。\nFAST 可以让模型在预训练阶段更早学习到动作结构。\nTraining π0.5 使用 两阶段训练流程。\nStage 1：Pretraining 预训练阶段模型表现为一个标准 VLM。\n模型预测：\n文本 token 物体位置 FAST 动作 token 训练长度：\n约 280k gradient steps 监督信号包括：\n子任务标签 物体定位 图像描述 问答任务 Stage 2：Post‑training 在后训练阶段：\n启用 action expert 激活 flow matching loss 引入额外 expert 权重 训练继续约：\n80k gradient steps Loss 训练目标为组合损失：\n[ L = H + \\alpha F ]\n其中：\nH：token 预测 cross‑entropy F：flow matching loss 因此模型同时学习：\n语言规划 连续动作控制 Failure / Limitation 尽管 π0.5 引入了层级结构，但仍然存在挑战。\n数据需求 层级模型通常需要：\n子任务标注 语言标签 这些标注成本较高。\n训练复杂度 系统同时包含：\ntoken 预测 flow matching hierarchical planning 训练流程较复杂。\n数据配方敏感 模型性能高度依赖：\n数据混合方式 训练 recipe Key Idea π0.5 的核心思想是：\n机器人策略应该具有层级结构。\n系统首先预测高层子任务，然后在该子任务条件下生成连续动作。\nTakeaway π0.5 将 VLA 模型推进到一个更结构化的阶段：\nperception → high‑level plan → continuous control\n通过结合层级规划与 flow‑based action generation，π0.5 试图提升机器人在真实环境中的长时序任务能力。\n",
+  "wordCount" : "334",
+  "inLanguage": "zh",
+  "datePublished": "2026-03-04T00:00:00Z",
+  "dateModified": "2026-03-04T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": {"name":"Hongchen Ji"}
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hongchenji.github.io/zh/reading/vla/2025pi0_5/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HC 的笔记",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hongchenji.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <a href="https://hongchenji.github.io/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -155,7 +298,7 @@ Attempt
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/en/" title="English"
+                            <a href="https://hongchenji.github.io/en/" title="English"
                                 aria-label="English">En</a>
                         </li>
                     </ul>
@@ -163,17 +306,17 @@ Attempt
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                <a href="https://hongchenji.github.io/zh/reading/" title="阅读">
                     <span>阅读</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                <a href="https://hongchenji.github.io/zh/engineering/" title="工程">
                     <span>工程</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                <a href="https://hongchenji.github.io/zh/concepts/" title="概念">
                     <span>概念</span>
                 </a>
             </li>
@@ -184,14 +327,14 @@ Attempt
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/vla/">VLA models</a></div>
+    <div class="breadcrumbs"><a href="https://hongchenji.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/vla/">VLA models</a></div>
     <h1 class="post-title entry-hint-parent">
       π0.5
     </h1>
     <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
 <ul class="i18n_list">
     <li>
-        <a href="http://localhost:1313/en/reading/vla/2025pi0_5/">En</a>
+        <a href="https://hongchenji.github.io/en/reading/vla/2025pi0_5/">En</a>
     </li>
 </ul>
 
@@ -425,12 +568,12 @@ L = H + \alpha F
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/zh/reading/vla/2024pi0/">
+  <a class="prev" href="https://hongchenji.github.io/zh/reading/vla/2024pi0/">
     <span class="title">« 上一页</span>
     <br>
     <span>π0</span>
   </a>
-  <a class="next" href="http://localhost:1313/zh/reading/pre-vla/2022basics/">
+  <a class="next" href="https://hongchenji.github.io/zh/reading/pre-vla/2022basics/">
     <span class="title">下一页 »</span>
     <br>
     <span>基础原理</span>
@@ -442,7 +585,7 @@ L = H + \alpha F
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+        <span>&copy; 2026 <a href="https://hongchenji.github.io/zh/">HC 的笔记</a></span> · 
 
     <span>
         Powered by

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>RT-2 | HC&#39;s Log</title>
 <meta name="keywords" content="">
 <meta name="description" content="RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control
@@ -24,17 +24,17 @@ robot demonstration datasets
 
 However, robot datasets are typically orders of magnitude smaller than the web-scale datasets used to train modern vision and language models.">
 <meta name="author" content="map[name:Hongchen Ji]">
-<link rel="canonical" href="http://localhost:1313/en/reading/vla/2023rt2/">
+<link rel="canonical" href="https://hongchenji.github.io/en/reading/vla/2023rt2/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://hongchenji.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hongchenji.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hongchenji.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hongchenji.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hongchenji.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2023rt2/">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+<link rel="alternate" hreflang="en" href="https://hongchenji.github.io/en/reading/vla/2023rt2/">
+<link rel="alternate" hreflang="zh" href="https://hongchenji.github.io/zh/reading/vla/2023rt2/">
 <noscript>
     <style>
         #theme-toggle,
@@ -86,13 +86,105 @@ However, robot datasets are typically orders of magnitude smaller than the web-s
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://hongchenji.github.io/en/reading/vla/2023rt2/">
+  <meta property="og:site_name" content="HC&#39;s Log">
+  <meta property="og:title" content="RT-2">
+  <meta property="og:description" content="RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control Authors: Anthony Brohan et al.
+Organization: Google DeepMind Year: 2023
+Paper / Blog https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+Problem Robot policies trained purely on robot datasets often struggle to generalize to new tasks.
+Most robot learning systems rely on:
+imitation learning reinforcement learning robot demonstration datasets However, robot datasets are typically orders of magnitude smaller than the web-scale datasets used to train modern vision and language models.">
+  <meta property="og:locale" content="en-us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="reading">
+    <meta property="article:published_time" content="2026-03-04T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-04T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RT-2">
+<meta name="twitter:description" content="RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control
+Authors: Anthony Brohan et al.
+Organization: Google DeepMind
+Year: 2023
+Paper / Blog
+https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+
+Problem
+Robot policies trained purely on robot datasets often struggle to generalize to new tasks.
+Most robot learning systems rely on:
+
+imitation learning
+reinforcement learning
+robot demonstration datasets
+
+However, robot datasets are typically orders of magnitude smaller than the web-scale datasets used to train modern vision and language models.">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Reading",
+      "item": "https://hongchenji.github.io/en/reading/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "VLA models",
+      "item": "https://hongchenji.github.io/en/reading/vla/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "RT-2",
+      "item": "https://hongchenji.github.io/en/reading/vla/2023rt2/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "RT-2",
+  "name": "RT-2",
+  "description": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control Authors: Anthony Brohan et al.\nOrganization: Google DeepMind Year: 2023\nPaper / Blog https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/\nProblem Robot policies trained purely on robot datasets often struggle to generalize to new tasks.\nMost robot learning systems rely on:\nimitation learning reinforcement learning robot demonstration datasets However, robot datasets are typically orders of magnitude smaller than the web-scale datasets used to train modern vision and language models.\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control Authors: Anthony Brohan et al.\nOrganization: Google DeepMind Year: 2023\nPaper / Blog https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/\nProblem Robot policies trained purely on robot datasets often struggle to generalize to new tasks.\nMost robot learning systems rely on:\nimitation learning reinforcement learning robot demonstration datasets However, robot datasets are typically orders of magnitude smaller than the web-scale datasets used to train modern vision and language models.\nAs a result, robot policies often lack:\nsemantic understanding language grounding commonsense reasoning For example, a robot trained on demonstrations might fail when asked to:\npick up an unfamiliar object interpret a new instruction reason about object affordances The core limitation is that robot policies typically learn motor behavior, but not semantic knowledge about the world.\nWhy it matters Large vision-language models (VLMs) trained on internet-scale data already contain rich knowledge about:\nobjects and categories language instructions semantic relationships everyday reasoning If this knowledge could be transferred into robot control systems, robots could potentially:\ngeneralize to unseen objects interpret flexible natural-language instructions reason about tasks instead of memorizing them Traditional robotics pipelines separate:\nperception → language understanding → control\nThis separation prevents robot policies from directly benefiting from the semantic knowledge learned by large multimodal models.\nAttempt RT-2 proposes a surprisingly simple idea:\nUse a large Vision-Language Model (VLM) as the robot policy itself.\nInstead of designing a custom robotics architecture, the model generates robot actions as tokens, similar to how language models generate text.\nPipeline:\nimage + language instruction ↓ Vision-Language Model ↓ action tokens\nExample output tokens:\n132 114 128 5 25 156\nThese tokens represent discretized robot commands such as:\nend-effector translation rotation gripper state Robot control is therefore reframed as a token prediction problem.\nModel Vision-Language Backbone RT-2 builds on large VLMs including:\nPaLM-E (12B parameters) PaLI-X (5B / 55B parameters) These architectures combine:\nVision Transformer (ViT)\nLarge Language Model (LLM) forming a multimodal model capable of reasoning jointly over images and text.\nAction Tokenization Robot actions are discretized into tokens.\nEach action token corresponds to a component of the robot command, including:\nend-effector translation orientation gripper open / close Instead of using a separate policy head, RT-2 uses the language model output head to generate these tokens.\nThis allows robot control to be treated as:\nsequence generation conditioned on visual observations and language instructions.\nRobot Dataset RT-2 is trained using robot interaction data from the RT-1 dataset.\nDataset statistics:\n13 robots ~130k demonstrations 17 months of data collection Important detail:\nThe RT-1 model is not reused, only the dataset.\nCo-Fine-Tuning A key training technique used in RT-2 is co-fine-tuning.\nThe model is trained simultaneously on:\nrobot interaction data original vision-language datasets This is necessary because robot datasets alone are relatively small.\nTraining only on robot data leads to:\noverfitting loss of semantic knowledge Experiments show that:\nrobot-only training performs significantly worse co-fine-tuning preserves semantic reasoning ability Chain-of-Thought Reasoning RT-2 also benefits from the reasoning capabilities of large language models.\nWith chain-of-thought prompting, the model can:\nreason about the task infer object properties generate the correct robot action tokens Example reasoning pattern:\nInstruction: “pick up the object that can hold liquid”\nReasoning:\ncup → holds liquid\nAction:\nmove gripper toward cup\nThis demonstrates how semantic reasoning can influence robot actions.\nFailure / Limitation Despite its improvements, RT-2 still has several limitations.\nMotion skills still require robot data Internet-scale data provides semantic knowledge but does not automatically teach robots new manipulation skills.\nMotor control still depends heavily on:\nrobot demonstrations physical interaction data Limited spatial and physical reasoning RT-2 improves semantic understanding but still struggles with:\n3D spatial reasoning physical interaction modeling complex manipulation dynamics Discretized control Action tokenization simplifies modeling but introduces potential drawbacks:\nlimited control precision discretization artifacts Fix / Key Idea The key conceptual innovation of RT-2 is unifying vision-language reasoning and robot control inside a single model.\nConceptually, RT-2 merges two earlier systems:\nPaLM-E → semantic reasoning\nRT-1 → robot policy learning\ninto a single Vision-Language-Action (VLA) model.\nThe main insight is:\nrobot control can be treated as sequence generation in a multimodal model.\nThis allows robots to leverage the semantic knowledge stored in internet-scale vision-language models.\nResults RT-2 demonstrates strong improvements in generalization to unseen tasks.\nKey findings include:\n~2× improvement in average generalization performance On tasks outside the training distribution, the PaLI-X version achieves ~3× better performance than the next best baseline Observed improvements include:\nreasoning about unfamiliar objects interpreting natural language instructions transferring semantic knowledge learned from web data Takeaway RT-2 shows that robot policies can be formulated as:\ntoken prediction problems using large vision-language models.\nInstead of building specialized robot architectures, the system reuses large multimodal models and trains them to output robot actions.\nThis idea directly influenced later Vision-Language-Action (VLA) models, including:\nOcto OpenVLA π0 ",
+  "wordCount" : "799",
+  "inLanguage": "en",
+  "datePublished": "2026-03-04T00:00:00Z",
+  "dateModified": "2026-03-04T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": {"name":"Hongchen Ji"}
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hongchenji.github.io/en/reading/vla/2023rt2/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HC's Log",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hongchenji.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <a href="https://hongchenji.github.io/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -116,7 +208,7 @@ However, robot datasets are typically orders of magnitude smaller than the web-s
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/zh/" title="中文"
+                            <a href="https://hongchenji.github.io/zh/" title="中文"
                                 aria-label="中文">Zh</a>
                         </li>
                     </ul>
@@ -124,17 +216,17 @@ However, robot datasets are typically orders of magnitude smaller than the web-s
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/en/reading/" title="Reading">
+                <a href="https://hongchenji.github.io/en/reading/" title="Reading">
                     <span>Reading</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                <a href="https://hongchenji.github.io/en/engineering/" title="Engineering">
                     <span>Engineering</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                <a href="https://hongchenji.github.io/en/concepts/" title="Concepts">
                     <span>Concepts</span>
                 </a>
             </li>
@@ -145,14 +237,14 @@ However, robot datasets are typically orders of magnitude smaller than the web-s
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/vla/">VLA models</a></div>
+    <div class="breadcrumbs"><a href="https://hongchenji.github.io/en/">Home</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/en/reading/vla/">VLA models</a></div>
     <h1 class="post-title entry-hint-parent">
       RT-2
     </h1>
     <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>4 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
 <ul class="i18n_list">
     <li>
-        <a href="http://localhost:1313/zh/reading/vla/2023rt2/">Zh</a>
+        <a href="https://hongchenji.github.io/zh/reading/vla/2023rt2/">Zh</a>
     </li>
 </ul>
 
@@ -371,12 +463,12 @@ action tokens</p>
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/en/reading/pre-vla/2022basics/">
+  <a class="prev" href="https://hongchenji.github.io/en/reading/pre-vla/2022basics/">
     <span class="title">« Prev</span>
     <br>
     <span>Basics</span>
   </a>
-  <a class="next" href="http://localhost:1313/en/reading/vla/2024pi0/">
+  <a class="next" href="https://hongchenji.github.io/en/reading/vla/2024pi0/">
     <span class="title">Next »</span>
     <br>
     <span>π0</span>
@@ -388,7 +480,7 @@ action tokens</p>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+        <span>&copy; 2026 <a href="https://hongchenji.github.io/en/">HC&#39;s Log</a></span> · 
 
     <span>
         Powered by

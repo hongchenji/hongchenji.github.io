@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Home on HC&#39;s Log</title>
-    <link>http://localhost:1313/en/</link>
+    <link>https://hongchenji.github.io/en/</link>
     <description>Recent content in Home on HC&#39;s Log</description>
     <generator>Hugo -- 0.157.0</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 04 Mar 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/en/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://hongchenji.github.io/en/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Basics</title>
-      <link>http://localhost:1313/en/reading/pre-vla/2022basics/</link>
+      <link>https://hongchenji.github.io/en/reading/pre-vla/2022basics/</link>
       <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/en/reading/pre-vla/2022basics/</guid>
+      <guid>https://hongchenji.github.io/en/reading/pre-vla/2022basics/</guid>
       <description>&lt;script&gt;
   window.MathJax = {
     tex: {
@@ -43,9 +43,9 @@
     </item>
     <item>
       <title>RT-2</title>
-      <link>http://localhost:1313/en/reading/vla/2023rt2/</link>
+      <link>https://hongchenji.github.io/en/reading/vla/2023rt2/</link>
       <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/en/reading/vla/2023rt2/</guid>
+      <guid>https://hongchenji.github.io/en/reading/vla/2023rt2/</guid>
       <description>&lt;h1 id=&#34;rt-2-vision-language-action-models-transfer-web-knowledge-to-robotic-control&#34;&gt;RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Authors:&lt;/strong&gt; Anthony Brohan et al.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Organization:&lt;/strong&gt; Google DeepMind
@@ -65,9 +65,9 @@
     </item>
     <item>
       <title>π0</title>
-      <link>http://localhost:1313/en/reading/vla/2024pi0/</link>
+      <link>https://hongchenji.github.io/en/reading/vla/2024pi0/</link>
       <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/en/reading/vla/2024pi0/</guid>
+      <guid>https://hongchenji.github.io/en/reading/vla/2024pi0/</guid>
       <description>&lt;h1 id=&#34;π0-a-vision-language-action-flow-model-for-general-robot-control&#34;&gt;π0: A Vision-Language-Action Flow Model for General Robot Control&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Organization:&lt;/strong&gt; Physical Intelligence
 &lt;strong&gt;Year:&lt;/strong&gt; 2024
@@ -91,9 +91,9 @@
     </item>
     <item>
       <title>π0.5</title>
-      <link>http://localhost:1313/en/reading/vla/2025pi0_5/</link>
+      <link>https://hongchenji.github.io/en/reading/vla/2025pi0_5/</link>
       <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/en/reading/vla/2025pi0_5/</guid>
+      <guid>https://hongchenji.github.io/en/reading/vla/2025pi0_5/</guid>
       <description>&lt;h1 id=&#34;π05-hierarchical-vision-language-action-flow-model&#34;&gt;π0.5: Hierarchical Vision-Language-Action Flow Model&lt;/h1&gt;
 &lt;p&gt;&lt;strong&gt;Organization:&lt;/strong&gt; Physical Intelligence
 &lt;strong&gt;Year:&lt;/strong&gt; 2025&lt;/p&gt;

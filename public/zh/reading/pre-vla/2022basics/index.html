@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto" data-theme="auto">
 
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<head><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
 <title>基础原理 | HC 的笔记</title>
 <meta name="keywords" content="">
 <meta name="description" content="
@@ -36,17 +36,17 @@ $$
 KL(q|p) = \mathbb{E}_{q(x)}[\log q(x) - \log p(x)]
 $$">
 <meta name="author" content="map[name:Hongchen Ji]">
-<link rel="canonical" href="http://localhost:1313/zh/reading/pre-vla/2022basics/">
+<link rel="canonical" href="https://hongchenji.github.io/zh/reading/pre-vla/2022basics/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
-<link rel="icon" href="http://localhost:1313/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
-<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
-<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<link rel="icon" href="https://hongchenji.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://hongchenji.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://hongchenji.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://hongchenji.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://hongchenji.github.io/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/pre-vla/2022basics/">
-<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/pre-vla/2022basics/">
+<link rel="alternate" hreflang="en" href="https://hongchenji.github.io/en/reading/pre-vla/2022basics/">
+<link rel="alternate" hreflang="zh" href="https://hongchenji.github.io/zh/reading/pre-vla/2022basics/">
 <noscript>
     <style>
         #theme-toggle,
@@ -98,13 +98,120 @@ $$">
         document.querySelector("html").dataset.theme = 'light';
     }
 
+</script><meta property="og:url" content="https://hongchenji.github.io/zh/reading/pre-vla/2022basics/">
+  <meta property="og:site_name" content="HC 的笔记">
+  <meta property="og:title" content="基础原理">
+  <meta property="og:description" content=" Diffusion Policy 与 Flow Matching：基础原理 本文总结 Diffusion Models、Diffusion Policy 和 Flow Matching 的理论基础，同时强调公式推导与直觉理解。
+核心问题是：
+模型如何学习把一个简单的噪声分布转换为复杂的数据分布？
+这个问题广泛出现在：
+图像生成 视频生成 以及越来越多的 机器人策略学习（robot policy learning） 1. 基础概念 在理解 diffusion 和 flow matching 之前，需要一些基础概念。
+KL 散度 KL 散度用于衡量两个概率分布之间的差异。
+$$ KL(q(x)|p(x)) = \int q(x)\log\frac{q(x)}{p(x)}dx $$
+期望形式：
+$$ KL(q|p) = \mathbb{E}_{q(x)}[\log q(x) - \log p(x)] $$">
+  <meta property="og:locale" content="zh-cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="reading">
+    <meta property="article:published_time" content="2026-03-04T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-03-04T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基础原理">
+<meta name="twitter:description" content="
+
+
+Diffusion Policy 与 Flow Matching：基础原理
+本文总结 Diffusion Models、Diffusion Policy 和 Flow Matching 的理论基础，同时强调公式推导与直觉理解。
+核心问题是：
+
+模型如何学习把一个简单的噪声分布转换为复杂的数据分布？
+
+这个问题广泛出现在：
+
+图像生成
+视频生成
+以及越来越多的 机器人策略学习（robot policy learning）
+
+
+1. 基础概念
+在理解 diffusion 和 flow matching 之前，需要一些基础概念。
+
+KL 散度
+KL 散度用于衡量两个概率分布之间的差异。
+$$
+KL(q(x)|p(x)) = \int q(x)\log\frac{q(x)}{p(x)}dx
+$$
+期望形式：
+$$
+KL(q|p) = \mathbb{E}_{q(x)}[\log q(x) - \log p(x)]
+$$">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Reading",
+      "item": "https://hongchenji.github.io/zh/reading/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Modeling Pre-VLA Robots",
+      "item": "https://hongchenji.github.io/zh/reading/pre-vla/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  3 ,
+      "name": "基础原理",
+      "item": "https://hongchenji.github.io/zh/reading/pre-vla/2022basics/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "基础原理",
+  "name": "基础原理",
+  "description": " Diffusion Policy 与 Flow Matching：基础原理 本文总结 Diffusion Models、Diffusion Policy 和 Flow Matching 的理论基础，同时强调公式推导与直觉理解。\n核心问题是：\n模型如何学习把一个简单的噪声分布转换为复杂的数据分布？\n这个问题广泛出现在：\n图像生成 视频生成 以及越来越多的 机器人策略学习（robot policy learning） 1. 基础概念 在理解 diffusion 和 flow matching 之前，需要一些基础概念。\nKL 散度 KL 散度用于衡量两个概率分布之间的差异。\n$$ KL(q(x)|p(x)) = \\int q(x)\\log\\frac{q(x)}{p(x)}dx $$\n期望形式：\n$$ KL(q|p) = \\mathbb{E}_{q(x)}[\\log q(x) - \\log p(x)] $$\n",
+  "keywords": [
+    
+  ],
+  "articleBody": " Diffusion Policy 与 Flow Matching：基础原理 本文总结 Diffusion Models、Diffusion Policy 和 Flow Matching 的理论基础，同时强调公式推导与直觉理解。\n核心问题是：\n模型如何学习把一个简单的噪声分布转换为复杂的数据分布？\n这个问题广泛出现在：\n图像生成 视频生成 以及越来越多的 机器人策略学习（robot policy learning） 1. 基础概念 在理解 diffusion 和 flow matching 之前，需要一些基础概念。\nKL 散度 KL 散度用于衡量两个概率分布之间的差异。\n$$ KL(q(x)|p(x)) = \\int q(x)\\log\\frac{q(x)}{p(x)}dx $$\n期望形式：\n$$ KL(q|p) = \\mathbb{E}_{q(x)}[\\log q(x) - \\log p(x)] $$\n直觉理解 KL 散度衡量 p 对 q 的近似程度 KL 始终 ≥ 0 当两个分布完全一致时 KL = 0 在生成模型中，KL 散度通常用于：\n让模型分布接近 真实后验分布 或接近 简单先验（如高斯分布） 最大似然估计 最大似然估计（MLE）通过最大化\n$$ \\log p_\\theta(x) $$\n来学习模型参数。\n这等价于最小化 负对数似然（negative log likelihood）。\n对于生成模型来说这是理想目标，但对于带 latent variable 的模型通常难以直接计算。\n变分推断与 ELBO 假设我们有 latent variable model：\n$$ p_\\theta(x) = \\int p_\\theta(x|z)p(z)dz $$\n该积分通常不可计算，因此引入近似后验：\n$$ q_\\phi(z|x) $$\n可以得到：\n$$ \\log p_\\theta(x) = ELBO + KL(q_\\phi(z|x)|p_\\theta(z|x)) $$\n其中\n$$ ELBO = \\mathbb{E}{q\\phi(z|x)}[\\log p_\\theta(x|z)] - KL(q_\\phi(z|x)|p(z)) $$\n由于 KL ≥ 0：\n$$ \\log p_\\theta(x) \\ge ELBO $$\n因此训练目标可以转化为：\n最大化 ELBO。\nELBO 的两个部分 重建项 $$ \\mathbb{E}{q\\phi(z|x)}[\\log p_\\theta(x|z)] $$\n保证 decoder 能够从 latent 重建输入数据。\nKL 正则项 $$ KL(q_\\phi(z|x)|p(z)) $$\n约束 latent distribution 接近先验分布。\n为什么需要变分推断 原始目标是：\n$$ q_\\phi(z|x) \\approx p_\\theta(z|x) $$\n但真实后验为：\n$$ p_\\theta(z|x) = \\frac{p_\\theta(x|z)p(z)}{p_\\theta(x)} $$\n其中\n$$ p_\\theta(x) = \\int p_\\theta(x|z)p(z)dz $$\n难以直接计算，因此使用 ELBO 进行优化。\n重参数技巧 如果\n$$ z \\sim \\mathcal{N}(\\mu,\\sigma^2) $$\n可以改写为\n$$ z = \\mu + \\sigma\\epsilon $$\n其中\n$$ \\epsilon \\sim \\mathcal{N}(0,1) $$\n这样可以使采样过程可微，从而允许梯度传播。\nU-Net U-Net 是 diffusion 模型中常见的网络结构。\n主要特点：\nencoder-decoder 结构 skip connection 多尺度特征融合 输入通常包括：\n带噪声的数据 timestep 条件信息（例如文本 embedding） 输出通常为：\n噪声预测 或 velocity / score 等目标 2. Diffusion Models Diffusion 模型通过 反转一个逐渐加噪的过程 来生成数据。\n包含两个过程：\nforward diffusion（逐渐加噪） reverse diffusion（逐渐去噪） 核心思想：\n真实数据分布非常复杂，而 高斯分布非常简单。\n因此模型学习：\n如何从高斯噪声逐渐恢复出真实数据。\n3. Forward Diffusion Process Forward process 会逐步向数据加入高斯噪声。\n$$ x_t = \\sqrt{\\bar{\\alpha}_t}x_0 + \\sqrt{1-\\bar{\\alpha}_t},\\epsilon $$\n其中\n$$ \\epsilon \\sim \\mathcal{N}(0,I) $$\n并且\n$$ \\bar{\\alpha}t = \\prod{s=1}^t \\alpha_s $$\n直觉 $\\sqrt{\\bar{\\alpha}_t}$ 控制保留原始信号 $\\sqrt{1-\\bar{\\alpha}_t}$ 控制噪声比例 随着时间步增加：\n$$ x_T \\approx \\mathcal{N}(0,I) $$\n最终样本会变成 纯高斯噪声。\n为什么会变成高斯 不断加入独立高斯噪声会使分布逐渐被噪声主导。\n直觉上：\n原始信息逐渐被抹去，最终只剩随机噪声。\n为什么这是一个分布过程 Forward process 不是确定性函数。\n给定同一个 $x_0$：\n不同噪声会产生不同 $x_t$。\n因此输出是 随机变量。\n4. Reverse Diffusion Process Reverse process 学习逐步去除噪声。\n通常训练一个网络：\n$$ \\epsilon_\\theta(x_t,t) $$\n预测噪声。\n损失函数：\n$$ L = \\mathbb{E}\\left[|\\epsilon - \\epsilon_\\theta(x_t,t)|^2\\right] $$\n即 MSE loss。\n为什么预测噪声 从变分推导可以得到训练目标可以分解为：\n常数项 去噪项 重建项 其中最重要的是 去噪项。\n由于 forward process 是高斯分布，reverse conditional 也可以写成高斯形式。\n因此问题可以转化为：\n估计均值 → 预测噪声。\nSampling 生成过程：\n从高斯噪声开始 $$ x_T \\sim \\mathcal{N}(0,I) $$\n逐步去噪 $$ x_T \\rightarrow x_{T-1} \\rightarrow … \\rightarrow x_0 $$\n5. Diffusion Model Architecture 典型 diffusion 模型包含三个模块。\nText Encoder 将文本 prompt 转换为 embedding。\n常见模型：\nCLIP BERT GPT T5 强大的 text encoder 通常会显著提升生成质量。\nGeneration Model 核心网络通常是：\nU-Net\n输入：\nnoisy sample timestep text embedding 输出：\npredicted noise Decoder 如果 diffusion 在 latent space 进行，需要 decoder 还原数据。\nimage → encoder → latent latent → diffusion latent → decoder → image 6. Evaluation Metrics FID Score Fréchet Inception Distance 用于比较生成图像和真实图像的分布差异。\n流程：\n生成大量图像 使用 CNN 提取特征 拟合为高斯分布 计算 Fréchet distance FID 越低越好。\nCLIP Score CLIP score 衡量图像和文本之间的语义匹配程度。\nCLIP 将：\n图像 文本 映射到同一 embedding 空间。\n7. Diffusion Policy Diffusion 模型也可以生成 机器人动作序列。\n在 Diffusion Policy 中：\nforward process：给动作加入高斯噪声\nreverse process：恢复动作序列。\n优点：\n可以表示多模态策略 生成平滑轨迹 适合 manipulation 任务 8. Flow Matching Flow Matching 是 diffusion 的连续时间版本。\n它学习：\n从噪声到数据的连续向量场。\n核心思想 $$ x_0 \\sim p_{data} $$\n$$ x_1 \\sim \\mathcal{N}(0,I) $$\n定义路径：\n$$ x_t = (1-t)x_0 + tx_1 $$\n学习 velocity field：\n$$ v_\\theta(x_t,t) $$\n满足：\n$$ \\frac{dx_t}{dt} = v_\\theta(x_t,t) $$\n训练目标：\n$$ \\mathbb{E}|v_\\theta(x_t,t) - v^*(x_t,t)|^2 $$\n直觉 Diffusion：\nnoise → many denoising steps → data Flow Matching：\nnoise → continuous flow → data 优势 更少采样步数 连续时间建模 训练目标简单 生成更快 因此广泛用于：\n图像生成 视频生成 机器人控制 9. Personal Understanding Diffusion 和 Flow Matching 本质上解决同一个问题：\n从简单分布生成复杂分布。\nDiffusion：\nnoise → many denoising steps → data Flow Matching：\nnoise → continuous flow field → data 在机器人领域，这类模型可以生成 平滑动作轨迹，非常适合 manipulation 和连续控制任务。\n",
+  "wordCount" : "563",
+  "inLanguage": "zh",
+  "datePublished": "2026-03-04T00:00:00Z",
+  "dateModified": "2026-03-04T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": {"name":"Hongchen Ji"}
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://hongchenji.github.io/zh/reading/pre-vla/2022basics/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "HC 的笔记",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://hongchenji.github.io/favicon.ico"
+    }
+  }
+}
 </script>
 </head>
 <body id="top">
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <a href="https://hongchenji.github.io/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -128,7 +235,7 @@ $$">
                 </button>
                     <ul class="lang-switch"><li>|</li>
                         <li>
-                            <a href="http://localhost:1313/en/" title="English"
+                            <a href="https://hongchenji.github.io/en/" title="English"
                                 aria-label="English">En</a>
                         </li>
                     </ul>
@@ -136,17 +243,17 @@ $$">
         </div>
         <ul id="menu">
             <li>
-                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                <a href="https://hongchenji.github.io/zh/reading/" title="阅读">
                     <span>阅读</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                <a href="https://hongchenji.github.io/zh/engineering/" title="工程">
                     <span>工程</span>
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                <a href="https://hongchenji.github.io/zh/concepts/" title="概念">
                     <span>概念</span>
                 </a>
             </li>
@@ -157,14 +264,14 @@ $$">
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
+    <div class="breadcrumbs"><a href="https://hongchenji.github.io/zh/">主页</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="https://hongchenji.github.io/zh/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
     <h1 class="post-title entry-hint-parent">
       基础原理
     </h1>
     <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>3 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
 <ul class="i18n_list">
     <li>
-        <a href="http://localhost:1313/en/reading/pre-vla/2022basics/">En</a>
+        <a href="https://hongchenji.github.io/en/reading/pre-vla/2022basics/">En</a>
     </li>
 </ul>
 
@@ -535,7 +642,7 @@ $$</p>
     <ul class="post-tags">
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/zh/reading/vla/2025pi0_5/">
+  <a class="prev" href="https://hongchenji.github.io/zh/reading/vla/2025pi0_5/">
     <span class="title">« 上一页</span>
     <br>
     <span>π0.5</span>
@@ -547,7 +654,7 @@ $$</p>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+        <span>&copy; 2026 <a href="https://hongchenji.github.io/zh/">HC 的笔记</a></span> · 
 
     <span>
         Powered by
