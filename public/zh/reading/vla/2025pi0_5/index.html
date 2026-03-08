@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>π0.5 | HC 的笔记</title>
+<meta name="keywords" content="">
+<meta name="description" content="π0.5：层级式 Vision-Language-Action Flow 模型
+机构：Physical Intelligence
+年份：2025
+
+Problem
+早期的 Vision-Language-Action（VLA）模型（例如 RT‑1、RT‑2 和 π0）证明：
+
+机器人策略可以通过 Transformer 架构学习
+多模态输入（视觉 &#43; 语言）可以直接映射到动作
+大规模数据可以显著提升泛化能力
+
+然而这些系统在 长时序任务（long‑horizon tasks） 上仍然存在明显困难。
+典型问题包括：
+
+任务需要很多连续步骤
+家庭环境复杂且变化多
+在新场景中泛化能力有限
+难以保持长期一致的任务规划
+
+原因在于：
+这些模型通常直接学习
+observation → action
+而没有显式建模 任务结构。
+因此一个关键问题是：
+
+是否可以将 高层规划 与 低层连续控制 结合，从而提升长时序机器人任务能力？
+
+
+Why it matters
+现实中的机器人任务通常具有明显的层级结构。
+例如：
+做咖啡
+可能包含以下子步骤：
+
+找到杯子
+将杯子放在咖啡机下
+按下按钮
+等待咖啡完成
+
+如果策略没有显式的子任务结构，模型必须隐式学习整条动作链。
+这会导致：
+
+训练难度增大
+长时序任务不稳定
+泛化能力下降
+
+如果模型能够预测 高层子任务（subtask）：
+
+长时序规划会更稳定
+新场景泛化能力更好
+任务结构更加清晰
+
+
+Attempt
+π0.5 在 π0 的基础上引入 层级式结构（hierarchical architecture）。">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/reading/vla/2025pi0_5/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2025pi0_5/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2025pi0_5/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/vla/">VLA models</a></div>
+    <h1 class="post-title entry-hint-parent">
+      π0.5
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/en/reading/vla/2025pi0_5/">En</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="π05层级式-vision-language-action-flow-模型">π0.5：层级式 Vision-Language-Action Flow 模型<a hidden class="anchor" aria-hidden="true" href="#π05层级式-vision-language-action-flow-模型">#</a></h1>
+<p><strong>机构</strong>：Physical Intelligence
+<strong>年份</strong>：2025</p>
+<hr>
+<h1 id="problem">Problem<a hidden class="anchor" aria-hidden="true" href="#problem">#</a></h1>
+<p>早期的 Vision-Language-Action（VLA）模型（例如 RT‑1、RT‑2 和 π0）证明：</p>
+<ul>
+<li>机器人策略可以通过 Transformer 架构学习</li>
+<li>多模态输入（视觉 + 语言）可以直接映射到动作</li>
+<li>大规模数据可以显著提升泛化能力</li>
+</ul>
+<p>然而这些系统在 <strong>长时序任务（long‑horizon tasks）</strong> 上仍然存在明显困难。</p>
+<p>典型问题包括：</p>
+<ul>
+<li>任务需要很多连续步骤</li>
+<li>家庭环境复杂且变化多</li>
+<li>在新场景中泛化能力有限</li>
+<li>难以保持长期一致的任务规划</li>
+</ul>
+<p>原因在于：</p>
+<p>这些模型通常直接学习</p>
+<p>observation → action</p>
+<p>而没有显式建模 <strong>任务结构</strong>。</p>
+<p>因此一个关键问题是：</p>
+<blockquote>
+<p>是否可以将 <strong>高层规划</strong> 与 <strong>低层连续控制</strong> 结合，从而提升长时序机器人任务能力？</p>
+</blockquote>
+<hr>
+<h1 id="why-it-matters">Why it matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h1>
+<p>现实中的机器人任务通常具有明显的层级结构。</p>
+<p>例如：</p>
+<p>做咖啡</p>
+<p>可能包含以下子步骤：</p>
+<ol>
+<li>找到杯子</li>
+<li>将杯子放在咖啡机下</li>
+<li>按下按钮</li>
+<li>等待咖啡完成</li>
+</ol>
+<p>如果策略没有显式的子任务结构，模型必须隐式学习整条动作链。</p>
+<p>这会导致：</p>
+<ul>
+<li>训练难度增大</li>
+<li>长时序任务不稳定</li>
+<li>泛化能力下降</li>
+</ul>
+<p>如果模型能够预测 <strong>高层子任务（subtask）</strong>：</p>
+<ul>
+<li>长时序规划会更稳定</li>
+<li>新场景泛化能力更好</li>
+<li>任务结构更加清晰</li>
+</ul>
+<hr>
+<h1 id="attempt">Attempt<a hidden class="anchor" aria-hidden="true" href="#attempt">#</a></h1>
+<p>π0.5 在 π0 的基础上引入 <strong>层级式结构（hierarchical architecture）</strong>。</p>
+<p>核心思想是：</p>
+<p>将机器人行为分为两个层次：</p>
+<p>1️⃣ <strong>高层子任务预测（language‑like planning）</strong>
+2️⃣ <strong>低层连续动作生成（flow‑based control）</strong></p>
+<p>同时引入：</p>
+<ul>
+<li>FAST action tokenization（用于预训练）</li>
+<li>两阶段训练流程</li>
+<li>多模态 token routing</li>
+</ul>
+<p>因此 π0.5 同时结合了：</p>
+<ul>
+<li>语言生成</li>
+<li>动作 token 预训练</li>
+<li>连续动作 flow matching</li>
+<li>层级式任务规划</li>
+</ul>
+<hr>
+<h1 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<h2 id="多模态输入-token">多模态输入 Token<a hidden class="anchor" aria-hidden="true" href="#多模态输入-token">#</a></h2>
+<p>模型处理一系列 <strong>多模态 token</strong>。</p>
+<p>每个 token (x_i) 可以表示：</p>
+<ul>
+<li>文本 token</li>
+<li>图像 patch</li>
+<li>机器人状态</li>
+<li>flow matching 中的噪声动作</li>
+</ul>
+<p>具体包括：</p>
+<ul>
+<li>文本 token (x_i^w)</li>
+<li>图像 patch (x_i^I)</li>
+<li>动作值 (x_i^a)</li>
+</ul>
+<p>观测 (o_t) 和语言指令 (l) 构成 token 序列的前缀。</p>
+<hr>
+<h2 id="token-类型路由">Token 类型路由<a hidden class="anchor" aria-hidden="true" href="#token-类型路由">#</a></h2>
+<p>函数 (\rho(x_i)) 表示 token 类型。</p>
+<p>它决定：</p>
+<ul>
+<li>token 进入哪个 encoder</li>
+<li>Transformer 中使用哪组 expert 权重</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>text token → embedding matrix</li>
+<li>image token → vision encoder</li>
+<li>action token → robotics action expert</li>
+</ul>
+<p>这种设计可以复用视觉语言模型能力，同时加入机器人专用模块。</p>
+<hr>
+<h2 id="两阶段输出结构">两阶段输出结构<a hidden class="anchor" aria-hidden="true" href="#两阶段输出结构">#</a></h2>
+<p>π0.5 同时预测 <strong>语言计划</strong> 与 <strong>连续动作</strong>。</p>
+<p>输出被划分为两部分：</p>
+<ul>
+<li>前 (M) 个输出：文本 token logits</li>
+<li>后 (H) 个输出：动作输出</li>
+</ul>
+<p>文本 token 可以被采样为 <strong>高层子任务计划</strong>。</p>
+<p>这些计划随后用于条件化生成连续机器人动作。</p>
+<hr>
+<h2 id="flow-matching-连续动作生成">Flow Matching 连续动作生成<a hidden class="anchor" aria-hidden="true" href="#flow-matching-连续动作生成">#</a></h2>
+<p>与 π0 一样，π0.5 使用 <strong>conditional flow matching</strong> 生成连续动作。</p>
+<p>推理阶段需要执行：</p>
+<ul>
+<li>大约 10 次去噪步骤</li>
+</ul>
+<p>从而得到平滑的动作轨迹。</p>
+<hr>
+<h1 id="fast-action-tokenization">FAST Action Tokenization<a hidden class="anchor" aria-hidden="true" href="#fast-action-tokenization">#</a></h1>
+<p>π0.5 引入 <strong>FAST</strong> 来加速预训练。</p>
+<p>目标是将连续动作轨迹转换为离散 token。</p>
+<p>流程如下：</p>
+<ol>
+<li>将动作维度归一化到 [-1,1]</li>
+<li>对每个维度应用 <strong>DCT（离散余弦变换）</strong></li>
+<li>将结果展平</li>
+<li>使用 <strong>BPE（Byte Pair Encoding）</strong> 压缩表示</li>
+</ol>
+<p>这样可以得到可用于自回归预测的动作 token。</p>
+<p>FAST 可以让模型在预训练阶段更早学习到动作结构。</p>
+<hr>
+<h1 id="training">Training<a hidden class="anchor" aria-hidden="true" href="#training">#</a></h1>
+<p>π0.5 使用 <strong>两阶段训练流程</strong>。</p>
+<h2 id="stage-1pretraining">Stage 1：Pretraining<a hidden class="anchor" aria-hidden="true" href="#stage-1pretraining">#</a></h2>
+<p>预训练阶段模型表现为一个标准 VLM。</p>
+<p>模型预测：</p>
+<ul>
+<li>文本 token</li>
+<li>物体位置</li>
+<li>FAST 动作 token</li>
+</ul>
+<p>训练长度：</p>
+<ul>
+<li>约 280k gradient steps</li>
+</ul>
+<p>监督信号包括：</p>
+<ul>
+<li>子任务标签</li>
+<li>物体定位</li>
+<li>图像描述</li>
+<li>问答任务</li>
+</ul>
+<hr>
+<h2 id="stage-2posttraining">Stage 2：Post‑training<a hidden class="anchor" aria-hidden="true" href="#stage-2posttraining">#</a></h2>
+<p>在后训练阶段：</p>
+<ul>
+<li>启用 action expert</li>
+<li>激活 flow matching loss</li>
+<li>引入额外 expert 权重</li>
+</ul>
+<p>训练继续约：</p>
+<ul>
+<li>80k gradient steps</li>
+</ul>
+<hr>
+<h1 id="loss">Loss<a hidden class="anchor" aria-hidden="true" href="#loss">#</a></h1>
+<p>训练目标为组合损失：</p>
+<p>[
+L = H + \alpha F
+]</p>
+<p>其中：</p>
+<ul>
+<li>H：token 预测 cross‑entropy</li>
+<li>F：flow matching loss</li>
+</ul>
+<p>因此模型同时学习：</p>
+<ul>
+<li>语言规划</li>
+<li>连续动作控制</li>
+</ul>
+<hr>
+<h1 id="failure--limitation">Failure / Limitation<a hidden class="anchor" aria-hidden="true" href="#failure--limitation">#</a></h1>
+<p>尽管 π0.5 引入了层级结构，但仍然存在挑战。</p>
+<h3 id="数据需求">数据需求<a hidden class="anchor" aria-hidden="true" href="#数据需求">#</a></h3>
+<p>层级模型通常需要：</p>
+<ul>
+<li>子任务标注</li>
+<li>语言标签</li>
+</ul>
+<p>这些标注成本较高。</p>
+<h3 id="训练复杂度">训练复杂度<a hidden class="anchor" aria-hidden="true" href="#训练复杂度">#</a></h3>
+<p>系统同时包含：</p>
+<ul>
+<li>token 预测</li>
+<li>flow matching</li>
+<li>hierarchical planning</li>
+</ul>
+<p>训练流程较复杂。</p>
+<h3 id="数据配方敏感">数据配方敏感<a hidden class="anchor" aria-hidden="true" href="#数据配方敏感">#</a></h3>
+<p>模型性能高度依赖：</p>
+<ul>
+<li>数据混合方式</li>
+<li>训练 recipe</li>
+</ul>
+<hr>
+<h1 id="key-idea">Key Idea<a hidden class="anchor" aria-hidden="true" href="#key-idea">#</a></h1>
+<p>π0.5 的核心思想是：</p>
+<p><strong>机器人策略应该具有层级结构。</strong></p>
+<p>系统首先预测高层子任务，然后在该子任务条件下生成连续动作。</p>
+<hr>
+<h1 id="takeaway">Takeaway<a hidden class="anchor" aria-hidden="true" href="#takeaway">#</a></h1>
+<p>π0.5 将 VLA 模型推进到一个更结构化的阶段：</p>
+<p>perception → high‑level plan → continuous control</p>
+<p>通过结合层级规划与 flow‑based action generation，π0.5 试图提升机器人在真实环境中的长时序任务能力。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/zh/reading/vla/2024pi0/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>π0</span>
+  </a>
+  <a class="next" href="http://localhost:1313/zh/reading/pre-vla/2022basics/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>基础原理</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

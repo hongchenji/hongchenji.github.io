@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RT-2 | HC 的笔记</title>
+<meta name="keywords" content="">
+<meta name="description" content="RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型
+作者：Anthony Brohan 等
+机构：Google DeepMind
+年份：2023
+论文 / 博客
+https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+
+Problem
+传统机器人策略通常只依赖 机器人交互数据（demonstrations 或 RL 数据）。
+但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：
+
+具体任务的操作模式
+局部的动作策略
+
+而缺乏：
+
+语义知识
+常识推理
+对新任务的泛化能力
+
+例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：
+
+遇到新的物体类别
+接收到新的语言指令
+需要理解物体用途（affordance）
+
+换句话说：
+
+传统机器人策略擅长学习 运动技能，但缺乏 世界知识（world knowledge）。
+
+
+Why it matters
+大型视觉语言模型（VLM）已经在 互联网规模数据 上训练，并学习到了大量语义知识，例如：
+
+物体类别
+语言描述
+物体之间的语义关系
+常识推理模式
+
+如果这些知识能够被迁移到机器人系统中，机器人可能可以：
+
+理解新的自然语言指令
+识别未见过的物体
+根据语义推理完成任务
+
+然而传统机器人系统通常将以下模块 分开设计：
+perception → language → control
+这种结构使机器人策略无法直接利用 互联网规模的语义知识。
+
+Attempt
+RT-2 提出了一个非常简单但影响深远的想法：
+
+直接使用 Vision-Language Model 作为机器人策略模型。
+
+作者没有设计新的机器人网络结构，而是让模型直接生成 机器人动作 token。
+整体 pipeline：
+image &#43; language instruction
+↓
+Vision-Language Model
+↓
+action tokens">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2023rt2/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/vla/">VLA models</a></div>
+    <h1 class="post-title entry-hint-parent">
+      RT-2
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/en/reading/vla/2023rt2/">En</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="rt-2将互联网知识迁移到机器人控制的-vision-language-action-模型">RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型<a hidden class="anchor" aria-hidden="true" href="#rt-2将互联网知识迁移到机器人控制的-vision-language-action-模型">#</a></h1>
+<p><strong>作者</strong>：Anthony Brohan 等
+<strong>机构</strong>：Google DeepMind
+<strong>年份</strong>：2023</p>
+<p>论文 / 博客
+<a href="https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/">https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/</a></p>
+<hr>
+<h1 id="problem">Problem<a hidden class="anchor" aria-hidden="true" href="#problem">#</a></h1>
+<p>传统机器人策略通常只依赖 <strong>机器人交互数据</strong>（demonstrations 或 RL 数据）。</p>
+<p>但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：</p>
+<ul>
+<li>具体任务的操作模式</li>
+<li>局部的动作策略</li>
+</ul>
+<p>而缺乏：</p>
+<ul>
+<li>语义知识</li>
+<li>常识推理</li>
+<li>对新任务的泛化能力</li>
+</ul>
+<p>例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：</p>
+<ul>
+<li>遇到新的物体类别</li>
+<li>接收到新的语言指令</li>
+<li>需要理解物体用途（affordance）</li>
+</ul>
+<p>换句话说：</p>
+<blockquote>
+<p>传统机器人策略擅长学习 <strong>运动技能</strong>，但缺乏 <strong>世界知识（world knowledge）</strong>。</p>
+</blockquote>
+<hr>
+<h1 id="why-it-matters">Why it matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h1>
+<p>大型视觉语言模型（VLM）已经在 <strong>互联网规模数据</strong> 上训练，并学习到了大量语义知识，例如：</p>
+<ul>
+<li>物体类别</li>
+<li>语言描述</li>
+<li>物体之间的语义关系</li>
+<li>常识推理模式</li>
+</ul>
+<p>如果这些知识能够被迁移到机器人系统中，机器人可能可以：</p>
+<ul>
+<li>理解新的自然语言指令</li>
+<li>识别未见过的物体</li>
+<li>根据语义推理完成任务</li>
+</ul>
+<p>然而传统机器人系统通常将以下模块 <strong>分开设计</strong>：</p>
+<p>perception → language → control</p>
+<p>这种结构使机器人策略无法直接利用 <strong>互联网规模的语义知识</strong>。</p>
+<hr>
+<h1 id="attempt">Attempt<a hidden class="anchor" aria-hidden="true" href="#attempt">#</a></h1>
+<p>RT-2 提出了一个非常简单但影响深远的想法：</p>
+<blockquote>
+<p><strong>直接使用 Vision-Language Model 作为机器人策略模型。</strong></p>
+</blockquote>
+<p>作者没有设计新的机器人网络结构，而是让模型直接生成 <strong>机器人动作 token</strong>。</p>
+<p>整体 pipeline：</p>
+<p>image + language instruction
+↓
+Vision-Language Model
+↓
+action tokens</p>
+<p>例如模型输出：</p>
+<p>132 114 128 5 25 156</p>
+<p>这些 token 表示离散化后的机器人控制指令，例如：</p>
+<ul>
+<li>末端执行器位置</li>
+<li>旋转角度</li>
+<li>夹爪开合</li>
+</ul>
+<p>因此机器人控制问题被重新表述为：</p>
+<blockquote>
+<p><strong>在视觉和语言条件下的 token 预测问题。</strong></p>
+</blockquote>
+<hr>
+<h1 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<h2 id="vision-language-backbone">Vision-Language Backbone<a hidden class="anchor" aria-hidden="true" href="#vision-language-backbone">#</a></h2>
+<p>RT-2 构建在大型视觉语言模型之上：</p>
+<ul>
+<li><strong>PaLM-E（12B 参数）</strong></li>
+<li><strong>PaLI-X（5B / 55B 参数）</strong></li>
+</ul>
+<p>这些模型通常由两部分组成：</p>
+<p>Vision Transformer（ViT）</p>
+<ul>
+<li></li>
+</ul>
+<p>Large Language Model（LLM）</p>
+<p>组合后形成一个能够同时处理 <strong>图像 + 文本</strong> 的 Vision-Language Model。</p>
+<hr>
+<h2 id="action-tokenization">Action Tokenization<a hidden class="anchor" aria-hidden="true" href="#action-tokenization">#</a></h2>
+<p>RT-2 不再使用单独的机器人策略网络，而是：</p>
+<p><strong>直接使用语言模型的输出头生成机器人动作 token。</strong></p>
+<p>动作被离散化为 token，并与文本 token 共享生成机制。</p>
+<p>因此机器人控制被统一为：</p>
+<blockquote>
+<p>条件序列生成问题（conditional sequence generation）。</p>
+</blockquote>
+<hr>
+<h2 id="robot-dataset">Robot Dataset<a hidden class="anchor" aria-hidden="true" href="#robot-dataset">#</a></h2>
+<p>RT-2 使用的机器人训练数据来自 <strong>RT-1 数据集</strong>。</p>
+<p>数据规模包括：</p>
+<ul>
+<li>13 台机器人</li>
+<li>约 130k demonstrations</li>
+<li>17 个月数据采集</li>
+</ul>
+<p>需要注意：</p>
+<p>RT-1 <strong>模型本身并没有被复用</strong>，RT-2 只使用了 RT-1 的数据。</p>
+<hr>
+<h2 id="co-fine-tuning">Co-Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#co-fine-tuning">#</a></h2>
+<p>RT-2 训练中的关键技术之一是 <strong>co-fine-tuning（联合微调）</strong>。</p>
+<p>模型在训练时同时使用两种数据：</p>
+<ul>
+<li>机器人交互数据</li>
+<li>原始视觉语言数据</li>
+</ul>
+<p>原因是：</p>
+<p>机器人数据规模较小，如果只用机器人数据训练，模型会：</p>
+<ul>
+<li>过拟合</li>
+<li>丢失原有的语义知识</li>
+</ul>
+<p>论文中的 ablation 结果表明：</p>
+<ul>
+<li>只使用机器人数据训练 → 泛化性能明显下降</li>
+<li>使用 co-fine-tuning → 能够保留语义推理能力</li>
+</ul>
+<hr>
+<h2 id="chain-of-thought-推理">Chain-of-Thought 推理<a hidden class="anchor" aria-hidden="true" href="#chain-of-thought-推理">#</a></h2>
+<p>RT-2 还继承了底层语言模型的 <strong>推理能力</strong>。</p>
+<p>通过 chain-of-thought prompting，模型可以：</p>
+<ol>
+<li>先对任务进行语义推理</li>
+<li>推断物体属性</li>
+<li>再生成最终动作</li>
+</ol>
+<p>例如：</p>
+<p>Instruction: &ldquo;pick up the object that can hold liquid&rdquo;</p>
+<p>推理：</p>
+<p>cup → 可以装液体</p>
+<p>动作：</p>
+<p>移动夹爪抓取杯子</p>
+<p>说明语义推理可以影响机器人动作决策。</p>
+<hr>
+<h1 id="failure--limitation">Failure / Limitation<a hidden class="anchor" aria-hidden="true" href="#failure--limitation">#</a></h1>
+<p>尽管 RT-2 展示了更好的泛化能力，但仍然存在一些限制。</p>
+<h3 id="运动技能仍依赖机器人数据">运动技能仍依赖机器人数据<a hidden class="anchor" aria-hidden="true" href="#运动技能仍依赖机器人数据">#</a></h3>
+<p>互联网数据能够提供语义知识，但 <strong>无法直接提供新的操作技能</strong>。</p>
+<p>机器人仍然需要：</p>
+<ul>
+<li>demonstration 数据</li>
+<li>真实机器人交互</li>
+</ul>
+<p>来学习：</p>
+<ul>
+<li>manipulation dynamics</li>
+<li>接触控制</li>
+</ul>
+<hr>
+<h3 id="空间与物理理解仍然有限">空间与物理理解仍然有限<a hidden class="anchor" aria-hidden="true" href="#空间与物理理解仍然有限">#</a></h3>
+<p>RT-2 在语义理解方面提升明显，但在以下方面仍然较弱：</p>
+<ul>
+<li>三维空间理解</li>
+<li>物理交互建模</li>
+<li>复杂 manipulation</li>
+</ul>
+<hr>
+<h3 id="动作离散化问题">动作离散化问题<a hidden class="anchor" aria-hidden="true" href="#动作离散化问题">#</a></h3>
+<p>动作 tokenization 简化了建模，但也可能带来：</p>
+<ul>
+<li>控制精度降低</li>
+<li>离散化误差</li>
+</ul>
+<hr>
+<h1 id="fix--key-idea">Fix / Key Idea<a hidden class="anchor" aria-hidden="true" href="#fix--key-idea">#</a></h1>
+<p>RT-2 的核心创新是：</p>
+<p><strong>将视觉-语言推理与机器人控制统一到同一个模型中。</strong></p>
+<p>从系统角度看，RT-2 相当于把两个系统合并：</p>
+<p>PaLM-E → 语义推理</p>
+<p>RT-1 → 机器人策略</p>
+<p>最终形成一个 <strong>Vision-Language-Action（VLA）模型</strong>。</p>
+<p>核心思想可以总结为：</p>
+<blockquote>
+<p>机器人控制可以被视为多模态模型中的序列生成问题。</p>
+</blockquote>
+<hr>
+<h1 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h1>
+<p>RT-2 在 <strong>未见任务泛化能力</strong> 上取得了显著提升。</p>
+<p>主要结果包括：</p>
+<ul>
+<li>平均泛化性能提升约 <strong>2×</strong></li>
+<li>在完全 <strong>OOD 任务</strong> 上
+PaLI-X 版本的 RT-2 比最佳 baseline <strong>提升约 3×</strong></li>
+</ul>
+<p>提升能力包括：</p>
+<ul>
+<li>识别未见过的物体</li>
+<li>理解自然语言指令</li>
+<li>利用互联网语义知识完成任务</li>
+</ul>
+<hr>
+<h1 id="takeaway">Takeaway<a hidden class="anchor" aria-hidden="true" href="#takeaway">#</a></h1>
+<p>RT-2 展示了一个非常重要的方向：</p>
+<blockquote>
+<p><strong>机器人策略可以被建模为 Vision-Language 模型中的 token 预测问题。</strong></p>
+</blockquote>
+<p>通过这种方式，机器人可以直接利用互联网规模模型中的语义知识。</p>
+<p>这一思想也影响了后续许多 <strong>VLA 模型</strong>，例如：</p>
+<ul>
+<li>Octo</li>
+<li>OpenVLA</li>
+<li>π0</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>RT-1</span>
+  </a>
+  <a class="next" href="http://localhost:1313/zh/reading/vla/2024pi0/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>π0</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

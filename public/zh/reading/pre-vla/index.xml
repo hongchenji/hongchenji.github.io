@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Modeling Pre-VLA Robots on HC 的笔记</title>
+    <link>http://localhost:1313/zh/reading/pre-vla/</link>
+    <description>Recent content in Modeling Pre-VLA Robots on HC 的笔记</description>
+    <generator>Hugo -- 0.157.0</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 04 Mar 2026 22:26:49 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/zh/reading/pre-vla/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RT-1</title>
+      <link>http://localhost:1313/zh/reading/pre-vla/2022rt1/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/zh/reading/pre-vla/2022rt1/</guid>
+      <description>&lt;h1 id=&#34;rt-1用于大规模真实世界控制的机器人-transformer&#34;&gt;RT-1：用于大规模真实世界控制的机器人 Transformer&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;机构&lt;/strong&gt;：Google Robotics
+&lt;strong&gt;年份&lt;/strong&gt;：2022
+&lt;strong&gt;论文&lt;/strong&gt;：&lt;a href=&#34;https://robotics-transformer1.github.io/assets/rt1.pdf&#34;&gt;https://robotics-transformer1.github.io/assets/rt1.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;problem&#34;&gt;Problem&lt;/h1&gt;
+&lt;p&gt;传统机器人策略通常针对 &lt;strong&gt;单一任务&lt;/strong&gt; 进行训练，例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Behavioral Cloning&lt;/li&gt;
+&lt;li&gt;Reinforcement Learning&lt;/li&gt;
+&lt;li&gt;task‑specific policy networks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些方法往往存在几个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;训练数据规模小&lt;/li&gt;
+&lt;li&gt;模型只针对特定任务&lt;/li&gt;
+&lt;li&gt;对新物体或新环境的泛化能力较差&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;与此同时，在 NLP 和计算机视觉领域已经证明：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;模型规模 + 数据规模 可以显著提升能力。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;因此一个关键问题是：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;是否可以像语言模型一样训练 &lt;strong&gt;大规模多任务机器人策略模型&lt;/strong&gt;？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;why-it-matters&#34;&gt;Why it matters&lt;/h1&gt;
+&lt;p&gt;如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;通用机器人策略（generalist policy）&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;能执行多种任务&lt;/li&gt;
+&lt;li&gt;可以复用跨任务知识&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这样的系统可能：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;减少任务特定工程&lt;/li&gt;
+&lt;li&gt;提高泛化能力&lt;/li&gt;
+&lt;li&gt;使机器人策略更接近 &lt;strong&gt;foundation model&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;但机器人系统仍然面临挑战：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;图像输入维度高&lt;/li&gt;
+&lt;li&gt;控制必须实时执行&lt;/li&gt;
+&lt;li&gt;数据规模远小于互联网数据&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此模型需要在以下方面取得平衡：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;表达能力&lt;/li&gt;
+&lt;li&gt;计算效率&lt;/li&gt;
+&lt;li&gt;实时控制&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;attempt&#34;&gt;Attempt&lt;/h1&gt;
+&lt;p&gt;RT-1 提出使用 &lt;strong&gt;Transformer 架构&lt;/strong&gt;来学习机器人策略。&lt;/p&gt;
+&lt;p&gt;核心思想是：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;将机器人控制问题转化为序列建模问题。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;模型输入：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;一段 &lt;strong&gt;图像历史&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;一个 &lt;strong&gt;自然语言指令&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;模型输出：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;离散化的机器人动作 token&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Pipeline：&lt;/p&gt;
+&lt;p&gt;image observations + instruction
+↓
+vision‑language encoding
+↓
+Transformer policy
+↓
+action tokens&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>基础原理</title>
+      <link>http://localhost:1313/zh/reading/pre-vla/2022basics/</link>
+      <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/zh/reading/pre-vla/2022basics/</guid>
+      <description>&lt;script&gt;
+  window.MathJax = {
+    tex: {
+      inlineMath: [
+        [&#34;$&#34;, &#34;$&#34;],
+        [&#34;\\(&#34;, &#34;\\)&#34;],
+      ],
+      displayMath: [
+        [&#34;$$&#34;, &#34;$$&#34;],
+        [&#34;\\[&#34;, &#34;\\]&#34;],
+      ],
+    },
+    svg: {
+      fontCache: &#34;global&#34;,
+    },
+  };
+&lt;/script&gt;
+&lt;script
+  defer
+  src=&#34;https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js&#34;
+&gt;&lt;/script&gt;
+
+&lt;h1 id=&#34;diffusion-policy-与-flow-matching基础原理&#34;&gt;Diffusion Policy 与 Flow Matching：基础原理&lt;/h1&gt;
+&lt;p&gt;本文总结 &lt;strong&gt;Diffusion Models、Diffusion Policy 和 Flow Matching&lt;/strong&gt; 的理论基础，同时强调公式推导与直觉理解。&lt;/p&gt;
+&lt;p&gt;核心问题是：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;模型如何学习把一个简单的噪声分布转换为复杂的数据分布？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这个问题广泛出现在：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;图像生成&lt;/li&gt;
+&lt;li&gt;视频生成&lt;/li&gt;
+&lt;li&gt;以及越来越多的 &lt;strong&gt;机器人策略学习（robot policy learning）&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;1-基础概念&#34;&gt;1. 基础概念&lt;/h1&gt;
+&lt;p&gt;在理解 diffusion 和 flow matching 之前，需要一些基础概念。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;kl-散度&#34;&gt;KL 散度&lt;/h2&gt;
+&lt;p&gt;KL 散度用于衡量两个概率分布之间的差异。&lt;/p&gt;
+&lt;p&gt;$$
+KL(q(x)|p(x)) = \int q(x)\log\frac{q(x)}{p(x)}dx
+$$&lt;/p&gt;
+&lt;p&gt;期望形式：&lt;/p&gt;
+&lt;p&gt;$$
+KL(q|p) = \mathbb{E}_{q(x)}[\log q(x) - \log p(x)]
+$$&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

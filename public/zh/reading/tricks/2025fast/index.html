@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>FAST | HC 的笔记</title>
+<meta name="keywords" content="">
+<meta name="description" content="FAST：用于 Vision-Language-Action 模型的高效动作 Tokenization
+作者： Karl Pertsch, Kyle Stachowicz, Brian Ichter, Danny Driess, Suraj Nair, Quan Vuong, Oier Mees, Chelsea Finn, Sergey Levine
+机构： Physical Intelligence, UC Berkeley, Stanford
+年份： 2025
+论文：
+https://arxiv.org/pdf/2501.09747
+
+1. 概览
+FAST 提出了一种新的 动作 tokenization 方法，用于 Vision-Language-Action（VLA）模型。
+其出发点是当前最常见的动作离散化方法 —— binning discretization（分桶离散化） —— 存在明显问题。
+传统方法通常：
+
+按 每个维度、每个时间步 对动作进行离散化
+
+但这种方法在 高频机器人控制数据 上表现较差。
+FAST 的核心思路是：
+
+通过压缩动作信号，将冗余的连续控制信号转换为 更少但信息量更高的 token
+
+FAST 使用了两个关键技术：
+
+离散余弦变换（DCT）
+Byte Pair Encoding（BPE）
+
+
+2. 背景与问题
+传统的 binning discretization 存在两个主要问题。">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/reading/tricks/2025fast/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/tricks/2025fast/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/tricks/2025fast/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/tricks/">useful tricks</a></div>
+    <h1 class="post-title entry-hint-parent">
+      FAST
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/en/reading/tricks/2025fast/">En</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="fast用于-vision-language-action-模型的高效动作-tokenization">FAST：用于 Vision-Language-Action 模型的高效动作 Tokenization<a hidden class="anchor" aria-hidden="true" href="#fast用于-vision-language-action-模型的高效动作-tokenization">#</a></h1>
+<p><strong>作者：</strong> Karl Pertsch, Kyle Stachowicz, Brian Ichter, Danny Driess, Suraj Nair, Quan Vuong, Oier Mees, Chelsea Finn, Sergey Levine<br>
+<strong>机构：</strong> Physical Intelligence, UC Berkeley, Stanford<br>
+<strong>年份：</strong> 2025</p>
+<p>论文：<br>
+<a href="https://arxiv.org/pdf/2501.09747">https://arxiv.org/pdf/2501.09747</a></p>
+<hr>
+<h1 id="1-概览">1. 概览<a hidden class="anchor" aria-hidden="true" href="#1-概览">#</a></h1>
+<p>FAST 提出了一种新的 <strong>动作 tokenization 方法</strong>，用于 Vision-Language-Action（VLA）模型。</p>
+<p>其出发点是当前最常见的动作离散化方法 —— <strong>binning discretization（分桶离散化）</strong> —— 存在明显问题。</p>
+<p>传统方法通常：</p>
+<ul>
+<li>按 <strong>每个维度、每个时间步</strong> 对动作进行离散化</li>
+</ul>
+<p>但这种方法在 <strong>高频机器人控制数据</strong> 上表现较差。</p>
+<p>FAST 的核心思路是：</p>
+<blockquote>
+<p>通过压缩动作信号，将冗余的连续控制信号转换为 <strong>更少但信息量更高的 token</strong></p>
+</blockquote>
+<p>FAST 使用了两个关键技术：</p>
+<ul>
+<li><strong>离散余弦变换（DCT）</strong></li>
+<li><strong>Byte Pair Encoding（BPE）</strong></li>
+</ul>
+<hr>
+<h1 id="2-背景与问题">2. 背景与问题<a hidden class="anchor" aria-hidden="true" href="#2-背景与问题">#</a></h1>
+<p>传统的 binning discretization 存在两个主要问题。</p>
+<hr>
+<h2 id="21-动作-token-高度相关">2.1 动作 token 高度相关<a hidden class="anchor" aria-hidden="true" href="#21-动作-token-高度相关">#</a></h2>
+<p>机器人控制信号通常是连续且平滑的。</p>
+<p>因此连续时间步的动作 token <strong>高度相关</strong>。</p>
+<p>这会导致：</p>
+<ul>
+<li>每个 token 的信息量很低</li>
+<li>模型容易直接 <strong>复制上一个 token</strong></li>
+</ul>
+<p>这样会削弱模型的学习信号，使训练目标变得低效。</p>
+<hr>
+<h2 id="22-token-序列过长">2.2 token 序列过长<a hidden class="anchor" aria-hidden="true" href="#22-token-序列过长">#</a></h2>
+<p>在高频控制场景下：</p>
+<ul>
+<li>每个动作片段可能产生 <strong>数百个 token</strong></li>
+</ul>
+<p>这会带来多个问题：</p>
+<ul>
+<li>训练困难</li>
+<li>推理速度变慢</li>
+<li>Transformer 上下文窗口被大量低信息 token 占用</li>
+</ul>
+<p>FAST 的目标就是在 tokenization 之前 <strong>压缩动作序列</strong>。</p>
+<hr>
+<h1 id="3-核心思想">3. 核心思想<a hidden class="anchor" aria-hidden="true" href="#3-核心思想">#</a></h1>
+<p>FAST 的核心思想是：</p>
+<p><strong>在频域对动作序列进行 tokenization。</strong></p>
+<p>具体流程是：</p>
+<ol>
+<li>将动作序列通过 <strong>DCT 转换到频域</strong></li>
+<li>去除冗余的高频信息</li>
+<li>使用 <strong>BPE</strong> 对频域表示进行压缩</li>
+</ol>
+<p>最终得到：</p>
+<p><strong>更短、更高信息密度的 token 序列。</strong></p>
+<hr>
+<h1 id="4-方法">4. 方法<a hidden class="anchor" aria-hidden="true" href="#4-方法">#</a></h1>
+<h2 id="41-动作归一化">4.1 动作归一化<a hidden class="anchor" aria-hidden="true" href="#41-动作归一化">#</a></h2>
+<p>在 tokenization 之前，需要对动作进行归一化。</p>
+<p>每个动作维度会根据数据集的：</p>
+<ul>
+<li><strong>1% 分位数</strong></li>
+<li><strong>99% 分位数</strong></li>
+</ul>
+<p>映射到范围：</p>
+<p>[
+[-1,1]
+]</p>
+<p>这样可以避免极端值影响表示。</p>
+<hr>
+<h2 id="42-离散余弦变换dct">4.2 离散余弦变换（DCT）<a hidden class="anchor" aria-hidden="true" href="#42-离散余弦变换dct">#</a></h2>
+<p>接下来，对每个动作维度分别应用 <strong>DCT</strong>。</p>
+<p>DCT 将动作序列从：</p>
+<p><strong>时间域 → 频率域</strong></p>
+<p>一个动作轨迹可以表示为多个不同频率余弦函数的叠加。</p>
+<p>关键观察：</p>
+<ul>
+<li><strong>低频部分包含主要运动信息</strong></li>
+<li><strong>高频部分通常是冗余或噪声</strong></li>
+</ul>
+<p>因此可以通过忽略较小的高频系数来实现压缩。</p>
+<hr>
+<h2 id="43-构造矩阵表示">4.3 构造矩阵表示<a hidden class="anchor" aria-hidden="true" href="#43-构造矩阵表示">#</a></h2>
+<p>对每个动作维度做 DCT 后：</p>
+<ul>
+<li>得到一个频率系数矩阵</li>
+</ul>
+<p>然后：</p>
+<ul>
+<li>按 <strong>列优先（column-wise）</strong> 展平成一维序列</li>
+</ul>
+<p>该序列即为压缩后的动作表示。</p>
+<hr>
+<h2 id="44-byte-pair-encodingbpe">4.4 Byte Pair Encoding（BPE）<a hidden class="anchor" aria-hidden="true" href="#44-byte-pair-encodingbpe">#</a></h2>
+<p>接下来使用 <strong>BPE</strong> 对序列进一步压缩。</p>
+<p>BPE 会学习：</p>
+<ul>
+<li>数据中频繁出现的系数组合</li>
+</ul>
+<p>并将其合并为新的 token。</p>
+<p>最终得到：</p>
+<p><strong>固定大小词表的动作 token。</strong></p>
+<p>需要注意：</p>
+<ul>
+<li>FAST 中唯一需要学习的部分是 <strong>BPE 词表</strong></li>
+<li>通常会 <strong>针对每个数据集单独训练</strong></li>
+</ul>
+<hr>
+<h2 id="45-fast">4.5 FAST+<a hidden class="anchor" aria-hidden="true" href="#45-fast">#</a></h2>
+<p>论文还提出了 <strong>FAST+</strong>。</p>
+<p>FAST+ 是一个 <strong>通用机器人 tokenizer</strong>：</p>
+<ul>
+<li>在 <strong>100 万条多样化机器人动作数据</strong> 上训练</li>
+<li>已发布在 HuggingFace</li>
+</ul>
+<p>FAST+ 不再依赖特定数据集，可以跨不同机器人系统使用。</p>
+<hr>
+<h1 id="5-关键超参数">5. 关键超参数<a hidden class="anchor" aria-hidden="true" href="#5-关键超参数">#</a></h1>
+<p>FAST 有两个主要超参数。</p>
+<hr>
+<h2 id="51-dct-rounding-scale">5.1 DCT rounding scale<a hidden class="anchor" aria-hidden="true" href="#51-dct-rounding-scale">#</a></h2>
+<p>控制 DCT 系数在压缩时的舍入强度。</p>
+<hr>
+<h2 id="52-bpe-vocabulary-size">5.2 BPE vocabulary size<a hidden class="anchor" aria-hidden="true" href="#52-bpe-vocabulary-size">#</a></h2>
+<p>控制 token 序列压缩程度。</p>
+<p>词表越大：</p>
+<ul>
+<li>token 序列越短</li>
+<li>但训练复杂度也更高。</li>
+</ul>
+<hr>
+<h1 id="6-实验结果">6. 实验结果<a hidden class="anchor" aria-hidden="true" href="#6-实验结果">#</a></h1>
+<p>论文报告了几个重要结论。</p>
+<hr>
+<h2 id="61-训练速度">6.1 训练速度<a hidden class="anchor" aria-hidden="true" href="#61-训练速度">#</a></h2>
+<p>FAST 可以显著提升训练速度。</p>
+<p>示例：</p>
+<ul>
+<li><strong>π0 vs π0-FAST</strong></li>
+<li>训练速度提升 <strong>约 5 倍</strong></li>
+</ul>
+<p>原因是 FAST 生成的 token 序列 <strong>更短</strong>。</p>
+<hr>
+<h2 id="62-推理速度">6.2 推理速度<a hidden class="anchor" aria-hidden="true" href="#62-推理速度">#</a></h2>
+<p>FAST 在推理阶段反而 <strong>更慢</strong>。</p>
+<p>论文给出的例子：</p>
+<ul>
+<li>π0：约 <strong>100 ms</strong></li>
+<li>π0-FAST：约 <strong>750 ms</strong></li>
+</ul>
+<p>原因包括：</p>
+<ul>
+<li>需要更多自回归 decoding</li>
+<li>使用大型语言模型 backbone</li>
+<li>而不是 π0 中较小的 action expert</li>
+</ul>
+<hr>
+<h2 id="63-token-压缩效果">6.3 token 压缩效果<a hidden class="anchor" aria-hidden="true" href="#63-token-压缩效果">#</a></h2>
+<p>FAST 可以显著减少每个动作片段的 token 数量。</p>
+<p>尤其是在 <strong>高频机器人数据</strong> 中。</p>
+<p>此外：</p>
+<p>BPE 可以避免大量 <strong>重复的 0 token</strong>，<br>
+这些 token 在传统 discretization 中经常出现，并会降低学习效率。</p>
+<hr>
+<h2 id="64-与其他-vla-模型的兼容性">6.4 与其他 VLA 模型的兼容性<a hidden class="anchor" aria-hidden="true" href="#64-与其他-vla-模型的兼容性">#</a></h2>
+<p>FAST 不依赖特定模型结构。</p>
+<p>它可以直接用于：</p>
+<ul>
+<li>RT 系列</li>
+<li>OpenVLA</li>
+<li>π 系列</li>
+</ul>
+<p>等多种 <strong>VLA backbone</strong>。</p>
+<hr>
+<h2 id="65-通用-tokenizer">6.5 通用 tokenizer<a hidden class="anchor" aria-hidden="true" href="#65-通用-tokenizer">#</a></h2>
+<p>FAST+ 的实验结果表明：</p>
+<p><strong>通用机器人 tokenizer 的性能与数据集特定 tokenizer 相近。</strong></p>
+<p>这意味着未来可能存在：</p>
+<p><strong>统一的机器人动作 tokenizer。</strong></p>
+<hr>
+<h1 id="7-实际意义">7. 实际意义<a hidden class="anchor" aria-hidden="true" href="#7-实际意义">#</a></h1>
+<p>论文指出：</p>
+<p>FAST 使得在 <strong>DROID 数据集上</strong> 可以训练出第一个能够 <strong>zero-shot 评估的通用机器人策略</strong>。</p>
+<p>这说明：</p>
+<p><strong>动作 tokenization 的改进可以显著提升 VLA 模型的可扩展性。</strong></p>
+<hr>
+<h1 id="8-个人笔记">8. 个人笔记<a hidden class="anchor" aria-hidden="true" href="#8-个人笔记">#</a></h1>
+<h2 id="核心-insight">核心 insight<a hidden class="anchor" aria-hidden="true" href="#核心-insight">#</a></h2>
+<p>FAST 的核心洞察是：</p>
+<p><strong>机器人动作信号本身高度冗余。</strong></p>
+<p>因此直接在时间域进行离散化并不是最佳方法。</p>
+<p>更好的方法是：</p>
+<ol>
+<li>先转换到频域</li>
+<li>压缩信号</li>
+<li>再进行 tokenization</li>
+</ol>
+<hr>
+<h2 id="我的理解">我的理解<a hidden class="anchor" aria-hidden="true" href="#我的理解">#</a></h2>
+<p>FAST 本质上把机器人动作问题看作：</p>
+<p><strong>信号压缩问题，而不是简单离散化问题。</strong></p>
+<p>整体 pipeline 可以概括为：</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/zh/reading/pre-vla/2023actiondiffusioin/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</span>
+  </a>
+  <a class="next" href="http://localhost:1313/zh/reading/vla/2024openvla/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>OpenVLA</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

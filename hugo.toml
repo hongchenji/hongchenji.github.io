@@ -1,0 +1,67 @@
+baseURL = "https://hongchenji.github.io/"
+title = "HC's Log"
+theme = "PaperMod"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = true
+
+[pagination]
+  pagerSize = 3
+
+[params]
+  author = { name = "Hongchen Ji" }
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowAllPagesInArchive = false
+  ShowPageNums = true
+  math = true
+
+[author]
+  name = "Hongchen Ji"
+
+[languages]
+
+  [languages.en]
+    languageName = "English"
+    languageCode = "en-us"
+    contentDir = "content/en"
+    weight = 1
+    title = "HC's Log"
+
+    [[languages.en.menu.main]]
+      name = "Reading"
+      url = "/en/reading/"
+      weight = 10
+
+    [[languages.en.menu.main]]
+      name = "Engineering"
+      url = "/en/engineering/"
+      weight = 20
+
+    [[languages.en.menu.main]]
+      name = "Concepts"
+      url = "/en/concepts/"
+      weight = 30
+
+  [languages.zh]
+    languageName = "中文"
+    languageCode = "zh-cn"
+    contentDir = "content/zh"
+    weight = 2
+    title = "HC 的笔记"
+
+    [[languages.zh.menu.main]]
+      name = "阅读"
+      url = "/zh/reading/"
+      weight = 10
+
+    [[languages.zh.menu.main]]
+      name = "工程"
+      url = "/zh/engineering/"
+      weight = 20
+
+    [[languages.zh.menu.main]]
+      name = "概念"
+      url = "/zh/concepts/"
+      weight = 30

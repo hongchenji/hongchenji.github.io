@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Diffusion Policy and Flow Matching: Foundations | HC&#39;s Log</title>
+<meta name="keywords" content="">
+<meta name="description" content="Diffusion Policy and Flow Matching: Foundations
+This note summarizes the theoretical foundations behind diffusion models, diffusion policy, and flow matching, which are widely used in modern generative models and robot policy learning.
+The goal is to understand how generative models can learn complex distributions by transforming noise into structured data.
+
+1. Background Concepts
+Before understanding diffusion models and flow matching, several fundamental concepts are required.
+KL Divergence
+KL divergence measures the difference between two probability distributions.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/en/reading/pre-vla/2023diffusioin/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/pre-vla/2023diffusioin/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/zh/" title="中文"
+                                aria-label="中文">Zh</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/reading/" title="Reading">
+                    <span>Reading</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                    <span>Engineering</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                    <span>Concepts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
+    <h1 class="post-title entry-hint-parent">
+      Diffusion Policy and Flow Matching: Foundations
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>5 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="diffusion-policy-and-flow-matching-foundations">Diffusion Policy and Flow Matching: Foundations<a hidden class="anchor" aria-hidden="true" href="#diffusion-policy-and-flow-matching-foundations">#</a></h1>
+<p>This note summarizes the theoretical foundations behind <strong>diffusion models</strong>, <strong>diffusion policy</strong>, and <strong>flow matching</strong>, which are widely used in modern generative models and robot policy learning.</p>
+<p>The goal is to understand how generative models can learn complex distributions by <strong>transforming noise into structured data</strong>.</p>
+<hr>
+<h1 id="1-background-concepts">1. Background Concepts<a hidden class="anchor" aria-hidden="true" href="#1-background-concepts">#</a></h1>
+<p>Before understanding diffusion models and flow matching, several fundamental concepts are required.</p>
+<h2 id="kl-divergence">KL Divergence<a hidden class="anchor" aria-hidden="true" href="#kl-divergence">#</a></h2>
+<p>KL divergence measures the difference between two probability distributions.</p>
+<p>[
+KL(q(x) || p(x)) = \int q(x) \log \frac{q(x)}{p(x)} dx
+]</p>
+<p>In machine learning it is often written as:</p>
+<p>[
+KL(q||p) = \mathbb{E}_{q(x)}[\log q(x) - \log p(x)]
+]</p>
+<p>Key intuition:</p>
+<ul>
+<li>KL divergence measures how well distribution <strong>p</strong> approximates <strong>q</strong></li>
+<li>KL is always <strong>non-negative</strong></li>
+<li>KL = 0 only when the two distributions are identical</li>
+</ul>
+<hr>
+<h2 id="maximum-likelihood">Maximum Likelihood<a hidden class="anchor" aria-hidden="true" href="#maximum-likelihood">#</a></h2>
+<p>Maximum likelihood estimation (MLE) learns model parameters by maximizing:</p>
+<p>[
+\log p_\theta(x)
+]</p>
+<p>This corresponds to minimizing the <strong>negative log likelihood</strong>.</p>
+<p>In practice, many generative models approximate this objective using <strong>variational inference</strong>.</p>
+<hr>
+<h2 id="variational-inference-and-elbo">Variational Inference and ELBO<a hidden class="anchor" aria-hidden="true" href="#variational-inference-and-elbo">#</a></h2>
+<p>Directly computing:</p>
+<p>[
+p*\theta(x) = \int p*\theta(x|z)p(z)dz
+]</p>
+<p>is usually intractable.</p>
+<p>Therefore we introduce an approximate posterior:</p>
+<p>[
+q_\phi(z|x)
+]</p>
+<p>The log likelihood can be decomposed into:</p>
+<p>[
+\log p*\theta(x) = ELBO + KL(q*\phi(z|x) || p_\theta(z|x))
+]</p>
+<p>Because KL divergence is non-negative:</p>
+<p>[
+\log p_\theta(x) \ge ELBO
+]</p>
+<p>Thus training becomes <strong>maximizing ELBO</strong>.</p>
+<p>The ELBO is:</p>
+<p>[
+ELBO =
+\mathbb{E}<em>{q</em>\phi(z|x)}[\log p_\theta(x|z)]</p>
+<ul>
+<li>KL(q_\phi(z|x) || p(z))
+]</li>
+</ul>
+<p>This contains two components:</p>
+<ol>
+<li><strong>Reconstruction loss</strong></li>
+</ol>
+<p>[
+\mathbb{E}<em>{q</em>\phi(z|x)}[\log p_\theta(x|z)]
+]</p>
+<ol start="2">
+<li><strong>KL regularization</strong></li>
+</ol>
+<p>[
+KL(q_\phi(z|x) || p(z))
+]</p>
+<hr>
+<h2 id="reparameterization-trick">Reparameterization Trick<a hidden class="anchor" aria-hidden="true" href="#reparameterization-trick">#</a></h2>
+<p>To sample from</p>
+<p>[
+z \sim \mathcal{N}(\mu,\sigma^2)
+]</p>
+<p>we rewrite it as:</p>
+<p>[
+z = \mu + \sigma \epsilon, \quad \epsilon \sim \mathcal{N}(0,1)
+]</p>
+<p>This allows gradients to flow through stochastic sampling.</p>
+<hr>
+<h1 id="2-diffusion-models">2. Diffusion Models<a hidden class="anchor" aria-hidden="true" href="#2-diffusion-models">#</a></h1>
+<p>Diffusion models generate data by <strong>gradually removing noise from a Gaussian distribution</strong>.</p>
+<p>They consist of two processes:</p>
+<ul>
+<li>forward diffusion process</li>
+<li>reverse denoising process</li>
+</ul>
+<hr>
+<h1 id="3-forward-diffusion-process">3. Forward Diffusion Process<a hidden class="anchor" aria-hidden="true" href="#3-forward-diffusion-process">#</a></h1>
+<p>The forward process gradually adds Gaussian noise to data.</p>
+<p>At timestep (t):</p>
+<p>[
+x_t =
+\sqrt{\bar{\alpha}_t} x_0 +
+\sqrt{1-\bar{\alpha}_t}\epsilon
+]</p>
+<p>where</p>
+<p>[
+\epsilon \sim \mathcal{N}(0,I)
+]</p>
+<p>and</p>
+<p>[
+\bar{\alpha}<em>t = \prod</em>{s=1}^t \alpha_s
+]</p>
+<p>As (t) increases:</p>
+<p>[
+\bar{\alpha}_t \rightarrow 0
+]</p>
+<p>Thus</p>
+<p>[
+x_T \sim \mathcal{N}(0,I)
+]</p>
+<p>Regardless of the original image.</p>
+<p>This works because repeated addition of independent noise drives the distribution toward a Gaussian (related to the <strong>central limit theorem</strong>).</p>
+<hr>
+<h1 id="4-reverse-diffusion-process">4. Reverse Diffusion Process<a hidden class="anchor" aria-hidden="true" href="#4-reverse-diffusion-process">#</a></h1>
+<p>The reverse process learns to remove noise step by step.</p>
+<p>We train a neural network:</p>
+<p>[
+\epsilon_\theta(x_t, t)
+]</p>
+<p>to predict the noise added at each timestep.</p>
+<p>Training objective:</p>
+<p>[
+L = \mathbb{E}<em>{x_0,\epsilon,t}
+\left[
+||\epsilon - \epsilon</em>\theta(x_t,t)||^2
+\right]
+]</p>
+<p>This is simply <strong>MSE between true noise and predicted noise</strong>.</p>
+<p>During generation:</p>
+<ol>
+<li>sample noise</li>
+</ol>
+<p>[
+x_T \sim \mathcal{N}(0,I)
+]</p>
+<ol start="2">
+<li>iteratively denoise</li>
+</ol>
+<p>[
+x<em>T \rightarrow x</em>{T-1} \rightarrow &hellip; \rightarrow x_0
+]</p>
+<hr>
+<h1 id="5-diffusion-model-architecture">5. Diffusion Model Architecture<a hidden class="anchor" aria-hidden="true" href="#5-diffusion-model-architecture">#</a></h1>
+<p>Typical diffusion models consist of three components.</p>
+<h2 id="text-encoder">Text Encoder<a hidden class="anchor" aria-hidden="true" href="#text-encoder">#</a></h2>
+<p>Maps text prompts to embeddings.</p>
+<p>Common choices:</p>
+<ul>
+<li>CLIP</li>
+<li>BERT</li>
+<li>GPT</li>
+<li>T5</li>
+</ul>
+<p>Text encoder capacity strongly influences generation quality.</p>
+<hr>
+<h2 id="generation-model">Generation Model<a hidden class="anchor" aria-hidden="true" href="#generation-model">#</a></h2>
+<p>The core diffusion network predicts noise.</p>
+<p>Typical architecture:</p>
+<ul>
+<li>U-Net</li>
+</ul>
+<p>Inputs include:</p>
+<ul>
+<li>noisy image</li>
+<li>timestep</li>
+<li>text embedding</li>
+</ul>
+<p>Output:</p>
+<ul>
+<li>predicted noise</li>
+</ul>
+<hr>
+<h2 id="decoder">Decoder<a hidden class="anchor" aria-hidden="true" href="#decoder">#</a></h2>
+<p>If diffusion is performed in latent space (e.g., Stable Diffusion), a decoder converts latent representations back into images.</p>
+<p>Example pipeline:
+image → encoder → latent
+latent → diffusion
+latent → decoder → image</p>
+<hr>
+<h1 id="6-evaluation-metrics">6. Evaluation Metrics<a hidden class="anchor" aria-hidden="true" href="#6-evaluation-metrics">#</a></h1>
+<p>Two common metrics are used to evaluate generative models.</p>
+<h2 id="fid-score">FID Score<a hidden class="anchor" aria-hidden="true" href="#fid-score">#</a></h2>
+<p>Fréchet Inception Distance measures similarity between real and generated images.</p>
+<p>Procedure:</p>
+<ol>
+<li>generate many images</li>
+<li>extract features using a CNN</li>
+<li>approximate both distributions as Gaussians</li>
+<li>compute Fréchet distance</li>
+</ol>
+<p>Lower FID indicates better generation quality.</p>
+<hr>
+<h2 id="clip-score">CLIP Score<a hidden class="anchor" aria-hidden="true" href="#clip-score">#</a></h2>
+<p>Measures alignment between generated images and text prompts.</p>
+<p>CLIP encodes both text and image into embeddings.</p>
+<p>Similarity between embeddings indicates semantic alignment.</p>
+<hr>
+<h1 id="7-diffusion-policy-in-robotics">7. Diffusion Policy in Robotics<a hidden class="anchor" aria-hidden="true" href="#7-diffusion-policy-in-robotics">#</a></h1>
+<p>Diffusion models can also be used for <strong>robot action generation</strong>.</p>
+<p>Instead of generating images, the model generates <strong>action trajectories</strong>.</p>
+<p>Forward process:</p>
+<ul>
+<li>add Gaussian noise to action sequences</li>
+</ul>
+<p>Reverse process:</p>
+<ul>
+<li>learn to remove noise and reconstruct actions</li>
+</ul>
+<p>This produces <strong>smooth multimodal policies</strong>, which are useful for complex robot behaviors.</p>
+<hr>
+<h1 id="8-flow-matching">8. Flow Matching<a hidden class="anchor" aria-hidden="true" href="#8-flow-matching">#</a></h1>
+<p>Flow Matching is an alternative formulation of diffusion-based generative modeling.</p>
+<p>Instead of learning discrete denoising steps, flow matching learns a <strong>continuous vector field</strong> that transforms noise into data.</p>
+<hr>
+<h2 id="core-idea">Core Idea<a hidden class="anchor" aria-hidden="true" href="#core-idea">#</a></h2>
+<p>Let:</p>
+<p>[
+x<em>0 \sim p</em>{data}
+]</p>
+<p>and</p>
+<p>[
+x_1 \sim \mathcal{N}(0,I)
+]</p>
+<p>Flow matching defines a continuous path:</p>
+<p>[
+x_t = (1-t)x_0 + tx_1
+]</p>
+<p>The model learns a velocity field:</p>
+<p>[
+v_\theta(x_t,t)
+]</p>
+<p>such that:</p>
+<p>[
+\frac{dx<em>t}{dt} = v</em>\theta(x_t,t)
+]</p>
+<p>Training objective:</p>
+<p>[
+\mathbb{E} || v_\theta(x_t,t) - v^*(x_t,t) ||^2
+]</p>
+<p>where (v^*) is the true velocity field.</p>
+<hr>
+<h2 id="advantages-of-flow-matching">Advantages of Flow Matching<a hidden class="anchor" aria-hidden="true" href="#advantages-of-flow-matching">#</a></h2>
+<p>Compared with diffusion models:</p>
+<ol>
+<li>fewer sampling steps</li>
+<li>continuous-time formulation</li>
+<li>easier training objective</li>
+<li>faster generation</li>
+</ol>
+<p>Because of these properties, flow matching has recently become popular in:</p>
+<ul>
+<li>image generation</li>
+<li>video generation</li>
+<li>robot control policies</li>
+</ul>
+<hr>
+<h1 id="9-personal-understanding">9. Personal Understanding<a hidden class="anchor" aria-hidden="true" href="#9-personal-understanding">#</a></h1>
+<p>Diffusion and flow matching both solve the same problem:</p>
+<blockquote>
+<p>learning a transformation from <strong>simple noise distributions</strong> to <strong>complex data distributions</strong>.</p>
+</blockquote>
+<p>Diffusion:
+noise → many denoising steps → data</p>
+<p>Flow Matching:
+noise → continuous flow → data</p>
+<p>In robotics, these models allow policies to generate <strong>smooth action trajectories</strong>, which is particularly useful for manipulation and control tasks.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/en/reading/vla/2024xvla/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>XVLA</span>
+  </a>
+  <a class="next" href="http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

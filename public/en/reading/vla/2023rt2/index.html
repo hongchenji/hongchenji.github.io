@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RT-2 | HC&#39;s Log</title>
+<meta name="keywords" content="">
+<meta name="description" content="RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control
+Authors: Anthony Brohan et al.
+Organization: Google DeepMind
+Year: 2023
+Paper / Blog
+https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+
+Problem
+Robot policies trained purely on robot datasets often struggle to generalize to new tasks.
+Most robot learning systems rely on:
+
+imitation learning
+reinforcement learning
+robot demonstration datasets
+
+However, robot datasets are typically orders of magnitude smaller than the web-scale datasets used to train modern vision and language models.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/en/reading/vla/2023rt2/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2023rt2/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/zh/" title="中文"
+                                aria-label="中文">Zh</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/reading/" title="Reading">
+                    <span>Reading</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                    <span>Engineering</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                    <span>Concepts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/vla/">VLA models</a></div>
+    <h1 class="post-title entry-hint-parent">
+      RT-2
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>4 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/zh/reading/vla/2023rt2/">Zh</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="rt-2-vision-language-action-models-transfer-web-knowledge-to-robotic-control">RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control<a hidden class="anchor" aria-hidden="true" href="#rt-2-vision-language-action-models-transfer-web-knowledge-to-robotic-control">#</a></h1>
+<p><strong>Authors:</strong> Anthony Brohan et al.</p>
+<p><strong>Organization:</strong> Google DeepMind
+<strong>Year:</strong> 2023</p>
+<p>Paper / Blog
+<a href="https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/">https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/</a></p>
+<hr>
+<h1 id="problem">Problem<a hidden class="anchor" aria-hidden="true" href="#problem">#</a></h1>
+<p>Robot policies trained purely on robot datasets often struggle to generalize to new tasks.</p>
+<p>Most robot learning systems rely on:</p>
+<ul>
+<li>imitation learning</li>
+<li>reinforcement learning</li>
+<li>robot demonstration datasets</li>
+</ul>
+<p>However, robot datasets are typically <strong>orders of magnitude smaller</strong> than the web-scale datasets used to train modern vision and language models.</p>
+<p>As a result, robot policies often lack:</p>
+<ul>
+<li>semantic understanding</li>
+<li>language grounding</li>
+<li>commonsense reasoning</li>
+</ul>
+<p>For example, a robot trained on demonstrations might fail when asked to:</p>
+<ul>
+<li>pick up an unfamiliar object</li>
+<li>interpret a new instruction</li>
+<li>reason about object affordances</li>
+</ul>
+<p>The core limitation is that robot policies typically learn <strong>motor behavior</strong>, but not <strong>semantic knowledge about the world</strong>.</p>
+<hr>
+<h1 id="why-it-matters">Why it matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h1>
+<p>Large vision-language models (VLMs) trained on internet-scale data already contain rich knowledge about:</p>
+<ul>
+<li>objects and categories</li>
+<li>language instructions</li>
+<li>semantic relationships</li>
+<li>everyday reasoning</li>
+</ul>
+<p>If this knowledge could be transferred into robot control systems, robots could potentially:</p>
+<ul>
+<li>generalize to unseen objects</li>
+<li>interpret flexible natural-language instructions</li>
+<li>reason about tasks instead of memorizing them</li>
+</ul>
+<p>Traditional robotics pipelines separate:</p>
+<p>perception → language understanding → control</p>
+<p>This separation prevents robot policies from directly benefiting from the semantic knowledge learned by large multimodal models.</p>
+<hr>
+<h1 id="attempt">Attempt<a hidden class="anchor" aria-hidden="true" href="#attempt">#</a></h1>
+<p>RT-2 proposes a surprisingly simple idea:</p>
+<p>Use a <strong>large Vision-Language Model (VLM)</strong> as the robot policy itself.</p>
+<p>Instead of designing a custom robotics architecture, the model generates <strong>robot actions as tokens</strong>, similar to how language models generate text.</p>
+<p>Pipeline:</p>
+<p>image + language instruction
+↓
+Vision-Language Model
+↓
+action tokens</p>
+<p>Example output tokens:</p>
+<p>132 114 128 5 25 156</p>
+<p>These tokens represent discretized robot commands such as:</p>
+<ul>
+<li>end-effector translation</li>
+<li>rotation</li>
+<li>gripper state</li>
+</ul>
+<p>Robot control is therefore reframed as a <strong>token prediction problem</strong>.</p>
+<hr>
+<h1 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<h2 id="vision-language-backbone">Vision-Language Backbone<a hidden class="anchor" aria-hidden="true" href="#vision-language-backbone">#</a></h2>
+<p>RT-2 builds on large VLMs including:</p>
+<ul>
+<li><strong>PaLM-E (12B parameters)</strong></li>
+<li><strong>PaLI-X (5B / 55B parameters)</strong></li>
+</ul>
+<p>These architectures combine:</p>
+<p>Vision Transformer (ViT)</p>
+<ul>
+<li>Large Language Model (LLM)</li>
+</ul>
+<p>forming a multimodal model capable of reasoning jointly over images and text.</p>
+<hr>
+<h2 id="action-tokenization">Action Tokenization<a hidden class="anchor" aria-hidden="true" href="#action-tokenization">#</a></h2>
+<p>Robot actions are discretized into tokens.</p>
+<p>Each action token corresponds to a component of the robot command, including:</p>
+<ul>
+<li>end-effector translation</li>
+<li>orientation</li>
+<li>gripper open / close</li>
+</ul>
+<p>Instead of using a separate policy head, RT-2 uses the <strong>language model output head</strong> to generate these tokens.</p>
+<p>This allows robot control to be treated as:</p>
+<blockquote>
+<p>sequence generation conditioned on visual observations and language instructions.</p>
+</blockquote>
+<hr>
+<h2 id="robot-dataset">Robot Dataset<a hidden class="anchor" aria-hidden="true" href="#robot-dataset">#</a></h2>
+<p>RT-2 is trained using robot interaction data from the <strong>RT-1 dataset</strong>.</p>
+<p>Dataset statistics:</p>
+<ul>
+<li>13 robots</li>
+<li>~130k demonstrations</li>
+<li>17 months of data collection</li>
+</ul>
+<p>Important detail:</p>
+<p>The <strong>RT-1 model is not reused</strong>, only the dataset.</p>
+<hr>
+<h2 id="co-fine-tuning">Co-Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#co-fine-tuning">#</a></h2>
+<p>A key training technique used in RT-2 is <strong>co-fine-tuning</strong>.</p>
+<p>The model is trained simultaneously on:</p>
+<ul>
+<li>robot interaction data</li>
+<li>original vision-language datasets</li>
+</ul>
+<p>This is necessary because robot datasets alone are relatively small.</p>
+<p>Training only on robot data leads to:</p>
+<ul>
+<li>overfitting</li>
+<li>loss of semantic knowledge</li>
+</ul>
+<p>Experiments show that:</p>
+<ul>
+<li>robot-only training performs significantly worse</li>
+<li>co-fine-tuning preserves semantic reasoning ability</li>
+</ul>
+<hr>
+<h2 id="chain-of-thought-reasoning">Chain-of-Thought Reasoning<a hidden class="anchor" aria-hidden="true" href="#chain-of-thought-reasoning">#</a></h2>
+<p>RT-2 also benefits from the reasoning capabilities of large language models.</p>
+<p>With <strong>chain-of-thought prompting</strong>, the model can:</p>
+<ol>
+<li>reason about the task</li>
+<li>infer object properties</li>
+<li>generate the correct robot action tokens</li>
+</ol>
+<p>Example reasoning pattern:</p>
+<p>Instruction: &ldquo;pick up the object that can hold liquid&rdquo;</p>
+<p>Reasoning:</p>
+<p>cup → holds liquid</p>
+<p>Action:</p>
+<p>move gripper toward cup</p>
+<p>This demonstrates how semantic reasoning can influence robot actions.</p>
+<hr>
+<h1 id="failure--limitation">Failure / Limitation<a hidden class="anchor" aria-hidden="true" href="#failure--limitation">#</a></h1>
+<p>Despite its improvements, RT-2 still has several limitations.</p>
+<h3 id="motion-skills-still-require-robot-data">Motion skills still require robot data<a hidden class="anchor" aria-hidden="true" href="#motion-skills-still-require-robot-data">#</a></h3>
+<p>Internet-scale data provides semantic knowledge but does <strong>not automatically teach robots new manipulation skills</strong>.</p>
+<p>Motor control still depends heavily on:</p>
+<ul>
+<li>robot demonstrations</li>
+<li>physical interaction data</li>
+</ul>
+<hr>
+<h3 id="limited-spatial-and-physical-reasoning">Limited spatial and physical reasoning<a hidden class="anchor" aria-hidden="true" href="#limited-spatial-and-physical-reasoning">#</a></h3>
+<p>RT-2 improves semantic understanding but still struggles with:</p>
+<ul>
+<li>3D spatial reasoning</li>
+<li>physical interaction modeling</li>
+<li>complex manipulation dynamics</li>
+</ul>
+<hr>
+<h3 id="discretized-control">Discretized control<a hidden class="anchor" aria-hidden="true" href="#discretized-control">#</a></h3>
+<p>Action tokenization simplifies modeling but introduces potential drawbacks:</p>
+<ul>
+<li>limited control precision</li>
+<li>discretization artifacts</li>
+</ul>
+<hr>
+<h1 id="fix--key-idea">Fix / Key Idea<a hidden class="anchor" aria-hidden="true" href="#fix--key-idea">#</a></h1>
+<p>The key conceptual innovation of RT-2 is <strong>unifying vision-language reasoning and robot control inside a single model</strong>.</p>
+<p>Conceptually, RT-2 merges two earlier systems:</p>
+<p>PaLM-E → semantic reasoning</p>
+<p>RT-1 → robot policy learning</p>
+<p>into a single <strong>Vision-Language-Action (VLA) model</strong>.</p>
+<p>The main insight is:</p>
+<blockquote>
+<p>robot control can be treated as sequence generation in a multimodal model.</p>
+</blockquote>
+<p>This allows robots to leverage the semantic knowledge stored in internet-scale vision-language models.</p>
+<hr>
+<h1 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h1>
+<p>RT-2 demonstrates strong improvements in <strong>generalization to unseen tasks</strong>.</p>
+<p>Key findings include:</p>
+<ul>
+<li>~2× improvement in average generalization performance</li>
+<li>On tasks outside the training distribution, the <strong>PaLI-X version achieves ~3× better performance</strong> than the next best baseline</li>
+</ul>
+<p>Observed improvements include:</p>
+<ul>
+<li>reasoning about unfamiliar objects</li>
+<li>interpreting natural language instructions</li>
+<li>transferring semantic knowledge learned from web data</li>
+</ul>
+<hr>
+<h1 id="takeaway">Takeaway<a hidden class="anchor" aria-hidden="true" href="#takeaway">#</a></h1>
+<p>RT-2 shows that robot policies can be formulated as:</p>
+<blockquote>
+<p>token prediction problems using large vision-language models.</p>
+</blockquote>
+<p>Instead of building specialized robot architectures, the system reuses large multimodal models and trains them to output robot actions.</p>
+<p>This idea directly influenced later <strong>Vision-Language-Action (VLA)</strong> models, including:</p>
+<ul>
+<li>Octo</li>
+<li>OpenVLA</li>
+<li>π0</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/en/reading/pre-vla/2022basics/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Basics</span>
+  </a>
+  <a class="next" href="http://localhost:1313/en/reading/vla/2024pi0/">
+    <span class="title">Next »</span>
+    <br>
+    <span>π0</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

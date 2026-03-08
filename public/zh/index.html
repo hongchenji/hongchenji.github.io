@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.157.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>HC 的笔记</title>
+
+<meta name="description" content="">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/zh/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body class="list" id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<div class="post-content"><h1 id="构建更好的机器人学习系统">构建更好的机器人学习系统<a hidden class="anchor" aria-hidden="true" href="#构建更好的机器人学习系统">#</a></h1>
+<p>我是一名从事 <strong>机器人学习系统开发</strong> 的 AI 工程师，目前主要探索：</p>
+<ul>
+<li><strong>Vision-Language-Action (VLA) 模型</strong></li>
+<li><strong>机器人仿真评测系统</strong></li>
+<li><strong>机器人策略训练与评估基础设施</strong></li>
+</ul>
+<p>这个网站记录我在尝试理解和构建 <strong>机器人基础模型系统（Robot Foundation Models）</strong> 过程中积累的一些笔记与思考。</p>
+<p><img alt="banner" loading="lazy" src="/images/img.png"></p>
+<hr>
+<h2 id="我正在探索的问题">我正在探索的问题<a hidden class="anchor" aria-hidden="true" href="#我正在探索的问题">#</a></h2>
+<p>近年来，大模型在 <strong>自然语言处理</strong> 和 <strong>计算机视觉</strong> 领域已经证明了规模化训练的有效性。</p>
+<p>机器人领域也开始出现类似趋势，例如 <strong>Vision-Language-Action (VLA) 模型</strong>，试图将感知、语言理解和动作控制统一到同一个模型框架中。</p>
+<p>但构建真正可用的机器人学习系统，并不仅仅是训练模型。</p>
+<p>我目前比较关注的一些问题包括：</p>
+<ul>
+<li><strong>VLA 的研发流程应该如何设计？</strong></li>
+<li><strong>如何构建可靠的机器人仿真评测体系？</strong></li>
+<li><strong>一个可扩展的机器人学习系统需要哪些关键组件？</strong></li>
+<li><strong>如何把研究想法逐步转化为可复用的工程系统？</strong></li>
+</ul>
+<hr>
+<h2 id="关于这个网站">关于这个网站<a hidden class="anchor" aria-hidden="true" href="#关于这个网站">#</a></h2>
+<p>这个网站更像是一个个人技术笔记本，用来记录在探索机器人学习系统过程中遇到的一些问题、想法和实验。</p>
+<p>很多文章是在 <strong>阅读论文、尝试开源实现或思考系统设计时写下的笔记</strong>，而不是在完全理解之后的总结。</p>
+<p>希望通过这种方式记录：</p>
+<ul>
+<li>从论文中获得的一些有价值的 insight</li>
+<li>一些小实验或原型探索带来的工程经验</li>
+<li>帮助理解机器人学习系统的一些概念框架</li>
+</ul>
+<p>所有内容主要基于 <strong>公开论文、开源项目以及个人实验探索</strong>。</p>
+<hr>
+<h2 id="网站内容">网站内容<a hidden class="anchor" aria-hidden="true" href="#网站内容">#</a></h2>
+<p><strong>Reading</strong></p>
+<p>机器人学习、Diffusion Policy、VLA 模型等相关论文阅读笔记。<br>
+重点是提炼对系统设计有启发的想法，而不是简单复述论文内容。</p>
+<p><strong>Engineering</strong></p>
+<p>关于开源训练流程、评测系统和仿真环境的一些笔记。</p>
+<p><strong>Concepts</strong></p>
+<p>一些用于理解机器人学习系统的概念总结和思考框架。</p>
+<hr>
+<h2 id="最近更新">最近更新<a hidden class="anchor" aria-hidden="true" href="#最近更新">#</a></h2>
+<p>下面列出最近更新的文章。</p>
+
+
+</div>
+
+<article class="first-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">RT-1
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>RT-1：用于大规模真实世界控制的机器人 Transformer 机构：Google Robotics 年份：2022 论文：https://robotics-transformer1.github.io/assets/rt1.pdf
+Problem 传统机器人策略通常针对 单一任务 进行训练，例如：
+Behavioral Cloning Reinforcement Learning task‑specific policy networks 这些方法往往存在几个问题：
+训练数据规模小 模型只针对特定任务 对新物体或新环境的泛化能力较差 与此同时，在 NLP 和计算机视觉领域已经证明：
+模型规模 &#43; 数据规模 可以显著提升能力。
+因此一个关键问题是：
+是否可以像语言模型一样训练 大规模多任务机器人策略模型？
+Why it matters 如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：
+通用机器人策略（generalist policy） 能执行多种任务 可以复用跨任务知识 这样的系统可能：
+减少任务特定工程 提高泛化能力 使机器人策略更接近 foundation model 但机器人系统仍然面临挑战：
+图像输入维度高 控制必须实时执行 数据规模远小于互联网数据 因此模型需要在以下方面取得平衡：
+表达能力 计算效率 实时控制 Attempt RT-1 提出使用 Transformer 架构来学习机器人策略。
+核心思想是：
+将机器人控制问题转化为序列建模问题。
+模型输入：
+一段 图像历史 一个 自然语言指令 模型输出：
+离散化的机器人动作 token Pipeline：
+image observations &#43; instruction ↓ vision‑language encoding ↓ Transformer policy ↓ action tokens
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-04 22:26:49 +0100 CET'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span></footer>
+  <a class="entry-link" aria-label="post link to RT-1" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">RT-2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型 作者：Anthony Brohan 等 机构：Google DeepMind 年份：2023
+论文 / 博客 https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+Problem 传统机器人策略通常只依赖 机器人交互数据（demonstrations 或 RL 数据）。
+但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：
+具体任务的操作模式 局部的动作策略 而缺乏：
+语义知识 常识推理 对新任务的泛化能力 例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：
+遇到新的物体类别 接收到新的语言指令 需要理解物体用途（affordance） 换句话说：
+传统机器人策略擅长学习 运动技能，但缺乏 世界知识（world knowledge）。
+Why it matters 大型视觉语言模型（VLM）已经在 互联网规模数据 上训练，并学习到了大量语义知识，例如：
+物体类别 语言描述 物体之间的语义关系 常识推理模式 如果这些知识能够被迁移到机器人系统中，机器人可能可以：
+理解新的自然语言指令 识别未见过的物体 根据语义推理完成任务 然而传统机器人系统通常将以下模块 分开设计：
+perception → language → control
+这种结构使机器人策略无法直接利用 互联网规模的语义知识。
+Attempt RT-2 提出了一个非常简单但影响深远的想法：
+直接使用 Vision-Language Model 作为机器人策略模型。
+作者没有设计新的机器人网络结构，而是让模型直接生成 机器人动作 token。
+整体 pipeline：
+image &#43; language instruction ↓ Vision-Language Model ↓ action tokens
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span></footer>
+  <a class="entry-link" aria-label="post link to RT-2" href="http://localhost:1313/zh/reading/vla/2023rt2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">π0
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>π0：用于通用机器人控制的 Vision-Language-Action Flow 模型 机构：Physical Intelligence 年份：2024 论文：https://www.physicalintelligence.company/download/pi0.pdf
+Problem 当前许多 Vision-Language-Action (VLA) 模型将机器人动作表示为 离散 token。
+例如：
+RT-2 OpenVLA Octo 这种做法虽然能够复用语言模型架构，但也带来了一些问题：
+动作离散化可能降低控制精度 token 生成可能产生不平滑或不自然的轨迹 连续控制问题被强行转化为符号预测 而在真实机器人控制中，动作本质上是 连续轨迹（continuous trajectory）。
+因此一个关键问题是：
+是否可以在 VLA 框架中直接生成 连续动作轨迹，而不是离散动作 token？
+Why it matters 通用机器人策略通常需要同时具备三种能力：
+语义理解能力 理解语言指令、物体类别以及任务语义。
+连续控制能力 生成平滑且稳定的动作轨迹。
+跨机器人泛化能力 在不同机器人本体（embodiment）之间迁移。
+大型 Vision-Language Model 已经具备强大的语义理解能力，但它们并不擅长生成连续控制信号。
+另一方面，传统机器人策略可以生成连续动作，但缺乏语义知识。
+因此自然的问题是：
+是否可以结合 互联网规模语义知识 &#43; 连续机器人控制？
+Attempt π0 提出一种新的思路：
+使用 flow matching 来生成连续机器人动作。
+整体系统由三个核心组件组成：
+提供语义理解能力的 Vision-Language Model (VLM) 负责机器人控制的 action expert 用于连续动作生成的 flow matching 与 token-based VLA 不同，π0 并不预测离散动作符号，而是通过 连续去噪过程 生成动作轨迹。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span></footer>
+  <a class="entry-link" aria-label="post link to π0" href="http://localhost:1313/zh/reading/vla/2024pi0/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="http://localhost:1313/zh/page/2/">下一页&nbsp;2/2&nbsp;»
+    </a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Welcome to HC&#39;s Log</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on Welcome to HC&#39;s Log</description>
+    <generator>Hugo -- 0.157.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Mar 2026 22:26:49 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Aloha</title>
+      <link>http://localhost:1313/reading/pre-vla/2023aloha/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/pre-vla/2023aloha/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Calvin</title>
+      <link>http://localhost:1313/reading/infra/calvin/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/infra/calvin/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Dex-UMI</title>
+      <link>http://localhost:1313/reading/dataset/2024dexumi/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/dataset/2024dexumi/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>ECOT</title>
+      <link>http://localhost:1313/reading/tricks/2024ecot/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/tricks/2024ecot/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>EgoMimic</title>
+      <link>http://localhost:1313/reading/dataset/2024egomimic/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/dataset/2024egomimic/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Fast</title>
+      <link>http://localhost:1313/reading/tricks/2025fast/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/tricks/2025fast/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>gr00t</title>
+      <link>http://localhost:1313/reading/vla/2024gr00t/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024gr00t/</guid>
+      <description>&lt;p&gt;Pi0&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to build a good VLA benchmark</title>
+      <link>http://localhost:1313/engineering/benchmark/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/engineering/benchmark/</guid>
+      <description>&lt;p&gt;benchmark&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to build a good VLA benchmark</title>
+      <link>http://localhost:1313/engineering/finetune/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/engineering/finetune/</guid>
+      <description>&lt;p&gt;benchmark&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to build a good VLA benchmark</title>
+      <link>http://localhost:1313/engineering/infrastructures/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/engineering/infrastructures/</guid>
+      <description>&lt;p&gt;benchmark&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How to construct a VLA model</title>
+      <link>http://localhost:1313/concepts/benchmark/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/concepts/benchmark/</guid>
+      <description>&lt;p&gt;vla model&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Libero</title>
+      <link>http://localhost:1313/reading/infra/libero/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/infra/libero/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>MOO</title>
+      <link>http://localhost:1313/reading/pre-vla/2023moo/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/pre-vla/2023moo/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Octo</title>
+      <link>http://localhost:1313/reading/pre-vla/2023octo/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/pre-vla/2023octo/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Open-X</title>
+      <link>http://localhost:1313/reading/dataset/2023open-x/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/dataset/2023open-x/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenVLA</title>
+      <link>http://localhost:1313/reading/vla/2024openvla/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024openvla/</guid>
+      <description>&lt;p&gt;OpenVLA&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Pali-X</title>
+      <link>http://localhost:1313/reading/pre-vla/2023pali-x/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/pre-vla/2023pali-x/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>PALM-E</title>
+      <link>http://localhost:1313/reading/pre-vla/2023palm-e/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/pre-vla/2023palm-e/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Phantom</title>
+      <link>http://localhost:1313/reading/dataset/2024phantom/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/dataset/2024phantom/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Pi0</title>
+      <link>http://localhost:1313/reading/vla/2024pi0/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024pi0/</guid>
+      <description>&lt;p&gt;Pi0&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Pi0.5</title>
+      <link>http://localhost:1313/reading/vla/2025pi0_5/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2025pi0_5/</guid>
+      <description>&lt;p&gt;Pi0.5&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RT-H</title>
+      <link>http://localhost:1313/reading/vla/2024rt-h/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024rt-h/</guid>
+      <description>&lt;p&gt;RT2&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RT1</title>
+      <link>http://localhost:1313/reading/pre-vla/2022rt1/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/pre-vla/2022rt1/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RT2</title>
+      <link>http://localhost:1313/reading/vla/2023rt2/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2023rt2/</guid>
+      <description>&lt;p&gt;RT2&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Scaling Law</title>
+      <link>http://localhost:1313/reading/dataset/2024scalinglaw/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/dataset/2024scalinglaw/</guid>
+      <description>&lt;p&gt;RT1&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>XVLA</title>
+      <link>http://localhost:1313/reading/vla/2024xvla/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024xvla/</guid>
+      <description>&lt;p&gt;Pi0&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

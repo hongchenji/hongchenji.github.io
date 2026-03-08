@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RT-1 | HC&#39;s Log</title>
+<meta name="keywords" content="">
+<meta name="description" content="RT-1: Robotics Transformer for Real-World Control at Scale
+RT-1 is a large-scale robot policy model proposed by Google Robotics. It combines vision, language, and action modeling in a Transformer-based architecture, with the goal of learning a single multi-task policy from diverse real-world robot data.
+At a high level, RT-1 takes a short history of images together with a natural language instruction, converts them into compact vision-language tokens, and predicts discretized robot actions in real time.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/en/reading/pre-vla/2022rt1/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/pre-vla/2022rt1/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/zh/" title="中文"
+                                aria-label="中文">Zh</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/reading/" title="Reading">
+                    <span>Reading</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                    <span>Engineering</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                    <span>Concepts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
+    <h1 class="post-title entry-hint-parent">
+      RT-1
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 22:26:49 +0100 CET'>March 4, 2026</span>&nbsp;·&nbsp;<span>7 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">Zh</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="rt-1-robotics-transformer-for-real-world-control-at-scale">RT-1: Robotics Transformer for Real-World Control at Scale<a hidden class="anchor" aria-hidden="true" href="#rt-1-robotics-transformer-for-real-world-control-at-scale">#</a></h1>
+<p><strong>RT-1</strong> is a large-scale robot policy model proposed by Google Robotics. It combines vision, language, and action modeling in a Transformer-based architecture, with the goal of learning a single multi-task policy from diverse real-world robot data.</p>
+<p>At a high level, RT-1 takes <strong>a short history of images</strong> together with <strong>a natural language instruction</strong>, converts them into compact vision-language tokens, and predicts <strong>discretized robot actions</strong> in real time.</p>
+<hr>
+<h2 id="1-basic-information">1. Basic Information<a hidden class="anchor" aria-hidden="true" href="#1-basic-information">#</a></h2>
+<p><strong>Authors</strong><br>
+Anthony Brohan, Noah Brown, Justice Carbajal, Yevgen Chebotar, Joseph Dabis, Chelsea Finn, Keerthana Gopalakrishnan, Karol Hausman, Alex Herzog, Jasmine Hsu, Julian Ibarz, Brian Ichter, Alex Irpan, Tomas Jackson, Sally Jesmonth, Nikhil J. Joshi, Ryan Julian, Dmitry Kalashnikov, Yuheng Kuang, Isabel Leal, Kuang-Huei Lee, Sergey Levine, Yao Lu, Utsav Malla, Deeksha Manjunath, Igor Mordatch, Ofir Nachum, Carolina Parada, Jodilyn Peralta, Emily Perez, Karl Pertsch, Jornell Quiambao, Kanishka Rao, Michael Ryoo, Grecia Salazar, Pannag Sanketi, Kevin Sayed, Jaspiar Singh, Sumedh Sontakke, Austin Stone, Clayton Tan, Huong Tran, Vincent Vanhoucke, Steve Vega, Quan Vuong, Fei Xia, Ted Xiao, Peng Xu, Sichun Xu, Tianhe Yu, Brianna Zitkovich</p>
+<p><strong>Year</strong><br>
+2022</p>
+<p><strong>Source</strong><br>
+arXiv</p>
+<p><strong>Link</strong><br>
+<code>https://robotics-transformer1.github.io/assets/rt1.pdf</code></p>
+<hr>
+<h2 id="2-core-question">2. Core Question<a hidden class="anchor" aria-hidden="true" href="#2-core-question">#</a></h2>
+<p>The paper asks whether it is possible to train:</p>
+<ul>
+<li>a <strong>single large multi-task robot policy</strong></li>
+<li>on a <strong>large and diverse real-world robotic dataset</strong></li>
+<li>while still achieving <strong>real-time control</strong></li>
+<li>and also benefiting from the kind of <strong>scaling and generalization</strong> seen in language and vision models.</li>
+</ul>
+<p>The long-term motivation is to move beyond narrow task-specific robot policies toward a more general robotic backbone model.</p>
+<hr>
+<h2 id="3-main-idea">3. Main Idea<a hidden class="anchor" aria-hidden="true" href="#3-main-idea">#</a></h2>
+<p>The main idea of RT-1 is to build a <strong>Transformer-based robot policy</strong> that can:</p>
+<ul>
+<li>absorb large amounts of heterogeneous robot data</li>
+<li>generalize across tasks, objects, and environments</li>
+<li>output robot actions fast enough for practical real-world control</li>
+</ul>
+<p>More concretely, RT-1:</p>
+<ol>
+<li>takes a <strong>natural language instruction</strong> and a <strong>short image sequence</strong> as input,</li>
+<li>converts them into <strong>vision-language tokens</strong>,</li>
+<li>compresses the visual tokens,</li>
+<li>and uses a <strong>decoder-only Transformer</strong> to predict tokenized actions.</li>
+</ol>
+<hr>
+<h2 id="4-model-architecture">4. Model Architecture<a hidden class="anchor" aria-hidden="true" href="#4-model-architecture">#</a></h2>
+<h3 id="41-inputs">4.1 Inputs<a hidden class="anchor" aria-hidden="true" href="#41-inputs">#</a></h3>
+<p>RT-1 takes:</p>
+<ul>
+<li>a <strong>short sequence of 6 images</strong></li>
+<li>a <strong>natural language instruction</strong></li>
+</ul>
+<p>The output is:</p>
+<ul>
+<li>a robot action at each time step</li>
+</ul>
+<h3 id="42-vision-language-encoding">4.2 Vision-Language Encoding<a hidden class="anchor" aria-hidden="true" href="#42-vision-language-encoding">#</a></h3>
+<p>The image encoder is a <strong>FiLM-conditioned EfficientNet-B3</strong>:</p>
+<ul>
+<li>images are processed by an ImageNet-pretrained <strong>EfficientNet-B3</strong></li>
+<li>input resolution is <strong>300 × 300</strong></li>
+<li>the output feature map is <strong>9 × 9 × 512</strong></li>
+<li>this produces <strong>81 visual tokens</strong> after flattening</li>
+</ul>
+<p>Language is incorporated through FiLM conditioning:</p>
+<ul>
+<li>the instruction is embedded using the <strong>Universal Sentence Encoder (USE)</strong></li>
+<li>the embedding is fed into <strong>FiLM layers</strong> inside EfficientNet</li>
+<li>this allows the visual encoder to adapt its features based on the instruction</li>
+</ul>
+<h3 id="43-token-compression">4.3 Token Compression<a hidden class="anchor" aria-hidden="true" href="#43-token-compression">#</a></h3>
+<p>RT-1 uses a <strong>TokenLearner</strong> module to reduce computation.</p>
+<ul>
+<li>it takes the <strong>81 visual tokens</strong></li>
+<li>applies an element-wise attention mechanism</li>
+<li>and compresses them into <strong>8 tokens</strong></li>
+</ul>
+<p>This is important because it greatly reduces the sequence length that the Transformer must process.</p>
+<h3 id="44-action-decoder">4.4 Action Decoder<a hidden class="anchor" aria-hidden="true" href="#44-action-decoder">#</a></h3>
+<p>The compressed tokens are fed into a <strong>decoder-only Transformer</strong>.</p>
+<p>Key points:</p>
+<ul>
+<li><strong>8 self-attention layers</strong></li>
+<li>about <strong>19M parameters</strong></li>
+<li>predicts <strong>discretized action tokens</strong> autoregressively</li>
+</ul>
+<p>The full system has around <strong>35M parameters</strong> and can run at <strong>3 Hz</strong> in real-world control.</p>
+<hr>
+<h2 id="5-action-representation">5. Action Representation<a hidden class="anchor" aria-hidden="true" href="#5-action-representation">#</a></h2>
+<p>RT-1 predicts tokenized robot actions.</p>
+<p>The action space contains:</p>
+<h3 id="arm-control">Arm control<a hidden class="anchor" aria-hidden="true" href="#arm-control">#</a></h3>
+<p>7 dimensions:</p>
+<ul>
+<li>x</li>
+<li>y</li>
+<li>z</li>
+<li>roll</li>
+<li>pitch</li>
+<li>yaw</li>
+<li>gripper opening</li>
+</ul>
+<h3 id="base-control">Base control<a hidden class="anchor" aria-hidden="true" href="#base-control">#</a></h3>
+<p>3 dimensions:</p>
+<ul>
+<li>x</li>
+<li>y</li>
+<li>yaw</li>
+</ul>
+<h3 id="mode-variable">Mode variable<a hidden class="anchor" aria-hidden="true" href="#mode-variable">#</a></h3>
+<p>1 discrete mode variable for switching between:</p>
+<ul>
+<li>arm control</li>
+<li>base control</li>
+<li>episode termination</li>
+</ul>
+<p>Each action dimension is discretized into <strong>256 bins</strong>.</p>
+<p>This converts continuous control into a token prediction problem, making it compatible with Transformer-style sequence modeling.</p>
+<hr>
+<h2 id="6-training-and-inference">6. Training and Inference<a hidden class="anchor" aria-hidden="true" href="#6-training-and-inference">#</a></h2>
+<h3 id="training">Training<a hidden class="anchor" aria-hidden="true" href="#training">#</a></h3>
+<p>RT-1 is trained with:</p>
+<ul>
+<li><strong>causal masking</strong></li>
+<li><strong>categorical cross-entropy loss</strong></li>
+</ul>
+<p>Because actions are discretized, the model predicts a categorical distribution over action bins.</p>
+<h3 id="inference">Inference<a hidden class="anchor" aria-hidden="true" href="#inference">#</a></h3>
+<p>At test time, RT-1 performs <strong>closed-loop control</strong>.</p>
+<p>Important practical details:</p>
+<ul>
+<li>actions are issued at <strong>3 Hz</strong></li>
+<li>token computation is reused across overlapping time windows</li>
+<li>execution continues until either:
+<ul>
+<li>the model predicts <strong>terminate</strong>, or</li>
+<li>a predefined time limit is reached</li>
+</ul>
+</li>
+</ul>
+<p>This design helps RT-1 remain computationally feasible for real robot deployment.</p>
+<hr>
+<h2 id="7-dataset-and-experimental-setting">7. Dataset and Experimental Setting<a hidden class="anchor" aria-hidden="true" href="#7-dataset-and-experimental-setting">#</a></h2>
+<p>The paper trains RT-1 on a large real-world robotic dataset:</p>
+<ul>
+<li>about <strong>130k robot demonstrations</strong></li>
+<li>collected over <strong>17 months</strong></li>
+<li>from <strong>13 robots</strong></li>
+</ul>
+<p>The dataset includes many everyday manipulation skills, such as:</p>
+<ul>
+<li>pick</li>
+<li>place</li>
+<li>open drawers</li>
+<li>close drawers</li>
+<li>take objects out of drawers</li>
+<li>put objects into drawers</li>
+</ul>
+<p>The evaluation focuses on several aspects:</p>
+<ul>
+<li>performance on seen tasks</li>
+<li>generalization to unseen tasks</li>
+<li>robustness to distractors and background variation</li>
+<li>long-horizon execution behavior</li>
+</ul>
+<hr>
+<h2 id="8-main-contributions">8. Main Contributions<a hidden class="anchor" aria-hidden="true" href="#8-main-contributions">#</a></h2>
+<p>The main contributions of the paper can be summarized as follows.</p>
+<h3 id="81-a-scalable-robot-policy-architecture">8.1 A scalable robot policy architecture<a hidden class="anchor" aria-hidden="true" href="#81-a-scalable-robot-policy-architecture">#</a></h3>
+<p>RT-1 shows that a Transformer-based architecture can be adapted to real-world robot control while still maintaining real-time action rates.</p>
+<h3 id="82-large-scale-multi-task-learning-from-real-robot-data">8.2 Large-scale multi-task learning from real robot data<a hidden class="anchor" aria-hidden="true" href="#82-large-scale-multi-task-learning-from-real-robot-data">#</a></h3>
+<p>The work demonstrates that training on a broad real-world robotic dataset can improve robustness and generalization.</p>
+<h3 id="83-practical-token-design-for-robot-control">8.3 Practical token design for robot control<a hidden class="anchor" aria-hidden="true" href="#83-practical-token-design-for-robot-control">#</a></h3>
+<p>The combination of:</p>
+<ul>
+<li>FiLM-conditioned vision encoding</li>
+<li>TokenLearner compression</li>
+<li>tokenized action prediction</li>
+</ul>
+<p>makes the model both expressive and computationally practical.</p>
+<h3 id="84-zero-shot-and-robustness-benefits">8.4 Zero-shot and robustness benefits<a hidden class="anchor" aria-hidden="true" href="#84-zero-shot-and-robustness-benefits">#</a></h3>
+<p>The model shows promising generalization to new objects, environments, and task variations.</p>
+<hr>
+<h2 id="9-why-rt-1-matters">9. Why RT-1 Matters<a hidden class="anchor" aria-hidden="true" href="#9-why-rt-1-matters">#</a></h2>
+<p>RT-1 is important because it is one of the early strong demonstrations that robotics may benefit from the same scaling trend seen in NLP and computer vision.</p>
+<p>Conceptually, it pushes robotics toward:</p>
+<ul>
+<li>larger shared backbone models</li>
+<li>multi-task learning at scale</li>
+<li>unified vision-language-action modeling</li>
+</ul>
+<p>This makes RT-1 a key precursor to later VLA-style models.</p>
+<hr>
+<h2 id="10-relevance-to-robotics-and-vla">10. Relevance to Robotics and VLA<a hidden class="anchor" aria-hidden="true" href="#10-relevance-to-robotics-and-vla">#</a></h2>
+<p>For robotics researchers, RT-1 is interesting for several reasons.</p>
+<h3 id="101-it-reframes-robot-control-as-sequence-modeling">10.1 It reframes robot control as sequence modeling<a hidden class="anchor" aria-hidden="true" href="#101-it-reframes-robot-control-as-sequence-modeling">#</a></h3>
+<p>Instead of hand-designed task pipelines, RT-1 treats perception, language grounding, and action generation within one sequence model.</p>
+<h3 id="102-it-is-a-bridge-from-bc-style-policies-to-vla-models">10.2 It is a bridge from BC-style policies to VLA models<a hidden class="anchor" aria-hidden="true" href="#102-it-is-a-bridge-from-bc-style-policies-to-vla-models">#</a></h3>
+<p>RT-1 can be seen as an early large-scale <strong>vision-language-action</strong> model, although compared with newer VLA systems it is still relatively specialized and discretized.</p>
+<h3 id="103-it-highlights-the-importance-of-representation-bottlenecks">10.3 It highlights the importance of representation bottlenecks<a hidden class="anchor" aria-hidden="true" href="#103-it-highlights-the-importance-of-representation-bottlenecks">#</a></h3>
+<p>The TokenLearner module is not just an engineering trick. It shows that <strong>token efficiency</strong> is critical when using Transformer architectures for robotic control.</p>
+<hr>
+<h2 id="11-limitations">11. Limitations<a hidden class="anchor" aria-hidden="true" href="#11-limitations">#</a></h2>
+<p>Several limitations are worth noting.</p>
+<h3 id="111-discretized-action-space">11.1 Discretized action space<a hidden class="anchor" aria-hidden="true" href="#111-discretized-action-space">#</a></h3>
+<p>Discretizing each action dimension into 256 bins makes Transformer training easier, but it may limit precision and smoothness compared with continuous action modeling.</p>
+<h3 id="112-behavior-cloning-setup">11.2 Behavior cloning setup<a hidden class="anchor" aria-hidden="true" href="#112-behavior-cloning-setup">#</a></h3>
+<p>RT-1 mainly follows an imitation-learning style formulation. This can limit performance when recovery, exploration, or long-horizon optimization is required.</p>
+<h3 id="113-low-control-frequency">11.3 Low control frequency<a hidden class="anchor" aria-hidden="true" href="#113-low-control-frequency">#</a></h3>
+<p>A control rate of <strong>3 Hz</strong> is practical for some mobile manipulation tasks, but still relatively low for fast or highly dynamic control problems.</p>
+<h3 id="114-domain-breadth-versus-embodiment-breadth">11.4 Domain breadth versus embodiment breadth<a hidden class="anchor" aria-hidden="true" href="#114-domain-breadth-versus-embodiment-breadth">#</a></h3>
+<p>Although the task diversity is impressive, the system is still tied to a particular family of robots and data collection settings.</p>
+<hr>
+<h2 id="12-my-takeaways">12. My Takeaways<a hidden class="anchor" aria-hidden="true" href="#12-my-takeaways">#</a></h2>
+<p>My main takeaways from RT-1 are the following.</p>
+<ul>
+<li>It is an important early example of <strong>scaling robot policy learning with Transformer-style architectures</strong>.</li>
+<li>Its biggest practical innovation is not just “use a Transformer,” but how it makes that computationally feasible through <strong>token compression</strong> and <strong>action discretization</strong>.</li>
+<li>It is best understood as a strong large-scale <strong>behavior cloning</strong> system for real-world robotics.</li>
+<li>From today’s perspective, RT-1 is especially valuable as a conceptual stepping stone toward later <strong>VLA</strong> and <strong>foundation-policy</strong> approaches.</li>
+</ul>
+<hr>
+<h2 id="13-discussion-questions">13. Discussion Questions<a hidden class="anchor" aria-hidden="true" href="#13-discussion-questions">#</a></h2>
+<p>When presenting this paper, useful discussion questions include:</p>
+<ol>
+<li>Why does action discretization help, and what does it sacrifice?</li>
+<li>How much of RT-1’s success comes from architecture, and how much comes from dataset scale?</li>
+<li>Would RT-1 still work well for higher-frequency control tasks?</li>
+<li>How does RT-1 compare with later diffusion-policy or VLA approaches?</li>
+<li>Is token compression a temporary engineering fix, or a core design principle for robotics Transformers?</li>
+</ol>
+<hr>
+<h2 id="14-suggested-next-step-notes">14. Suggested Next-Step Notes<a hidden class="anchor" aria-hidden="true" href="#14-suggested-next-step-notes">#</a></h2>
+<p>If you want to expand this Hugo page later, the most useful additions would be:</p>
+<ul>
+<li>one architecture diagram</li>
+<li>one table comparing RT-1 with RT-2 / diffusion policy / modern VLA models</li>
+<li>one short section on “RT-1 from today’s perspective”</li>
+<li>one section connecting it to your own robotics or VLA work</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/en/reading/data/2024phantom/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Phantom</span>
+  </a>
+  <a class="next" href="http://localhost:1313/en/reading/vla/2024rt-h/">
+    <span class="title">Next »</span>
+    <br>
+    <span>RT-H</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

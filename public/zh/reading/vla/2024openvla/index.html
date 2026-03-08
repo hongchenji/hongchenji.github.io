@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>OpenVLA | HC 的笔记</title>
+<meta name="keywords" content="">
+<meta name="description" content="OpenVLA：一个开源的 Vision-Language-Action 模型
+作者：Moo Jin Kim*, Karl Pertsch*, Siddharth Karamcheti*, Ted Xiao, Ashwin Balakrishna, Suraj Nair, Rafael Rafailov, Ethan Foster, Grace Lam, Pannag Sanketi, Quan Vuong, Thomas Kollar, Benjamin Burchfiel, Russ Tedrake, Dorsa Sadigh, Sergey Levine, Percy Liang, Chelsea Finn
+机构：Stanford, UC Berkeley, TRI, Google DeepMind, Physical Intelligence, MIT
+年份：2024
+论文：
+https://arxiv.org/pdf/2406.09246
+
+1. 背景
+OpenVLA 是一个 开源的 Vision-Language-Action（VLA）模型，用于机器人学习任务。
+近年来的工作（例如 RT-2）表明，大规模 Vision-Language Model（VLM） 可以显著提升机器人策略的泛化能力。然而这些系统通常存在一些问题：
+
+大部分模型 闭源
+训练流程难以复现
+大规模 VLA 模型 微调成本高
+实际部署流程缺乏公开实现
+
+OpenVLA 的目标是提供一个 完全开源的 VLA 实现框架，从而使研究者能够更容易地训练、微调以及部署机器人策略模型。">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/reading/vla/2024openvla/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2024openvla/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2024openvla/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/vla/">VLA models</a></div>
+    <h1 class="post-title entry-hint-parent">
+      OpenVLA
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/en/reading/vla/2024openvla/">En</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="openvla一个开源的-vision-language-action-模型">OpenVLA：一个开源的 Vision-Language-Action 模型<a hidden class="anchor" aria-hidden="true" href="#openvla一个开源的-vision-language-action-模型">#</a></h1>
+<p><strong>作者</strong>：Moo Jin Kim*, Karl Pertsch*, Siddharth Karamcheti*, Ted Xiao, Ashwin Balakrishna, Suraj Nair, Rafael Rafailov, Ethan Foster, Grace Lam, Pannag Sanketi, Quan Vuong, Thomas Kollar, Benjamin Burchfiel, Russ Tedrake, Dorsa Sadigh, Sergey Levine, Percy Liang, Chelsea Finn</p>
+<p><strong>机构</strong>：Stanford, UC Berkeley, TRI, Google DeepMind, Physical Intelligence, MIT</p>
+<p><strong>年份</strong>：2024</p>
+<p>论文：<br>
+<a href="https://arxiv.org/pdf/2406.09246">https://arxiv.org/pdf/2406.09246</a></p>
+<hr>
+<h1 id="1-背景">1. 背景<a hidden class="anchor" aria-hidden="true" href="#1-背景">#</a></h1>
+<p>OpenVLA 是一个 <strong>开源的 Vision-Language-Action（VLA）模型</strong>，用于机器人学习任务。</p>
+<p>近年来的工作（例如 RT-2）表明，大规模 <strong>Vision-Language Model（VLM）</strong> 可以显著提升机器人策略的泛化能力。然而这些系统通常存在一些问题：</p>
+<ul>
+<li>大部分模型 <strong>闭源</strong></li>
+<li>训练流程难以复现</li>
+<li>大规模 VLA 模型 <strong>微调成本高</strong></li>
+<li>实际部署流程缺乏公开实现</li>
+</ul>
+<p>OpenVLA 的目标是提供一个 <strong>完全开源的 VLA 实现框架</strong>，从而使研究者能够更容易地训练、微调以及部署机器人策略模型。</p>
+<hr>
+<h1 id="2-核心方法">2. 核心方法<a hidden class="anchor" aria-hidden="true" href="#2-核心方法">#</a></h1>
+<p>OpenVLA 的核心思想是：</p>
+<p><strong>在一个预训练的 Vision-Language Model 上直接构建机器人策略。</strong></p>
+<p>模型输入：图像观测 + 语言指令</p>
+<p>输出：离散化的机器人动作</p>
+<p>机器人动作被 <strong>离散化为 256 个 bin</strong>。</p>
+<p>因此机器人控制问题被转换为一种 <strong>类似语言模型的 token 预测问题</strong>。</p>
+<hr>
+<h1 id="3-模型结构">3. 模型结构<a hidden class="anchor" aria-hidden="true" href="#3-模型结构">#</a></h1>
+<p>OpenVLA 基于 <strong>Prismatic-7B Vision-Language Model</strong> 构建。</p>
+<h2 id="31-prismatic-7b-vlm">3.1 Prismatic-7B VLM<a hidden class="anchor" aria-hidden="true" href="#31-prismatic-7b-vlm">#</a></h2>
+<p>模型由视觉模块和语言模块组成。</p>
+<h3 id="视觉编码器">视觉编码器<a hidden class="anchor" aria-hidden="true" href="#视觉编码器">#</a></h3>
+<p>视觉编码器结合了两个预训练视觉模型：</p>
+<ul>
+<li><strong>SigLIP</strong></li>
+<li><strong>DINOv2</strong></li>
+</ul>
+<p>主要特点：</p>
+<ul>
+<li>约 <strong>0.6B 参数</strong></li>
+<li>输入图像同时经过两个 encoder</li>
+<li>最终特征 <strong>按 channel 维拼接（concatenate channel-wise）</strong></li>
+</ul>
+<p>这种设计可以融合不同视觉模型的表示能力。</p>
+<hr>
+<h3 id="投影层">投影层<a hidden class="anchor" aria-hidden="true" href="#投影层">#</a></h3>
+<p>拼接后的视觉特征通过：</p>
+<p><strong>2 层 projector</strong></p>
+<p>该 projector 将视觉特征映射到语言模型的 token embedding 空间。</p>
+<hr>
+<h3 id="语言模型">语言模型<a hidden class="anchor" aria-hidden="true" href="#语言模型">#</a></h3>
+<p>语言模型 backbone 使用：</p>
+<p><strong>LLaMA-2（7B 参数）</strong></p>
+<p>随后模型在 <strong>LLaVA-1.5</strong> 上进一步微调，以增强视觉-语言推理能力。</p>
+<hr>
+<h2 id="32-动作表示">3.2 动作表示<a hidden class="anchor" aria-hidden="true" href="#32-动作表示">#</a></h2>
+<p>机器人动作被离散化为 <strong>256 个 bin</strong>。</p>
+<p>模型直接预测这些 bin。</p>
+<p>因此机器人控制可以表示为：</p>
+<p><strong>在视觉观测和语言指令条件下的序列生成问题</strong>。</p>
+<hr>
+<h2 id="33-训练效率优化">3.3 训练效率优化<a hidden class="anchor" aria-hidden="true" href="#33-训练效率优化">#</a></h2>
+<p>为了能够高效训练大规模模型，OpenVLA 使用了多种工程优化技术：</p>
+<ul>
+<li><strong>AMP（Automatic Mixed Precision）</strong></li>
+<li><strong>FlashAttention</strong></li>
+<li><strong>FSDP（Fully Sharded Data Parallel）</strong></li>
+<li><strong>LoRA 微调</strong></li>
+</ul>
+<p>这些技术可以：</p>
+<ul>
+<li>降低显存占用</li>
+<li>提高训练效率</li>
+<li>使大模型训练更加可行</li>
+</ul>
+<hr>
+<h1 id="4-实验">4. 实验<a hidden class="anchor" aria-hidden="true" href="#4-实验">#</a></h1>
+<p>（OpenVLA 论文实验部分待补充）</p>
+<h2 id="数据集--任务">数据集 / 任务<a hidden class="anchor" aria-hidden="true" href="#数据集--任务">#</a></h2>
+<ul>
+<li>机器人操作数据集</li>
+<li>真实机器人演示数据</li>
+</ul>
+<h2 id="实验设置">实验设置<a hidden class="anchor" aria-hidden="true" href="#实验设置">#</a></h2>
+<ul>
+<li>与现有 VLA 模型进行比较</li>
+<li>评估跨任务泛化能力</li>
+</ul>
+<h2 id="实验结果">实验结果<a hidden class="anchor" aria-hidden="true" href="#实验结果">#</a></h2>
+<p>（结果部分待补充）</p>
+<hr>
+<h1 id="5-论文贡献">5. 论文贡献<a hidden class="anchor" aria-hidden="true" href="#5-论文贡献">#</a></h1>
+<p>OpenVLA 的主要贡献包括：</p>
+<ol>
+<li>提供一个 <strong>开源的 Vision-Language-Action 模型</strong></li>
+<li>构建可复现的 <strong>VLA 模型训练流程</strong></li>
+<li>提供大规模多模态机器人策略的 <strong>高效微调方法</strong></li>
+<li>提供机器人 VLA 模型的 <strong>实际部署框架</strong></li>
+</ol>
+<hr>
+<h1 id="6-与机器人研究的关系">6. 与机器人研究的关系<a hidden class="anchor" aria-hidden="true" href="#6-与机器人研究的关系">#</a></h1>
+<p>OpenVLA 对机器人研究的重要意义在于：</p>
+<ul>
+<li>提供 <strong>首个完整开源的 VLA 模型实现</strong></li>
+<li>研究者可以复现并扩展 VLA 训练流程</li>
+<li>降低机器人基础模型研究的门槛</li>
+</ul>
+<p>潜在应用包括：</p>
+<ul>
+<li>机器人操作任务</li>
+<li>任务泛化</li>
+<li>语言条件机器人控制</li>
+</ul>
+<hr>
+<h1 id="7-个人笔记">7. 个人笔记<a hidden class="anchor" aria-hidden="true" href="#7-个人笔记">#</a></h1>
+<h2 id="一些观察">一些观察<a hidden class="anchor" aria-hidden="true" href="#一些观察">#</a></h2>
+<p>OpenVLA 的主要贡献更多体现在 <strong>工程实现与开放性</strong> 上，而不是提出全新的模型结构。</p>
+<p>整体架构仍然基于现有的 VLM 组件，但提供了一个 <strong>完整可复现的训练 pipeline</strong>。</p>
+<hr>
+<h2 id="有意思的技术设计">有意思的技术设计<a hidden class="anchor" aria-hidden="true" href="#有意思的技术设计">#</a></h2>
+<p>OpenVLA 中几个值得注意的技术选择包括：</p>
+<ul>
+<li>使用 <strong>SigLIP + DINOv2</strong> 作为视觉编码器</li>
+<li>使用 <strong>LLaMA-2 + LLaVA-1.5</strong> 作为视觉语言模型</li>
+<li>将机器人动作 <strong>离散化为 256 个 bin</strong></li>
+<li>使用 <strong>LoRA 和 FSDP</strong> 进行高效训练</li>
+</ul>
+<p>这些工程设计使模型更加实用，也更容易被研究社区复现。</p>
+<hr>
+<h2 id="未来可能的方向">未来可能的方向<a hidden class="anchor" aria-hidden="true" href="#未来可能的方向">#</a></h2>
+<p>未来的研究方向可能包括：</p>
+<ul>
+<li>提升模型的 <strong>空间推理能力</strong></li>
+<li>扩展机器人数据规模</li>
+<li>结合 <strong>Embodied Chain-of-Thought 等推理机制</strong></li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/zh/reading/tricks/2025fast/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>FAST</span>
+  </a>
+  <a class="next" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>RT-2</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

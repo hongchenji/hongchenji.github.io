@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>VLA models on Welcome to HC&#39;s Log</title>
+    <link>http://localhost:1313/reading/vla/</link>
+    <description>Recent content in VLA models on Welcome to HC&#39;s Log</description>
+    <generator>Hugo -- 0.157.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Mar 2026 22:26:49 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/reading/vla/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>gr00t</title>
+      <link>http://localhost:1313/reading/vla/2024gr00t/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024gr00t/</guid>
+      <description>&lt;p&gt;Pi0&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>OpenVLA</title>
+      <link>http://localhost:1313/reading/vla/2024openvla/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024openvla/</guid>
+      <description>&lt;p&gt;OpenVLA&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Pi0</title>
+      <link>http://localhost:1313/reading/vla/2024pi0/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024pi0/</guid>
+      <description>&lt;p&gt;Pi0&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Pi0.5</title>
+      <link>http://localhost:1313/reading/vla/2025pi0_5/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2025pi0_5/</guid>
+      <description>&lt;p&gt;Pi0.5&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RT-H</title>
+      <link>http://localhost:1313/reading/vla/2024rt-h/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024rt-h/</guid>
+      <description>&lt;p&gt;RT2&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RT2</title>
+      <link>http://localhost:1313/reading/vla/2023rt2/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2023rt2/</guid>
+      <description>&lt;p&gt;RT2&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>XVLA</title>
+      <link>http://localhost:1313/reading/vla/2024xvla/</link>
+      <pubDate>Wed, 04 Mar 2026 22:26:49 +0100</pubDate>
+      <guid>http://localhost:1313/reading/vla/2024xvla/</guid>
+      <description>&lt;p&gt;Pi0&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RT-1 | HC 的笔记</title>
+<meta name="keywords" content="">
+<meta name="description" content="RT-1：用于大规模真实世界控制的机器人 Transformer
+机构：Google Robotics
+年份：2022
+论文：https://robotics-transformer1.github.io/assets/rt1.pdf
+
+Problem
+传统机器人策略通常针对 单一任务 进行训练，例如：
+
+Behavioral Cloning
+Reinforcement Learning
+task‑specific policy networks
+
+这些方法往往存在几个问题：
+
+训练数据规模小
+模型只针对特定任务
+对新物体或新环境的泛化能力较差
+
+与此同时，在 NLP 和计算机视觉领域已经证明：
+模型规模 &#43; 数据规模 可以显著提升能力。
+因此一个关键问题是：
+
+是否可以像语言模型一样训练 大规模多任务机器人策略模型？
+
+
+Why it matters
+如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：
+
+通用机器人策略（generalist policy）
+能执行多种任务
+可以复用跨任务知识
+
+这样的系统可能：
+
+减少任务特定工程
+提高泛化能力
+使机器人策略更接近 foundation model
+
+但机器人系统仍然面临挑战：
+
+图像输入维度高
+控制必须实时执行
+数据规模远小于互联网数据
+
+因此模型需要在以下方面取得平衡：
+
+表达能力
+计算效率
+实时控制
+
+
+Attempt
+RT-1 提出使用 Transformer 架构来学习机器人策略。
+核心思想是：
+将机器人控制问题转化为序列建模问题。
+模型输入：
+
+一段 图像历史
+一个 自然语言指令
+
+模型输出：
+
+离散化的机器人动作 token
+
+Pipeline：
+image observations &#43; instruction
+↓
+vision‑language encoding
+↓
+Transformer policy
+↓
+action tokens">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/pre-vla/2022rt1/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
+    <h1 class="post-title entry-hint-parent">
+      RT-1
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 22:26:49 +0100 CET'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="rt-1用于大规模真实世界控制的机器人-transformer">RT-1：用于大规模真实世界控制的机器人 Transformer<a hidden class="anchor" aria-hidden="true" href="#rt-1用于大规模真实世界控制的机器人-transformer">#</a></h1>
+<p><strong>机构</strong>：Google Robotics
+<strong>年份</strong>：2022
+<strong>论文</strong>：<a href="https://robotics-transformer1.github.io/assets/rt1.pdf">https://robotics-transformer1.github.io/assets/rt1.pdf</a></p>
+<hr>
+<h1 id="problem">Problem<a hidden class="anchor" aria-hidden="true" href="#problem">#</a></h1>
+<p>传统机器人策略通常针对 <strong>单一任务</strong> 进行训练，例如：</p>
+<ul>
+<li>Behavioral Cloning</li>
+<li>Reinforcement Learning</li>
+<li>task‑specific policy networks</li>
+</ul>
+<p>这些方法往往存在几个问题：</p>
+<ul>
+<li>训练数据规模小</li>
+<li>模型只针对特定任务</li>
+<li>对新物体或新环境的泛化能力较差</li>
+</ul>
+<p>与此同时，在 NLP 和计算机视觉领域已经证明：</p>
+<p><strong>模型规模 + 数据规模 可以显著提升能力。</strong></p>
+<p>因此一个关键问题是：</p>
+<blockquote>
+<p>是否可以像语言模型一样训练 <strong>大规模多任务机器人策略模型</strong>？</p>
+</blockquote>
+<hr>
+<h1 id="why-it-matters">Why it matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h1>
+<p>如果机器人策略也能够通过规模扩展获得能力提升，我们可能训练出：</p>
+<ul>
+<li><strong>通用机器人策略（generalist policy）</strong></li>
+<li>能执行多种任务</li>
+<li>可以复用跨任务知识</li>
+</ul>
+<p>这样的系统可能：</p>
+<ul>
+<li>减少任务特定工程</li>
+<li>提高泛化能力</li>
+<li>使机器人策略更接近 <strong>foundation model</strong></li>
+</ul>
+<p>但机器人系统仍然面临挑战：</p>
+<ul>
+<li>图像输入维度高</li>
+<li>控制必须实时执行</li>
+<li>数据规模远小于互联网数据</li>
+</ul>
+<p>因此模型需要在以下方面取得平衡：</p>
+<ul>
+<li>表达能力</li>
+<li>计算效率</li>
+<li>实时控制</li>
+</ul>
+<hr>
+<h1 id="attempt">Attempt<a hidden class="anchor" aria-hidden="true" href="#attempt">#</a></h1>
+<p>RT-1 提出使用 <strong>Transformer 架构</strong>来学习机器人策略。</p>
+<p>核心思想是：</p>
+<p><strong>将机器人控制问题转化为序列建模问题。</strong></p>
+<p>模型输入：</p>
+<ul>
+<li>一段 <strong>图像历史</strong></li>
+<li>一个 <strong>自然语言指令</strong></li>
+</ul>
+<p>模型输出：</p>
+<ul>
+<li><strong>离散化的机器人动作 token</strong></li>
+</ul>
+<p>Pipeline：</p>
+<p>image observations + instruction
+↓
+vision‑language encoding
+↓
+Transformer policy
+↓
+action tokens</p>
+<hr>
+<h1 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<h2 id="visionlanguage-encoding">Vision‑Language Encoding<a hidden class="anchor" aria-hidden="true" href="#visionlanguage-encoding">#</a></h2>
+<p>RT‑1 使用 <strong>FiLM‑conditioned EfficientNet‑B3</strong> 处理图像。</p>
+<p>关键参数：</p>
+<ul>
+<li>输入分辨率：300 × 300</li>
+<li>输出特征图：9 × 9 × 512</li>
+</ul>
+<p>展平后得到：</p>
+<p><strong>81 个视觉 tokens</strong>。</p>
+<p>语言信息通过 <strong>FiLM conditioning</strong> 注入：</p>
+<ul>
+<li>指令由 <strong>Universal Sentence Encoder (USE)</strong> 编码</li>
+<li>embedding 输入 FiLM 层</li>
+<li>调制 EfficientNet 的视觉特征</li>
+</ul>
+<p>这样视觉特征可以根据语言指令进行调整。</p>
+<hr>
+<h2 id="token-compression">Token Compression<a hidden class="anchor" aria-hidden="true" href="#token-compression">#</a></h2>
+<p>直接处理 81 个 token 计算成本较高。</p>
+<p>RT‑1 使用 <strong>TokenLearner</strong> 模块进行压缩。</p>
+<p>TokenLearner：</p>
+<ul>
+<li>输入 81 个视觉 tokens</li>
+<li>使用 element‑wise attention</li>
+<li>压缩为 <strong>8 个 tokens</strong></li>
+</ul>
+<p>这样可以显著减少 Transformer 的计算量。</p>
+<hr>
+<h2 id="action-transformer">Action Transformer<a hidden class="anchor" aria-hidden="true" href="#action-transformer">#</a></h2>
+<p>压缩后的 tokens 输入 <strong>decoder‑only Transformer</strong>。</p>
+<p>模型结构：</p>
+<ul>
+<li>8 层 self‑attention</li>
+<li>约 19M 参数</li>
+</ul>
+<p>整个 RT‑1 系统：</p>
+<ul>
+<li>约 <strong>35M 参数</strong></li>
+<li>实际控制频率 <strong>3Hz</strong></li>
+</ul>
+<hr>
+<h2 id="action-representation">Action Representation<a hidden class="anchor" aria-hidden="true" href="#action-representation">#</a></h2>
+<p>RT‑1 将连续控制 <strong>离散化为 tokens</strong>。</p>
+<p>动作空间包括：</p>
+<h3 id="机械臂控制">机械臂控制<a hidden class="anchor" aria-hidden="true" href="#机械臂控制">#</a></h3>
+<p>7 维：</p>
+<ul>
+<li>x</li>
+<li>y</li>
+<li>z</li>
+<li>roll</li>
+<li>pitch</li>
+<li>yaw</li>
+<li>gripper</li>
+</ul>
+<h3 id="底盘控制">底盘控制<a hidden class="anchor" aria-hidden="true" href="#底盘控制">#</a></h3>
+<p>3 维：</p>
+<ul>
+<li>x</li>
+<li>y</li>
+<li>yaw</li>
+</ul>
+<h3 id="模式变量">模式变量<a hidden class="anchor" aria-hidden="true" href="#模式变量">#</a></h3>
+<p>用于切换：</p>
+<ul>
+<li>机械臂控制</li>
+<li>底盘控制</li>
+<li>任务终止</li>
+</ul>
+<p>每个维度被离散化为：</p>
+<p><strong>256 bins</strong>。</p>
+<p>因此连续控制被转换为：</p>
+<p><strong>token prediction problem</strong>。</p>
+<hr>
+<h1 id="failure--limitation">Failure / Limitation<a hidden class="anchor" aria-hidden="true" href="#failure--limitation">#</a></h1>
+<p>RT‑1 仍然存在一些限制。</p>
+<h3 id="动作离散化">动作离散化<a hidden class="anchor" aria-hidden="true" href="#动作离散化">#</a></h3>
+<p>离散化简化训练，但可能降低控制精度。</p>
+<h3 id="behavior-cloning">Behavior Cloning<a hidden class="anchor" aria-hidden="true" href="#behavior-cloning">#</a></h3>
+<p>RT‑1 本质上属于 <strong>imitation learning</strong>。</p>
+<p>因此：</p>
+<ul>
+<li>recovery 能力有限</li>
+<li>exploration 不足</li>
+</ul>
+<h3 id="控制频率">控制频率<a hidden class="anchor" aria-hidden="true" href="#控制频率">#</a></h3>
+<p>RT‑1 控制频率为 <strong>3Hz</strong>。</p>
+<p>对于很多 manipulation 任务可以接受，但对高速控制仍然较慢。</p>
+<h3 id="机器人形态">机器人形态<a hidden class="anchor" aria-hidden="true" href="#机器人形态">#</a></h3>
+<p>虽然任务多样，但模型仍依赖特定机器人平台。</p>
+<p>跨机器人泛化仍然困难。</p>
+<hr>
+<h1 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h1>
+<p>RT‑1 使用大规模真实机器人数据训练：</p>
+<ul>
+<li><strong>130k demonstrations</strong></li>
+<li><strong>17 个月采集</strong></li>
+<li><strong>13 台机器人</strong></li>
+</ul>
+<p>任务包括：</p>
+<ul>
+<li>pick</li>
+<li>place</li>
+<li>open drawers</li>
+<li>close drawers</li>
+<li>从抽屉取物</li>
+</ul>
+<p>实验表明 RT‑1 在以下方面表现良好：</p>
+<ul>
+<li>多任务性能</li>
+<li>对干扰的鲁棒性</li>
+<li>新环境泛化</li>
+</ul>
+<hr>
+<h1 id="key-idea">Key Idea<a hidden class="anchor" aria-hidden="true" href="#key-idea">#</a></h1>
+<p>RT‑1 的核心思想是：</p>
+<blockquote>
+<p>机器人策略可以被建模为 <strong>vision‑language‑action tokens 的序列模型</strong>。</p>
+</blockquote>
+<p>通过将动作离散化并使用 Transformer，机器人策略可以像语言模型一样进行规模化训练。</p>
+<hr>
+<h1 id="takeaway">Takeaway<a hidden class="anchor" aria-hidden="true" href="#takeaway">#</a></h1>
+<p>RT‑1 是最早展示以下趋势的工作之一：</p>
+<p><strong>机器人策略也可能通过规模扩展获得能力提升。</strong></p>
+<p>它提出了一种新的范式：</p>
+<p>robot control = sequence modeling</p>
+<p>这一思想后来影响了：</p>
+<ul>
+<li>RT‑2</li>
+<li>OpenVLA</li>
+<li>Octo</li>
+</ul>
+<p>以及后续的 <strong>Vision‑Language‑Action (VLA)</strong> 模型。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/zh/reading/vla/2023rt2/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>RT-2</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

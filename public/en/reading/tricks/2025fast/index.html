@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>FAST | HC&#39;s Log</title>
+<meta name="keywords" content="">
+<meta name="description" content="FAST: Efficient Action Tokenization for Vision-Language-Action Models
+Authors: Karl Pertsch, Kyle Stachowicz, Brian Ichter, Danny Driess, Suraj Nair, Quan Vuong, Oier Mees, Chelsea Finn, Sergey Levine
+Institutions: Physical Intelligence, UC Berkeley, Stanford
+Year: 2025
+Paper:
+https://arxiv.org/pdf/2501.09747
+
+1. Overview
+FAST proposes a new action tokenization scheme for Vision-Language-Action (VLA) models.
+The motivation comes from the limitations of the most common action tokenization method: binning discretization, where actions are discretized per dimension and per timestep.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/en/reading/tricks/2025fast/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/tricks/2025fast/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/tricks/2025fast/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/zh/" title="中文"
+                                aria-label="中文">Zh</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/reading/" title="Reading">
+                    <span>Reading</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                    <span>Engineering</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                    <span>Concepts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/tricks/">useful tricks</a></div>
+    <h1 class="post-title entry-hint-parent">
+      FAST
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>4 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/zh/reading/tricks/2025fast/">Zh</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="fast-efficient-action-tokenization-for-vision-language-action-models">FAST: Efficient Action Tokenization for Vision-Language-Action Models<a hidden class="anchor" aria-hidden="true" href="#fast-efficient-action-tokenization-for-vision-language-action-models">#</a></h1>
+<p><strong>Authors:</strong> Karl Pertsch, Kyle Stachowicz, Brian Ichter, Danny Driess, Suraj Nair, Quan Vuong, Oier Mees, Chelsea Finn, Sergey Levine<br>
+<strong>Institutions:</strong> Physical Intelligence, UC Berkeley, Stanford<br>
+<strong>Year:</strong> 2025</p>
+<p>Paper:<br>
+<a href="https://arxiv.org/pdf/2501.09747">https://arxiv.org/pdf/2501.09747</a></p>
+<hr>
+<h1 id="1-overview">1. Overview<a hidden class="anchor" aria-hidden="true" href="#1-overview">#</a></h1>
+<p>FAST proposes a new <strong>action tokenization scheme</strong> for Vision-Language-Action (VLA) models.</p>
+<p>The motivation comes from the limitations of the most common action tokenization method: <strong>binning discretization</strong>, where actions are discretized per dimension and per timestep.</p>
+<p>This approach works poorly for <strong>high-frequency robot data</strong>, which leads to inefficient training and poor learning signals.</p>
+<p>FAST addresses this by introducing a <strong>compression-based tokenization method</strong> that transforms action trajectories into compact token sequences using:</p>
+<ul>
+<li><strong>Discrete Cosine Transform (DCT)</strong></li>
+<li><strong>Byte Pair Encoding (BPE)</strong></li>
+</ul>
+<p>The goal is to <strong>compress redundant action signals into fewer, high-information tokens</strong>.</p>
+<hr>
+<h1 id="2-motivation">2. Motivation<a hidden class="anchor" aria-hidden="true" href="#2-motivation">#</a></h1>
+<p>Standard binning discretization suffers from several problems.</p>
+<h3 id="1-highly-correlated-action-tokens">1. Highly correlated action tokens<a hidden class="anchor" aria-hidden="true" href="#1-highly-correlated-action-tokens">#</a></h3>
+<p>Robot control signals are typically smooth and continuous.</p>
+<p>This means that consecutive action tokens are <strong>strongly correlated</strong>, which leads to:</p>
+<ul>
+<li>low marginal information per token</li>
+<li>models simply copying the previous token</li>
+</ul>
+<p>As a result, the prediction objective becomes weak and learning becomes inefficient.</p>
+<hr>
+<h3 id="2-very-long-token-sequences">2. Very long token sequences<a hidden class="anchor" aria-hidden="true" href="#2-very-long-token-sequences">#</a></h3>
+<p>High-frequency control produces <strong>hundreds of tokens per action chunk</strong>, which causes:</p>
+<ul>
+<li>difficult training</li>
+<li>slow inference</li>
+<li>inefficient use of the transformer context window</li>
+</ul>
+<p>FAST attempts to solve these problems by <strong>compressing the action trajectory before tokenization</strong>.</p>
+<hr>
+<h1 id="3-core-idea">3. Core Idea<a hidden class="anchor" aria-hidden="true" href="#3-core-idea">#</a></h1>
+<p>The core idea of FAST is to perform <strong>frequency-space action sequence tokenization</strong>.</p>
+<p>Instead of tokenizing actions directly in the time domain, FAST:</p>
+<ol>
+<li>converts action trajectories into <strong>frequency space using DCT</strong></li>
+<li>removes redundant high-frequency information</li>
+<li>compresses the resulting representation using <strong>Byte Pair Encoding</strong></li>
+</ol>
+<p>This produces a much shorter sequence of <strong>high-information tokens</strong>.</p>
+<hr>
+<h1 id="4-method">4. Method<a hidden class="anchor" aria-hidden="true" href="#4-method">#</a></h1>
+<h2 id="41-action-normalization">4.1 Action Normalization<a hidden class="anchor" aria-hidden="true" href="#41-action-normalization">#</a></h2>
+<p>Before tokenization, actions are normalized.</p>
+<p>Each action dimension is mapped to the range:</p>
+<p>[
+[-1, 1]
+]</p>
+<p>using the <strong>1st and 99th percentile</strong> values of the dataset.</p>
+<p>This prevents extreme values from dominating the representation.</p>
+<hr>
+<h2 id="42-discrete-cosine-transform-dct">4.2 Discrete Cosine Transform (DCT)<a hidden class="anchor" aria-hidden="true" href="#42-discrete-cosine-transform-dct">#</a></h2>
+<p>Next, FAST applies <strong>DCT</strong> to each action dimension independently.</p>
+<p>DCT converts the action trajectory from the <strong>time domain to the frequency domain</strong>.</p>
+<p>The trajectory is represented as a sum of cosine functions with different frequencies.</p>
+<p>Key idea:</p>
+<ul>
+<li>low-frequency components capture most of the motion structure</li>
+<li>high-frequency components often contain redundant or noisy information</li>
+</ul>
+<p>Therefore, the representation can be <strong>compressed by removing small frequency components</strong>.</p>
+<hr>
+<h2 id="43-matrix-construction">4.3 Matrix Construction<a hidden class="anchor" aria-hidden="true" href="#43-matrix-construction">#</a></h2>
+<p>After applying DCT to each action dimension:</p>
+<ul>
+<li>the frequency coefficients form a matrix</li>
+<li>this matrix is <strong>flattened column-wise</strong> into a 1D sequence</li>
+</ul>
+<p>This sequence represents the compressed action trajectory.</p>
+<hr>
+<h2 id="44-byte-pair-encoding-bpe">4.4 Byte Pair Encoding (BPE)<a hidden class="anchor" aria-hidden="true" href="#44-byte-pair-encoding-bpe">#</a></h2>
+<p>The flattened sequence is then further compressed using <strong>Byte Pair Encoding (BPE)</strong>.</p>
+<p>BPE learns frequently occurring coefficient patterns and merges them into tokens.</p>
+<p>The result is a <strong>fixed-size vocabulary of action tokens</strong>.</p>
+<p>Important properties:</p>
+<ul>
+<li>the only learned component of FAST is the <strong>BPE vocabulary</strong></li>
+<li>the vocabulary is typically trained <strong>per dataset</strong></li>
+</ul>
+<hr>
+<h2 id="45-fast">4.5 FAST+<a hidden class="anchor" aria-hidden="true" href="#45-fast">#</a></h2>
+<p>The paper also introduces <strong>FAST+</strong>, a universal robot tokenizer.</p>
+<p>FAST+ is trained on <strong>1 million diverse robot actions</strong> and released on HuggingFace.</p>
+<p>Unlike dataset-specific FAST tokenizers, FAST+ can be applied across different datasets and robot platforms.</p>
+<hr>
+<h1 id="5-key-hyperparameters">5. Key Hyperparameters<a hidden class="anchor" aria-hidden="true" href="#5-key-hyperparameters">#</a></h1>
+<p>FAST has two main hyperparameters:</p>
+<h3 id="1-dct-rounding-scale">1. DCT rounding scale<a hidden class="anchor" aria-hidden="true" href="#1-dct-rounding-scale">#</a></h3>
+<p>Controls how aggressively frequency coefficients are rounded during compression.</p>
+<h3 id="2-bpe-vocabulary-size">2. BPE vocabulary size<a hidden class="anchor" aria-hidden="true" href="#2-bpe-vocabulary-size">#</a></h3>
+<p>Determines how strongly the token sequence is compressed.</p>
+<hr>
+<h1 id="6-results">6. Results<a hidden class="anchor" aria-hidden="true" href="#6-results">#</a></h1>
+<p>The paper reports several important findings.</p>
+<h3 id="training-speed">Training speed<a hidden class="anchor" aria-hidden="true" href="#training-speed">#</a></h3>
+<p>FAST significantly reduces training time.</p>
+<p>Example result:</p>
+<ul>
+<li><strong>5× faster training</strong></li>
+<li>comparing <strong>π0 vs π0-FAST</strong></li>
+</ul>
+<p>The main reason is that FAST produces <strong>much shorter token sequences</strong>.</p>
+<hr>
+<h3 id="inference-speed">Inference speed<a hidden class="anchor" aria-hidden="true" href="#inference-speed">#</a></h3>
+<p>Inference becomes <strong>slower</strong> with FAST.</p>
+<p>Example numbers reported:</p>
+<ul>
+<li>π0: <strong>100 ms</strong></li>
+<li>π0-FAST: <strong>750 ms</strong></li>
+</ul>
+<p>This is because FAST requires:</p>
+<ul>
+<li>more autoregressive decoding steps</li>
+<li>the use of a large language backbone instead of the smaller action expert used by π0</li>
+</ul>
+<hr>
+<h3 id="token-compression">Token compression<a hidden class="anchor" aria-hidden="true" href="#token-compression">#</a></h3>
+<p>FAST significantly reduces the number of tokens per action chunk, especially for <strong>high-frequency robot data</strong>.</p>
+<p>Another benefit is that BPE avoids long runs of <strong>repeated zero tokens</strong>, which are common in naive discretization methods and slow down learning.</p>
+<hr>
+<h3 id="compatibility-with-other-vla-models">Compatibility with other VLA models<a hidden class="anchor" aria-hidden="true" href="#compatibility-with-other-vla-models">#</a></h3>
+<p>FAST is not tied to a specific architecture.</p>
+<p>The tokenizer can be applied to other <strong>VLA backbones</strong> with minimal changes.</p>
+<hr>
+<h3 id="universal-tokenizer-performance">Universal tokenizer performance<a hidden class="anchor" aria-hidden="true" href="#universal-tokenizer-performance">#</a></h3>
+<p>FAST+ performs similarly to dataset-specific tokenizers.</p>
+<p>This suggests that a <strong>universal robot tokenizer</strong> may be feasible.</p>
+<hr>
+<h1 id="7-practical-impact">7. Practical Impact<a hidden class="anchor" aria-hidden="true" href="#7-practical-impact">#</a></h1>
+<p>One notable result mentioned in the paper is that FAST enables the first <strong>generalist policy on the DROID dataset</strong> that can be evaluated <strong>zero-shot</strong>.</p>
+<p>This suggests that improved action tokenization can significantly improve scalability of VLA training.</p>
+<hr>
+<h1 id="8-personal-notes">8. Personal Notes<a hidden class="anchor" aria-hidden="true" href="#8-personal-notes">#</a></h1>
+<h2 id="key-insight">Key insight<a hidden class="anchor" aria-hidden="true" href="#key-insight">#</a></h2>
+<p>The main insight of FAST is that <strong>robot action signals are highly redundant</strong>.</p>
+<p>Instead of discretizing them directly in the time domain, it is more efficient to:</p>
+<ol>
+<li>transform them into frequency space</li>
+<li>compress them</li>
+<li>tokenize the compressed representation</li>
+</ol>
+<hr>
+<h2 id="my-interpretation">My interpretation<a hidden class="anchor" aria-hidden="true" href="#my-interpretation">#</a></h2>
+<p>FAST essentially treats robot actions like a <strong>signal compression problem</strong> rather than a simple discretization problem.</p>
+<p>The pipeline can be summarized as:</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Diffusion Policy: Visuomotor Policy Learning via Action Diffusion</span>
+  </a>
+  <a class="next" href="http://localhost:1313/en/reading/vla/2024openvla/">
+    <span class="title">Next »</span>
+    <br>
+    <span>OpenVLA</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

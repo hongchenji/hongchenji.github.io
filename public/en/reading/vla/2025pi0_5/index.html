@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>π0.5 | HC&#39;s Log</title>
+<meta name="keywords" content="">
+<meta name="description" content="π0.5: Hierarchical Vision-Language-Action Flow Model
+Organization: Physical Intelligence
+Year: 2025
+
+Problem
+Early Vision-Language-Action (VLA) models such as RT-1, RT-2 and π0 demonstrate that robot policies can be learned from large datasets using transformer-based architectures.
+However, these systems still struggle with long-horizon manipulation tasks.
+Typical problems include:
+
+tasks requiring many sequential steps
+complex household environments
+generalization to new homes or scenes
+difficulty maintaining coherent plans over long time horizons
+
+Low-level policies alone often fail because they attempt to directly map observations to actions without an explicit notion of task structure.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/en/reading/vla/2025pi0_5/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2025pi0_5/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2025pi0_5/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/zh/" title="中文"
+                                aria-label="中文">Zh</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/reading/" title="Reading">
+                    <span>Reading</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                    <span>Engineering</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                    <span>Concepts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/vla/">VLA models</a></div>
+    <h1 class="post-title entry-hint-parent">
+      π0.5
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>4 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/zh/reading/vla/2025pi0_5/">Zh</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="π05-hierarchical-vision-language-action-flow-model">π0.5: Hierarchical Vision-Language-Action Flow Model<a hidden class="anchor" aria-hidden="true" href="#π05-hierarchical-vision-language-action-flow-model">#</a></h1>
+<p><strong>Organization:</strong> Physical Intelligence
+<strong>Year:</strong> 2025</p>
+<hr>
+<h1 id="problem">Problem<a hidden class="anchor" aria-hidden="true" href="#problem">#</a></h1>
+<p>Early Vision-Language-Action (VLA) models such as RT-1, RT-2 and π0 demonstrate that robot policies can be learned from large datasets using transformer-based architectures.</p>
+<p>However, these systems still struggle with <strong>long-horizon manipulation tasks</strong>.</p>
+<p>Typical problems include:</p>
+<ul>
+<li>tasks requiring many sequential steps</li>
+<li>complex household environments</li>
+<li>generalization to new homes or scenes</li>
+<li>difficulty maintaining coherent plans over long time horizons</li>
+</ul>
+<p>Low-level policies alone often fail because they attempt to directly map observations to actions without an explicit notion of <strong>task structure</strong>.</p>
+<p>This raises a key question:</p>
+<blockquote>
+<p>Can robot policies benefit from explicit <strong>high-level planning</strong> combined with continuous action generation?</p>
+</blockquote>
+<hr>
+<h1 id="why-it-matters">Why it matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h1>
+<p>Many real-world robotic tasks involve hierarchical structure.</p>
+<p>For example:</p>
+<p>make coffee</p>
+<p>may involve:</p>
+<ol>
+<li>find mug</li>
+<li>place mug under machine</li>
+<li>press button</li>
+<li>wait for coffee</li>
+</ol>
+<p>Without modeling this structure, a policy must implicitly discover long chains of actions.</p>
+<p>This makes training difficult and often reduces generalization.</p>
+<p>Introducing <strong>high-level subtasks</strong> could help:</p>
+<ul>
+<li>stabilize long-horizon planning</li>
+<li>improve generalization to new scenes</li>
+<li>allow models to reason about task structure</li>
+</ul>
+<hr>
+<h1 id="attempt">Attempt<a hidden class="anchor" aria-hidden="true" href="#attempt">#</a></h1>
+<p>π0.5 extends π0 with a <strong>hierarchical architecture</strong>.</p>
+<p>The key idea is to separate behavior into two levels:</p>
+<ol>
+<li><strong>High-level subtask prediction</strong> (language-like output)</li>
+<li><strong>Low-level action generation</strong> (continuous flow-based control)</li>
+</ol>
+<p>The system also introduces:</p>
+<ul>
+<li>FAST action tokenization for efficient pretraining</li>
+<li>a two-stage training pipeline</li>
+<li>multimodal token routing for different input types</li>
+</ul>
+<p>In short, π0.5 combines:</p>
+<ul>
+<li>language generation</li>
+<li>action-token pretraining</li>
+<li>continuous flow matching</li>
+<li>hierarchical planning</li>
+</ul>
+<hr>
+<h1 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<h2 id="multimodal-token-input">Multimodal Token Input<a hidden class="anchor" aria-hidden="true" href="#multimodal-token-input">#</a></h2>
+<p>The model processes a sequence of multimodal tokens.</p>
+<p>Each token may represent:</p>
+<ul>
+<li>text instruction tokens</li>
+<li>image patches</li>
+<li>robot state observations</li>
+<li>noisy action inputs used for flow matching</li>
+</ul>
+<p>Formally a token (x_i) may be:</p>
+<ul>
+<li>text token (x_i^w)</li>
+<li>image patch (x_i^I)</li>
+<li>action value (x_i^a)</li>
+</ul>
+<p>The observation and instruction form the <strong>prefix of the token sequence</strong>.</p>
+<hr>
+<h2 id="token-type-routing">Token-Type Routing<a hidden class="anchor" aria-hidden="true" href="#token-type-routing">#</a></h2>
+<p>A routing function (\rho(x_i)) determines which encoder processes a token.</p>
+<p>Examples:</p>
+<ul>
+<li>text tokens → embedding matrix</li>
+<li>image tokens → vision encoder</li>
+<li>action tokens → robotics action expert</li>
+</ul>
+<p>This allows the system to reuse vision-language modeling while introducing robotics-specific processing.</p>
+<hr>
+<h2 id="two-stage-output-structure">Two-Stage Output Structure<a hidden class="anchor" aria-hidden="true" href="#two-stage-output-structure">#</a></h2>
+<p>π0.5 predicts two types of outputs.</p>
+<ol>
+<li><strong>High-level plan tokens</strong></li>
+<li><strong>continuous robot actions</strong></li>
+</ol>
+<p>The output sequence is split as:</p>
+<ul>
+<li>first (M) outputs → language token logits</li>
+<li>last (H) outputs → action outputs</li>
+</ul>
+<p>The predicted language tokens represent a <strong>subtask plan</strong>.</p>
+<p>These plans condition the generation of continuous robot actions.</p>
+<hr>
+<h2 id="flow-matching-for-continuous-actions">Flow Matching for Continuous Actions<a hidden class="anchor" aria-hidden="true" href="#flow-matching-for-continuous-actions">#</a></h2>
+<p>Like π0, π0.5 generates actions using <strong>conditional flow matching</strong>.</p>
+<p>During inference the model performs:</p>
+<ul>
+<li>~10 denoising steps</li>
+<li>conditioned on observations and predicted subtasks</li>
+</ul>
+<p>This produces smooth continuous action trajectories.</p>
+<hr>
+<h1 id="fast-action-tokenization">FAST Action Tokenization<a hidden class="anchor" aria-hidden="true" href="#fast-action-tokenization">#</a></h1>
+<p>π0.5 introduces <strong>FAST</strong> to accelerate pretraining.</p>
+<p>The goal is to convert continuous action trajectories into discrete tokens.</p>
+<p>Steps:</p>
+<ol>
+<li>normalize each action dimension to [-1,1]</li>
+<li>apply <strong>Discrete Cosine Transform (DCT)</strong></li>
+<li>flatten the representation</li>
+<li>train a <strong>Byte Pair Encoder (BPE)</strong> to compress it</li>
+</ol>
+<p>This produces discrete action tokens that can be used during pretraining.</p>
+<p>FAST allows the model to learn action structure earlier during training.</p>
+<hr>
+<h1 id="training">Training<a hidden class="anchor" aria-hidden="true" href="#training">#</a></h1>
+<p>π0.5 uses a <strong>two-stage training pipeline</strong>.</p>
+<h2 id="stage-1-pretraining">Stage 1: Pretraining<a hidden class="anchor" aria-hidden="true" href="#stage-1-pretraining">#</a></h2>
+<p>During pretraining the model behaves like a standard vision-language model.</p>
+<p>The model predicts tokens for:</p>
+<ul>
+<li>text</li>
+<li>object locations</li>
+<li>FAST action tokens</li>
+</ul>
+<p>Training length:</p>
+<ul>
+<li>~280k gradient steps</li>
+</ul>
+<p>Additional supervision may include:</p>
+<ul>
+<li>subtask annotations</li>
+<li>object localization</li>
+<li>captioning</li>
+<li>question answering</li>
+</ul>
+<hr>
+<h2 id="stage-2-post-training">Stage 2: Post-training<a hidden class="anchor" aria-hidden="true" href="#stage-2-post-training">#</a></h2>
+<p>During post-training the robotics action expert is activated.</p>
+<p>Key changes:</p>
+<ul>
+<li>flow matching loss enabled</li>
+<li>additional expert weights</li>
+<li>filtered robot trajectories</li>
+</ul>
+<p>Training continues for:</p>
+<ul>
+<li>~80k additional steps</li>
+</ul>
+<hr>
+<h1 id="loss">Loss<a hidden class="anchor" aria-hidden="true" href="#loss">#</a></h1>
+<p>The training objective combines two components.</p>
+<p>[
+\mathcal{L} = \mathcal{H} + \alpha \mathcal{F}
+]</p>
+<p>Where:</p>
+<ul>
+<li>(\mathcal{H}) = cross-entropy loss for token prediction</li>
+<li>(\mathcal{F}) = flow-matching loss for actions</li>
+</ul>
+<p>This jointly trains:</p>
+<ul>
+<li>language planning</li>
+<li>continuous robot control</li>
+</ul>
+<hr>
+<h1 id="failure--limitation">Failure / Limitation<a hidden class="anchor" aria-hidden="true" href="#failure--limitation">#</a></h1>
+<p>Despite improvements, several challenges remain.</p>
+<h3 id="data-requirements">Data requirements<a hidden class="anchor" aria-hidden="true" href="#data-requirements">#</a></h3>
+<p>Hierarchical models require rich annotations such as subtasks and language labels.</p>
+<h3 id="training-complexity">Training complexity<a hidden class="anchor" aria-hidden="true" href="#training-complexity">#</a></h3>
+<p>The system combines multiple components:</p>
+<ul>
+<li>token prediction</li>
+<li>flow matching</li>
+<li>hierarchical outputs</li>
+</ul>
+<p>which increases training complexity.</p>
+<h3 id="dataset-mixture-sensitivity">Dataset mixture sensitivity<a hidden class="anchor" aria-hidden="true" href="#dataset-mixture-sensitivity">#</a></h3>
+<p>Performance depends heavily on the composition of the training data.</p>
+<hr>
+<h1 id="key-idea">Key Idea<a hidden class="anchor" aria-hidden="true" href="#key-idea">#</a></h1>
+<p>π0.5 introduces <strong>hierarchical VLA policies</strong>.</p>
+<p>Instead of directly mapping observations to actions, the system first predicts a high-level subtask and then generates continuous actions conditioned on that plan.</p>
+<hr>
+<h1 id="takeaway">Takeaway<a hidden class="anchor" aria-hidden="true" href="#takeaway">#</a></h1>
+<p>π0.5 moves VLA systems toward a more structured policy design:</p>
+<p>perception → high-level plan → continuous control</p>
+<p>By combining hierarchical planning with flow-based action generation, π0.5 aims to improve long-horizon reasoning and generalization in real-world robotic tasks.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/en/reading/vla/2024pi0/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>π0</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

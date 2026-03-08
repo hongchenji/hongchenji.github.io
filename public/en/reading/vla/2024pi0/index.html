@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>π0 | HC&#39;s Log</title>
+<meta name="keywords" content="">
+<meta name="description" content="π0: A Vision-Language-Action Flow Model for General Robot Control
+Organization: Physical Intelligence
+Year: 2024
+Paper: https://www.physicalintelligence.company/download/pi0.pdf
+
+Problem
+Most recent Vision-Language-Action (VLA) models treat robot actions as discrete tokens, similar to text tokens in language models.
+Examples include models such as:
+
+RT-2
+OpenVLA
+Octo
+
+While tokenization simplifies modeling, it introduces several limitations for robot control:
+
+discretization can reduce control precision
+action tokens may produce jerky or unnatural trajectories
+continuous robot motion must be approximated using symbolic outputs
+
+In practice, robot control is inherently continuous and dynamic. Policies must generate smooth trajectories that respect physical constraints.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/en/reading/vla/2024pi0/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2024pi0/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/2024pi0/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/zh/" title="中文"
+                                aria-label="中文">Zh</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/reading/" title="Reading">
+                    <span>Reading</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                    <span>Engineering</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                    <span>Concepts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/vla/">VLA models</a></div>
+    <h1 class="post-title entry-hint-parent">
+      π0
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>March 4, 2026</span>&nbsp;·&nbsp;<span>5 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>Translations:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/zh/reading/vla/2024pi0/">Zh</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="π0-a-vision-language-action-flow-model-for-general-robot-control">π0: A Vision-Language-Action Flow Model for General Robot Control<a hidden class="anchor" aria-hidden="true" href="#π0-a-vision-language-action-flow-model-for-general-robot-control">#</a></h1>
+<p><strong>Organization:</strong> Physical Intelligence
+<strong>Year:</strong> 2024
+<strong>Paper:</strong> <a href="https://www.physicalintelligence.company/download/pi0.pdf">https://www.physicalintelligence.company/download/pi0.pdf</a></p>
+<hr>
+<h1 id="problem">Problem<a hidden class="anchor" aria-hidden="true" href="#problem">#</a></h1>
+<p>Most recent Vision-Language-Action (VLA) models treat robot actions as <strong>discrete tokens</strong>, similar to text tokens in language models.</p>
+<p>Examples include models such as:</p>
+<ul>
+<li>RT-2</li>
+<li>OpenVLA</li>
+<li>Octo</li>
+</ul>
+<p>While tokenization simplifies modeling, it introduces several limitations for robot control:</p>
+<ul>
+<li>discretization can reduce control precision</li>
+<li>action tokens may produce jerky or unnatural trajectories</li>
+<li>continuous robot motion must be approximated using symbolic outputs</li>
+</ul>
+<p>In practice, robot control is inherently <strong>continuous and dynamic</strong>. Policies must generate smooth trajectories that respect physical constraints.</p>
+<p>Therefore, a key question emerges:</p>
+<blockquote>
+<p>Can VLA models generate <strong>continuous robot actions</strong> while still benefiting from large vision-language models?</p>
+</blockquote>
+<hr>
+<h1 id="why-it-matters">Why it matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h1>
+<p>General robot control requires three capabilities simultaneously:</p>
+<ol>
+<li><strong>Semantic understanding</strong> of tasks and objects</li>
+<li><strong>Continuous motor control</strong> for manipulation</li>
+<li><strong>Generalization across robots and environments</strong></li>
+</ol>
+<p>Large Vision-Language Models (VLMs) provide strong semantic reasoning abilities but are not designed for continuous control.</p>
+<p>Conversely, traditional robot policies can generate continuous actions but often lack semantic understanding.</p>
+<p>A unified system that combines:</p>
+<ul>
+<li>internet-scale semantic knowledge</li>
+<li>continuous control generation</li>
+<li>cross-embodiment learning</li>
+</ul>
+<p>would move robotics closer to <strong>generalist robot policies</strong>.</p>
+<hr>
+<h1 id="attempt">Attempt<a hidden class="anchor" aria-hidden="true" href="#attempt">#</a></h1>
+<p>π0 proposes a new approach:</p>
+<blockquote>
+<p>model robot actions as <strong>continuous trajectories using flow matching</strong>.</p>
+</blockquote>
+<p>Instead of predicting discrete action tokens, the model generates actions through a <strong>continuous denoising / flow process</strong>.</p>
+<p>The system combines three components:</p>
+<ul>
+<li>a pretrained <strong>Vision-Language Model (VLM)</strong> for perception and reasoning</li>
+<li>a robotics-specific <strong>action expert</strong> for control</li>
+<li><strong>flow matching</strong> for continuous action trajectory generation</li>
+</ul>
+<p>This allows semantic reasoning and low-level control to coexist within a single architecture.</p>
+<hr>
+<h1 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<h2 id="vlm-backbone">VLM Backbone<a hidden class="anchor" aria-hidden="true" href="#vlm-backbone">#</a></h2>
+<p>The semantic backbone is based on <strong>PaliGemma</strong>, which itself builds on <strong>Gemma</strong>.</p>
+<p>Architecture characteristics noted in the paper include:</p>
+<ul>
+<li>multi-query attention</li>
+<li>width: 2048</li>
+<li>depth: 18</li>
+<li>MLP dimension: 16384</li>
+<li>attention heads: 18</li>
+<li>KV heads: 1</li>
+<li>head dimension: 256</li>
+</ul>
+<p>The π0 configuration uses a smaller model:</p>
+<ul>
+<li>width: 1024</li>
+<li>MLP dimension: 4096</li>
+<li>roughly <strong>3B parameters</strong></li>
+</ul>
+<p>Conceptually, the VLM can be viewed as:</p>
+<p>SigLIP (vision encoder) + Gemma (language model)</p>
+<p>Images are processed by a ViT-style encoder to produce visual embeddings, which are then combined with language tokens.</p>
+<hr>
+<h2 id="inputs">Inputs<a hidden class="anchor" aria-hidden="true" href="#inputs">#</a></h2>
+<p>The model receives three main inputs:</p>
+<ul>
+<li>image observations (I_i^t) from multiple cameras</li>
+<li>language instruction (l_t)</li>
+<li>robot proprioceptive state (q_t)</li>
+</ul>
+<p>For one example embodiment, the proprioceptive state has <strong>18 dimensions</strong>, including:</p>
+<ul>
+<li>two 6-DoF robot arms</li>
+<li>two grippers</li>
+<li>an AGV</li>
+<li>a vertical moving body</li>
+</ul>
+<p>Robot states are projected into the same embedding space as language tokens.</p>
+<hr>
+<h2 id="action-expert">Action Expert<a hidden class="anchor" aria-hidden="true" href="#action-expert">#</a></h2>
+<p>π0 introduces a robotics-specific module called the <strong>action expert</strong>.</p>
+<p>The model separates parameters into two groups:</p>
+<ul>
+<li><strong>VLM weights</strong> for vision and language reasoning</li>
+<li><strong>action-expert weights</strong> for robot states and action generation</li>
+</ul>
+<p>Both branches share a single Transformer but use different parameter subsets.</p>
+<p>This design allows the system to:</p>
+<ul>
+<li>reuse large VLM knowledge</li>
+<li>maintain specialized control modules for robotics.</li>
+</ul>
+<hr>
+<h2 id="action-horizon">Action Horizon<a hidden class="anchor" aria-hidden="true" href="#action-horizon">#</a></h2>
+<p>The model predicts an <strong>action trajectory</strong> rather than a single action.</p>
+<p>Action horizon:</p>
+<p>[
+A<em>t = [a_t, &hellip;, a</em>{t+H-1}]
+]</p>
+<p>where:</p>
+<ul>
+<li>(H = 50)</li>
+</ul>
+<p>During training, the model predicts <strong>noisy action trajectories</strong> that will later be denoised through the flow process.</p>
+<hr>
+<h2 id="flow-matching">Flow Matching<a hidden class="anchor" aria-hidden="true" href="#flow-matching">#</a></h2>
+<p>π0 uses <strong>conditional flow matching</strong> to generate continuous actions.</p>
+<p>The model learns a velocity field that transforms noise into valid robot action trajectories.</p>
+<p>An MLP injects the flow timestep (\tau) into the network:</p>
+<p>[
+W_3 \cdot \mathrm{swish}(W_2 \cdot \mathrm{concat}(W_1 \cdot a&rsquo;_{t,\tau}, \phi(\tau)))
+]</p>
+<p>This mechanism conditions the action expert on both the noisy action and the diffusion timestep.</p>
+<hr>
+<h2 id="attention-mask">Attention Mask<a hidden class="anchor" aria-hidden="true" href="#attention-mask">#</a></h2>
+<p>π0 uses a <strong>blockwise causal attention mask</strong>.</p>
+<p>Token ordering:</p>
+<ol>
+<li>image / language tokens</li>
+<li>robot state tokens</li>
+<li>action tokens</li>
+</ol>
+<p>Attention behavior:</p>
+<ul>
+<li>bidirectional attention within the current block</li>
+<li>access to previous blocks</li>
+<li>no attention to future blocks</li>
+</ul>
+<p>This maintains causal structure while enabling strong conditioning on recent observations.</p>
+<hr>
+<h1 id="failure--limitation">Failure / Limitation<a hidden class="anchor" aria-hidden="true" href="#failure--limitation">#</a></h1>
+<p>Despite its promising design, several open challenges remain.</p>
+<h3 id="data-requirements-remain-unclear">Data requirements remain unclear<a hidden class="anchor" aria-hidden="true" href="#data-requirements-remain-unclear">#</a></h3>
+<p>The exact amount of data required per task for reliable performance is still uncertain.</p>
+<p>Large-scale cross-embodiment datasets are difficult and expensive to collect.</p>
+<hr>
+<h3 id="cross-embodiment-generalization-is-still-limited">Cross-embodiment generalization is still limited<a hidden class="anchor" aria-hidden="true" href="#cross-embodiment-generalization-is-still-limited">#</a></h3>
+<p>Although π0 is trained on multiple robot embodiments, true universal policies remain challenging.</p>
+<p>Different robots may have:</p>
+<ul>
+<li>different kinematics</li>
+<li>different control interfaces</li>
+<li>different observation spaces</li>
+</ul>
+<hr>
+<h3 id="flow-based-control-increases-computational-cost">Flow-based control increases computational cost<a hidden class="anchor" aria-hidden="true" href="#flow-based-control-increases-computational-cost">#</a></h3>
+<p>Flow matching requires <strong>multiple denoising steps during inference</strong>, which may increase latency compared to single-step token prediction.</p>
+<hr>
+<h1 id="fix--key-idea">Fix / Key Idea<a hidden class="anchor" aria-hidden="true" href="#fix--key-idea">#</a></h1>
+<p>The central insight of π0 is that <strong>continuous action generation is better suited for robot control than discrete token prediction</strong>.</p>
+<p>Instead of representing actions as symbols, π0 models them as trajectories generated by a flow process.</p>
+<p>This architecture combines three complementary components:</p>
+<ul>
+<li><strong>VLM reasoning</strong> for semantic understanding</li>
+<li><strong>action expert</strong> for robotics control</li>
+<li><strong>flow matching</strong> for smooth continuous trajectories</li>
+</ul>
+<p>Together these components form a new type of <strong>Vision-Language-Action flow model</strong>.</p>
+<hr>
+<h1 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h1>
+<p>Key observations from the paper include:</p>
+<ul>
+<li>the model can perform <strong>long-horizon tasks</strong>, sometimes lasting up to <strong>10 minutes</strong></li>
+<li>flow-based generation produces smoother trajectories</li>
+<li>evaluation uses <strong>partial success scores (0-1)</strong> instead of binary success</li>
+</ul>
+<p>Training data includes multiple sources:</p>
+<ul>
+<li>Open-X Embodiment</li>
+<li>DROID</li>
+<li>Bridge</li>
+<li>internal cross-embodiment datasets</li>
+</ul>
+<p>The training corpus covers:</p>
+<ul>
+<li><strong>7 robot embodiments</strong></li>
+<li><strong>68 tasks</strong></li>
+</ul>
+<hr>
+<h1 id="takeaway">Takeaway<a hidden class="anchor" aria-hidden="true" href="#takeaway">#</a></h1>
+<p>π0 suggests a new direction for VLA systems:</p>
+<blockquote>
+<p>robot actions should be modeled as <strong>continuous trajectories rather than discrete tokens</strong>.</p>
+</blockquote>
+<p>In this framework:</p>
+<ul>
+<li>the VLM provides semantic context</li>
+<li>the action expert handles robot-specific control</li>
+<li>flow matching generates smooth continuous trajectories</li>
+</ul>
+<p>This design moves VLA models closer to <strong>general robot control policies</strong>.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/en/reading/vla/2023rt2/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>RT-2</span>
+  </a>
+  <a class="next" href="http://localhost:1313/en/reading/vla/2025pi0_5/">
+    <span class="title">Next »</span>
+    <br>
+    <span>π0.5</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

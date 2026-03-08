@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>动作扩散模型 | HC 的笔记</title>
+<meta name="keywords" content="">
+<meta name="description" content="Diffusion Policy：通过动作扩散进行视觉运动策略学习
+作者
+Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun Du, Benjamin Burchfiel, Russ Tedrake, Shuran Song
+会议
+Robotics: Science and Systems (RSS)
+年份
+2023
+论文
+https://diffusion-policy.cs.columbia.edu/diffusion_policy_2023.pdf
+
+Problem
+在机器人操作任务中，策略需要根据观测（图像、机器人状态等）生成连续动作。
+但真实机器人任务通常具有几个困难特性：
+
+动作分布是多模态的：同一个任务可能有多种可行解
+时间相关性很强：动作必须组成连贯的轨迹
+控制精度要求高：操作任务需要稳定且平滑的控制
+
+传统策略学习方法（例如 Behavioral Cloning）通常使用 直接回归（direct regression） 来预测动作。
+这种方法会带来一些问题：
+
+多个可行行为会被平均化
+生成的动作轨迹不稳定
+难以建模长时序依赖
+
+因此，在复杂 manipulation 任务中，这类策略往往表现不稳定。
+
+Why it matters
+一个好的机器人策略表示方式需要能够：
+
+表达 多模态动作分布
+生成 时间上连贯的动作序列
+产生 平滑的连续轨迹
+
+近年来 Diffusion Models 在图像生成中表现出很强的能力，能够表示复杂分布。
+因此一个自然的问题是：
+
+是否可以使用 diffusion model 来表示 机器人策略分布？
+
+如果可行，这将提供一种比传统回归策略更灵活的方式来建模复杂动作分布。
+
+Attempt
+Diffusion Policy 提出了一个新的思路：">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/reading/pre-vla/2023actiondiffusioin/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/pre-vla/2023actiondiffusioin/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/pre-vla/">Modeling Pre-VLA Robots</a></div>
+    <h1 class="post-title entry-hint-parent">
+      动作扩散模型
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>1 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>&nbsp;|&nbsp;<span>语言:</span>
+<ul class="i18n_list">
+    <li>
+        <a href="http://localhost:1313/en/reading/pre-vla/2023actiondiffusioin/">En</a>
+    </li>
+</ul>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="diffusion-policy通过动作扩散进行视觉运动策略学习">Diffusion Policy：通过动作扩散进行视觉运动策略学习<a hidden class="anchor" aria-hidden="true" href="#diffusion-policy通过动作扩散进行视觉运动策略学习">#</a></h1>
+<p><strong>作者</strong>
+Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun Du, Benjamin Burchfiel, Russ Tedrake, Shuran Song</p>
+<p><strong>会议</strong>
+Robotics: Science and Systems (RSS)</p>
+<p><strong>年份</strong>
+2023</p>
+<p><strong>论文</strong>
+<a href="https://diffusion-policy.cs.columbia.edu/diffusion_policy_2023.pdf">https://diffusion-policy.cs.columbia.edu/diffusion_policy_2023.pdf</a></p>
+<hr>
+<h1 id="problem">Problem<a hidden class="anchor" aria-hidden="true" href="#problem">#</a></h1>
+<p>在机器人操作任务中，策略需要根据观测（图像、机器人状态等）生成连续动作。</p>
+<p>但真实机器人任务通常具有几个困难特性：</p>
+<ul>
+<li><strong>动作分布是多模态的</strong>：同一个任务可能有多种可行解</li>
+<li><strong>时间相关性很强</strong>：动作必须组成连贯的轨迹</li>
+<li><strong>控制精度要求高</strong>：操作任务需要稳定且平滑的控制</li>
+</ul>
+<p>传统策略学习方法（例如 Behavioral Cloning）通常使用 <strong>直接回归（direct regression）</strong> 来预测动作。</p>
+<p>这种方法会带来一些问题：</p>
+<ul>
+<li>多个可行行为会被平均化</li>
+<li>生成的动作轨迹不稳定</li>
+<li>难以建模长时序依赖</li>
+</ul>
+<p>因此，在复杂 manipulation 任务中，这类策略往往表现不稳定。</p>
+<hr>
+<h1 id="why-it-matters">Why it matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h1>
+<p>一个好的机器人策略表示方式需要能够：</p>
+<ol>
+<li>表达 <strong>多模态动作分布</strong></li>
+<li>生成 <strong>时间上连贯的动作序列</strong></li>
+<li>产生 <strong>平滑的连续轨迹</strong></li>
+</ol>
+<p>近年来 <strong>Diffusion Models</strong> 在图像生成中表现出很强的能力，能够表示复杂分布。</p>
+<p>因此一个自然的问题是：</p>
+<blockquote>
+<p>是否可以使用 diffusion model 来表示 <strong>机器人策略分布</strong>？</p>
+</blockquote>
+<p>如果可行，这将提供一种比传统回归策略更灵活的方式来建模复杂动作分布。</p>
+<hr>
+<h1 id="attempt">Attempt<a hidden class="anchor" aria-hidden="true" href="#attempt">#</a></h1>
+<p>Diffusion Policy 提出了一个新的思路：</p>
+<p><strong>将机器人策略建模为条件扩散过程（conditional diffusion process）。</strong></p>
+<p>与图像生成类似，模型通过扩散过程生成 <strong>未来动作序列</strong>。</p>
+<p>模型学习的条件分布为：</p>
+<p>p(A_t | O_t)</p>
+<p>其中：</p>
+<ul>
+<li>O_t：观测历史（图像 + 状态）</li>
+<li>A_t：未来动作序列</li>
+</ul>
+<p>扩散模型从带噪动作序列开始，通过多步去噪逐渐生成有效动作。</p>
+<p>因此策略学习被重新表述为：</p>
+<blockquote>
+<p><strong>条件动作轨迹生成问题（conditional trajectory generation）。</strong></p>
+</blockquote>
+<hr>
+<h1 id="model">Model<a hidden class="anchor" aria-hidden="true" href="#model">#</a></h1>
+<h2 id="receding-horizon-control">Receding Horizon Control<a hidden class="anchor" aria-hidden="true" href="#receding-horizon-control">#</a></h2>
+<p>在时间步 t：</p>
+<ul>
+<li>策略接收最近 <strong>T_o 个观测</strong></li>
+<li>模型预测 <strong>T_p 个未来动作</strong></li>
+<li>实际只执行前 <strong>T_a 个动作</strong></li>
+</ul>
+<p>随后系统根据新的观测重新规划。</p>
+<p>这种机制形成了一个 <strong>receding horizon control loop</strong>。</p>
+<hr>
+<h2 id="conditional-diffusion">Conditional Diffusion<a hidden class="anchor" aria-hidden="true" href="#conditional-diffusion">#</a></h2>
+<p>扩散模型作用在 <strong>动作轨迹</strong> 上。</p>
+<p>训练过程包括：</p>
+<ol>
+<li>对动作序列加入高斯噪声</li>
+<li>训练网络预测噪声</li>
+<li>在推理阶段逐步去噪</li>
+</ol>
+<p>去噪过程以观测信息（图像 + 机器人状态）作为条件。</p>
+<hr>
+<h2 id="policy-representation">Policy Representation<a hidden class="anchor" aria-hidden="true" href="#policy-representation">#</a></h2>
+<p>模型直接学习条件分布：</p>
+<p>p(A_t | O_t)</p>
+<p>而不是联合分布 p(A_t, O_t)。</p>
+<p>这样可以简化推理过程，并专注于 <strong>在给定观测条件下生成动作</strong>。</p>
+<hr>
+<h1 id="failure--limitation">Failure / Limitation<a hidden class="anchor" aria-hidden="true" href="#failure--limitation">#</a></h1>
+<p>尽管 Diffusion Policy 表现良好，但也存在一些权衡。</p>
+<h3 id="推理延迟">推理延迟<a hidden class="anchor" aria-hidden="true" href="#推理延迟">#</a></h3>
+<p>扩散模型在推理阶段需要 <strong>多步去噪</strong>。</p>
+<p>相比单步回归策略，这会增加计算时间。</p>
+<hr>
+<h3 id="数据需求">数据需求<a hidden class="anchor" aria-hidden="true" href="#数据需求">#</a></h3>
+<p>扩散策略通常需要较大的训练数据规模。</p>
+<hr>
+<h3 id="控制频率限制">控制频率限制<a hidden class="anchor" aria-hidden="true" href="#控制频率限制">#</a></h3>
+<p>在高频控制任务中，多步扩散采样可能带来延迟问题。</p>
+<hr>
+<h1 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h1>
+<p>论文在多个机器人操作 benchmark 上进行了评估：</p>
+<ul>
+<li>Push-T</li>
+<li>Franka Kitchen</li>
+<li>Robomimic 任务</li>
+</ul>
+<p>实验结果表明 Diffusion Policy 优于多种 baseline：</p>
+<ul>
+<li>Behavioral Cloning</li>
+<li>Transformer policy</li>
+</ul>
+<p>特别是在 <strong>复杂 manipulation 任务</strong> 中表现明显更好。</p>
+<hr>
+<h1 id="key-idea">Key Idea<a hidden class="anchor" aria-hidden="true" href="#key-idea">#</a></h1>
+<p>论文的核心思想是：</p>
+<blockquote>
+<p>将机器人策略表示为 <strong>动作轨迹的生成模型（generative model）</strong>。</p>
+</blockquote>
+<p>策略不再直接预测动作，而是通过扩散过程生成动作序列。</p>
+<p>这种方式能够自然表示 <strong>复杂和多模态的动作分布</strong>。</p>
+<hr>
+<h1 id="takeaway">Takeaway<a hidden class="anchor" aria-hidden="true" href="#takeaway">#</a></h1>
+<p>Diffusion Policy 展示了一种新的机器人策略建模方式：</p>
+<ul>
+<li>使用生成模型表示策略</li>
+<li>通过扩散过程生成动作轨迹</li>
+<li>更好地处理多模态行为</li>
+</ul>
+<p>这项工作也启发了后续许多将机器人控制视为 <strong>轨迹生成问题</strong> 的研究，例如 diffusion-based 或 flow-based VLA 模型。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/zh/reading/vla/2024pi0/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>π0</span>
+  </a>
+  <a class="next" href="http://localhost:1313/zh/reading/pre-vla/2022basics/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>基础原理</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

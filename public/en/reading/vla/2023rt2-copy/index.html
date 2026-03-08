@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RT2 | HC&#39;s Log</title>
+<meta name="keywords" content="">
+<meta name="description" content="RT-2
+by Google DeepMind
+The RT-2 paper introduces a novel vision-language-action (VLA) model called Robotic Transformer 2 (RT-2) that learns from both web and robotics data. The key idea, which is simple, is captured by this animation. A VLM (e.g., PaLI-X or PaLM-E) is trained on internet text, internet images (e.g., VQA), and then finetuned on robot data to output actions literally as text tokens (&ldquo;132 114 128 5 25 156&rdquo;) to create a &ldquo;vision-language-action&rdquo; model. The RT-1 in the animation is confusing a bit, but it is just implying that some of the robot data was used from RT-1, but nothing from the RT-1 model was used.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/en/reading/vla/2023rt2-copy/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/2023rt2-copy/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/en/" accesskey="h" title="HC&#39;s Log (Alt + H)">HC&#39;s Log</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/zh/" title="中文"
+                                aria-label="中文">Zh</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/en/reading/" title="Reading">
+                    <span>Reading</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/engineering/" title="Engineering">
+                    <span>Engineering</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/en/concepts/" title="Concepts">
+                    <span>Concepts</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/en/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/">Reading</a>&nbsp;»&nbsp;<a href="http://localhost:1313/en/reading/vla/">VLA models</a></div>
+    <h1 class="post-title entry-hint-parent">
+      RT2
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2026-03-04 22:26:49 +0100 CET'>March 4, 2026</span>&nbsp;·&nbsp;<span>4 min</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p><strong>RT-2</strong></p>
+<p><em>by Google DeepMind</em></p>
+<p>The RT-2 paper introduces a novel vision-language-action (<strong>VLA</strong>) model called Robotic Transformer 2 (<strong>RT-2</strong>) that learns from both web and robotics data. The key idea, <strong>which is simple</strong>, is captured by this animation. A VLM (e.g., PaLI-X or PaLM-E) is trained on internet text, internet images (e.g., VQA), and then <strong>finetuned</strong> on robot data to output actions literally as text tokens (&ldquo;132 114 128 5 25 156&rdquo;) to create a &ldquo;vision-language-action&rdquo; model. <strong>The RT-1 in the animation is confusing a bit, but it is just implying that some of the robot data was used from RT-1, but nothing from the RT-1 model was used.</strong></p>
+<p><strong>Architecture</strong></p>
+<p>Action format</p>
+<p>The architecture of RT-2 consists of the following components:</p>
+<ul>
+<li><strong>Vision-Language Model (VLM)</strong>: RT-2 uses a VLM as its backbone, which enables it to plan from both image and text commands, enabling visually grounded planning (<strong>Palm-E and PaLI-X</strong>) ( The Vit and LLM combined are just a VLM)
+<ul>
+<li>PaLM-E 12B</li>
+<li>PaLI-X 5B, 55B</li>
+</ul>
+</li>
+<li><strong>Robotic Data</strong>: RT-2 incorporates robotic data to improve its understanding of the physical world and its ability to output actions literally as text tokens from images directly
+<ul>
+<li>RT-1 data</li>
+<li>Human demos</li>
+<li>13 robots</li>
+<li>17 month</li>
+</ul>
+</li>
+<li><strong>Chain-of-Thought Reasoning</strong>: RT-2 incorporates chain-of-thought reasoning, allowing it to perform multi-stage reasoning and problem-solving tasks</li>
+<li><strong>Co-fine tuning</strong>: To make sure that RT-2 doesn&rsquo;t forget various concepts baked into the VLM weights, some of the VLM data are kept around during the robot action fine-tuning phase (co-fine-tuning)</li>
+</ul>
+<p>RT2w/PaLI-X-55B ablations</p>
+<p>Training on robot data only, or even fine tuning on robot data, is not as good as co-fine tuning. If you only train on robot data, it will not work, because it will over-fit, since the data is small</p>
+<p><strong>Results</strong></p>
+<p>~2x better avg generalization than the next best baseline.</p>
+<p>Tasks that are completely out of distribution of the robot data collected. RT-2 PaLI-X was 3x better than the next best baseline.</p>
+<p>Chain-of-thought to get the model to &ldquo;think through&rdquo; the task and <em>then</em> output the actions</p>
+<p><strong>Interesting thoughts &amp; conclusion from RT-2</strong></p>
+<ol>
+<li>Instead of designing custom model architectures for robotics the solution was no architecture -&gt; just use a VLM without adding any new layers.</li>
+<li>The best VLMs might be the most generalizable robotic controllers.</li>
+<li>With a little bit of robot data, it is possible to transfer semantic concepts from vision language web-scale data to robot actions.</li>
+<li>While RT-2 shows the transfer of semantic and visual concepts, it does not acquire the ability to perform new motions, indicating that further work is needed in this area.</li>
+<li>RT-2 is essentially functioning as an end-to-end version of what PaLM-E + RT-1 accomplish in one model.</li>
+</ol>
+<h1 id="rt-2-vision-language-action-models-transfer-web-knowledge-to-robotic-control">RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control<a hidden class="anchor" aria-hidden="true" href="#rt-2-vision-language-action-models-transfer-web-knowledge-to-robotic-control">#</a></h1>
+<ul>
+<li>作者 / Authors:  </li>
+</ul>
+<p>    - Anthony Brohan, Noah Brown, Justice Carbajal, Yevgen Chebotar, Xi Chen, Krzysztof Choromanski, Tianli Ding, Danny Driess, Avinava Dubey, Chelsea Finn, Pete Florence, Chuyuan Fu, Montse Gonzalez Arenas, Keerthana Gopalakrishnan, Kehang Han, Karol Hausman, Alexander Herzog, Jasmine Hsu, Brian Ichter, Alex Irpan, Nikhil Joshi, Ryan Julian, Dmitry Kalashnikov, Yuheng Kuang, Isabel Leal, Lisa Lee, Tsang-Wei Edward Lee, Sergey Levine, Yao Lu, Henryk Michalewski, Igor Mordatch, Karl Pertsch, Kanishka Rao, Krista Reymann, Michael Ryoo, Grecia Salazar, Pannag Sanketi, Pierre Sermanet, Jaspiar Singh, Anikait Singh, Radu Soricut, Huong Tran, Vincent Vanhoucke, Quan Vuong, Ayzaan Wahid, Stefan Welker, Paul Wohlhart, Jialin Wu, Fei Xia, Ted Xiao, Peng Xu, Sichun Xu, Tianhe Yu, and Brianna Zitkovich</p>
+<ul>
+<li>来源/会议 / Source/Conference:  </li>
+</ul>
+<p>    - google deepmind</p>
+<ul>
+<li>时间 / Year:  </li>
+</ul>
+<p>    - 2023</p>
+<ul>
+<li>链接/DOI / Link/DOI:</li>
+</ul>
+<p>    - <a href="https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/">https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/</a></p>
+<hr>
+<h2 id="-1-背景与问题--background--problem">🎯 1. 背景与问题 / Background &amp; Problem<a hidden class="anchor" aria-hidden="true" href="#-1-背景与问题--background--problem">#</a></h2>
+<ul>
+<li>研究领域 / Research area:</li>
+</ul>
+<p>    - robot learning</p>
+<ul>
+<li>要解决的核心问题 / Core problem to solve:</li>
+</ul>
+<p>    - train vision-language models designed to output low-level robot actions</p>
+<p>    - Internet scale data incorporation</p>
+<ul>
+<li>现有方法的不足 / Limitations of existing methods:  </li>
+</ul>
+<p>    - no internet scale data</p>
+<p>    - unclear how robots should acquire such capabilities</p>
+<hr>
+<h2 id="-2-方法核心--core-method">💡 2. 方法核心 / Core Method<a hidden class="anchor" aria-hidden="true" href="#-2-方法核心--core-method">#</a></h2>
+<ul>
+<li>作者提出的思路 / Main idea proposed by the authors:  </li>
+</ul>
+<p>    - use PaLI-X instead of separated vision and language block</p>
+<p>    - rest similar to RT1</p>
+<ul>
+<li>
+<p>核心机制/模型结构 / Key mechanism/model architecture:  </p>
+</li>
+<li>
+<p>与已有方法的区别 / Differences from previous approaches:  </p>
+</li>
+</ul>
+<p>（可用流程图/伪代码/比喻来解释 / Use flowcharts, pseudocode, or analogies if helpful）</p>
+<hr>
+<h2 id="-3-实验与结果--experiments--results">📊 3. 实验与结果 / Experiments &amp; Results<a hidden class="anchor" aria-hidden="true" href="#-3-实验与结果--experiments--results">#</a></h2>
+<ul>
+<li>
+<p>数据集/任务 / Datasets/Tasks:  </p>
+</li>
+<li>
+<p>实验设置要点 / Key experimental setup:  </p>
+</li>
+<li>
+<p>主要结果 / Main results:  </p>
+</li>
+<li>
+<p>对比分析 / Comparative analysis:  </p>
+</li>
+</ul>
+<p>（截图/贴图表，标记关键数据 / Add screenshots/tables, highlight critical numbers）</p>
+<hr>
+<h2 id="-4-总结与贡献--summary--contributions">📝 4. 总结与贡献 / Summary &amp; Contributions<a hidden class="anchor" aria-hidden="true" href="#-4-总结与贡献--summary--contributions">#</a></h2>
+<ul>
+<li>
+<p>论文的主要贡献点 / Main contributions of the paper:  </p>
+</li>
+<li>
+<p>创新点一句话总结 / One-sentence innovation summary:  </p>
+</li>
+</ul>
+<hr>
+<h2 id="-5-与机器人方向的联系--relevance-to-robotics">🤖 5. 与机器人方向的联系 / Relevance to Robotics<a hidden class="anchor" aria-hidden="true" href="#-5-与机器人方向的联系--relevance-to-robotics">#</a></h2>
+<ul>
+<li>
+<p>能否迁移到机器人应用？ / Can this be applied to robotics?  </p>
+</li>
+<li>
+<p>在你们项目中的潜在价值 / Potential value in our projects:  </p>
+</li>
+<li>
+<p>可能的限制/改进方向 / Possible limitations / improvements:  </p>
+</li>
+</ul>
+<hr>
+<h2 id="-6-讨论准备给同事讲解时--discussion-prep-for-presentation">💬 6. 讨论准备（给同事讲解时） / Discussion Prep (for presentation)<a hidden class="anchor" aria-hidden="true" href="#-6-讨论准备给同事讲解时--discussion-prep-for-presentation">#</a></h2>
+<ul>
+<li>
+<p>同事可能会问的问题 / Possible questions from colleagues:  </p>
+</li>
+<li>
+<p>自己的回答思路 / My prepared answers/thoughts:  </p>
+</li>
+</ul>
+<hr>
+<h2 id="-7-个人备注--personal-notes">🔖 7. 个人备注 / Personal Notes<a hidden class="anchor" aria-hidden="true" href="#-7-个人备注--personal-notes">#</a></h2>
+<ul>
+<li>
+<p>阅读时的直观感受 / Intuitive impressions while reading:  </p>
+</li>
+<li>
+<p>和自己已有知识的联系 / Links to my existing knowledge:  </p>
+</li>
+<li>
+<p>下次复习时要重点看的部分 / Parts to revisit next time:</p>
+</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/en/reading/pre-vla/2022rt1/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>RT1</span>
+  </a>
+  <a class="next" href="http://localhost:1313/en/reading/data/2024scalinglaw/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Scaling Law</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/en/">HC&#39;s Log</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

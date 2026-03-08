@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Home on HC&#39;s Log</title>
+    <link>http://localhost:1313/en/</link>
+    <description>Recent content in Home on HC&#39;s Log</description>
+    <generator>Hugo -- 0.157.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 04 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/en/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Basics</title>
+      <link>http://localhost:1313/en/reading/pre-vla/2022basics/</link>
+      <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/en/reading/pre-vla/2022basics/</guid>
+      <description>&lt;script&gt;
+  window.MathJax = {
+    tex: {
+      inlineMath: [
+        [&#34;$&#34;, &#34;$&#34;],
+        [&#34;\\(&#34;, &#34;\\)&#34;],
+      ],
+      displayMath: [
+        [&#34;$$&#34;, &#34;$$&#34;],
+        [&#34;\\[&#34;, &#34;\\]&#34;],
+      ],
+    },
+    svg: {
+      fontCache: &#34;global&#34;,
+    },
+  };
+&lt;/script&gt;
+&lt;script
+  defer
+  src=&#34;https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js&#34;
+&gt;&lt;/script&gt;
+
+&lt;h1 id=&#34;diffusion-policy-and-flow-matching-foundations&#34;&gt;Diffusion Policy and Flow Matching: Foundations&lt;/h1&gt;
+&lt;p&gt;This note summarizes the foundations of &lt;strong&gt;diffusion models&lt;/strong&gt;, &lt;strong&gt;diffusion policy&lt;/strong&gt;, and &lt;strong&gt;flow matching&lt;/strong&gt;, with an emphasis on both the formal derivation and the intuition behind them.&lt;/p&gt;
+&lt;p&gt;The central question is:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;How can a model learn to transform a simple noise distribution into a complex structured data distribution?&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RT-2</title>
+      <link>http://localhost:1313/en/reading/vla/2023rt2/</link>
+      <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/en/reading/vla/2023rt2/</guid>
+      <description>&lt;h1 id=&#34;rt-2-vision-language-action-models-transfer-web-knowledge-to-robotic-control&#34;&gt;RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Authors:&lt;/strong&gt; Anthony Brohan et al.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Organization:&lt;/strong&gt; Google DeepMind
+&lt;strong&gt;Year:&lt;/strong&gt; 2023&lt;/p&gt;
+&lt;p&gt;Paper / Blog
+&lt;a href=&#34;https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/&#34;&gt;https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;problem&#34;&gt;Problem&lt;/h1&gt;
+&lt;p&gt;Robot policies trained purely on robot datasets often struggle to generalize to new tasks.&lt;/p&gt;
+&lt;p&gt;Most robot learning systems rely on:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;imitation learning&lt;/li&gt;
+&lt;li&gt;reinforcement learning&lt;/li&gt;
+&lt;li&gt;robot demonstration datasets&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;However, robot datasets are typically &lt;strong&gt;orders of magnitude smaller&lt;/strong&gt; than the web-scale datasets used to train modern vision and language models.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>π0</title>
+      <link>http://localhost:1313/en/reading/vla/2024pi0/</link>
+      <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/en/reading/vla/2024pi0/</guid>
+      <description>&lt;h1 id=&#34;π0-a-vision-language-action-flow-model-for-general-robot-control&#34;&gt;π0: A Vision-Language-Action Flow Model for General Robot Control&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Organization:&lt;/strong&gt; Physical Intelligence
+&lt;strong&gt;Year:&lt;/strong&gt; 2024
+&lt;strong&gt;Paper:&lt;/strong&gt; &lt;a href=&#34;https://www.physicalintelligence.company/download/pi0.pdf&#34;&gt;https://www.physicalintelligence.company/download/pi0.pdf&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;problem&#34;&gt;Problem&lt;/h1&gt;
+&lt;p&gt;Most recent Vision-Language-Action (VLA) models treat robot actions as &lt;strong&gt;discrete tokens&lt;/strong&gt;, similar to text tokens in language models.&lt;/p&gt;
+&lt;p&gt;Examples include models such as:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RT-2&lt;/li&gt;
+&lt;li&gt;OpenVLA&lt;/li&gt;
+&lt;li&gt;Octo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;While tokenization simplifies modeling, it introduces several limitations for robot control:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;discretization can reduce control precision&lt;/li&gt;
+&lt;li&gt;action tokens may produce jerky or unnatural trajectories&lt;/li&gt;
+&lt;li&gt;continuous robot motion must be approximated using symbolic outputs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In practice, robot control is inherently &lt;strong&gt;continuous and dynamic&lt;/strong&gt;. Policies must generate smooth trajectories that respect physical constraints.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>π0.5</title>
+      <link>http://localhost:1313/en/reading/vla/2025pi0_5/</link>
+      <pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/en/reading/vla/2025pi0_5/</guid>
+      <description>&lt;h1 id=&#34;π05-hierarchical-vision-language-action-flow-model&#34;&gt;π0.5: Hierarchical Vision-Language-Action Flow Model&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;Organization:&lt;/strong&gt; Physical Intelligence
+&lt;strong&gt;Year:&lt;/strong&gt; 2025&lt;/p&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;problem&#34;&gt;Problem&lt;/h1&gt;
+&lt;p&gt;Early Vision-Language-Action (VLA) models such as RT-1, RT-2 and π0 demonstrate that robot policies can be learned from large datasets using transformer-based architectures.&lt;/p&gt;
+&lt;p&gt;However, these systems still struggle with &lt;strong&gt;long-horizon manipulation tasks&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Typical problems include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;tasks requiring many sequential steps&lt;/li&gt;
+&lt;li&gt;complex household environments&lt;/li&gt;
+&lt;li&gt;generalization to new homes or scenes&lt;/li&gt;
+&lt;li&gt;difficulty maintaining coherent plans over long time horizons&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Low-level policies alone often fail because they attempt to directly map observations to actions without an explicit notion of &lt;strong&gt;task structure&lt;/strong&gt;.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

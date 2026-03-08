@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>VLA models | HC 的笔记</title>
+<meta name="keywords" content="">
+<meta name="description" content="Reading lists &amp; paper notes on robot foundation models.">
+<meta name="author" content="map[name:Hongchen Ji]">
+<link rel="canonical" href="http://localhost:1313/zh/reading/vla/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3211e5ef867bf2b75fd5a6515cfed7195c011e8ab735694e203810a827097b.css" integrity="sha256-2jIR5e&#43;Ge/K3X9WmUVz&#43;1xlcAR6KtzVpTiA4EKgnCXs=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/zh/reading/vla/index.xml" title="rss">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/en/reading/vla/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/zh/reading/vla/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body class="list" id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/zh/" accesskey="h" title="HC 的笔记 (Alt + H)">HC 的笔记</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                    <ul class="lang-switch"><li>|</li>
+                        <li>
+                            <a href="http://localhost:1313/en/" title="English"
+                                aria-label="English">En</a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/zh/reading/" title="阅读">
+                    <span>阅读</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/engineering/" title="工程">
+                    <span>工程</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/zh/concepts/" title="概念">
+                    <span>概念</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/zh/">主页</a>&nbsp;»&nbsp;<a href="http://localhost:1313/zh/reading/">Reading</a></div>
+  <h1>
+    VLA models
+  </h1>
+  <div class="post-description">
+    Reading lists &amp; paper notes on robot foundation models.
+  </div>
+</header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">RT-2
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>RT-2：将互联网知识迁移到机器人控制的 Vision-Language-Action 模型 作者：Anthony Brohan 等 机构：Google DeepMind 年份：2023
+论文 / 博客 https://deepmind.google/discover/blog/rt-2-new-model-translates-vision-and-language-into-action/
+Problem 传统机器人策略通常只依赖 机器人交互数据（demonstrations 或 RL 数据）。
+但与互联网规模的数据相比，机器人数据集通常非常小，因此这些策略往往只学到了：
+具体任务的操作模式 局部的动作策略 而缺乏：
+语义知识 常识推理 对新任务的泛化能力 例如，一个机器人策略可能在训练过的任务上表现很好，但在以下情况中容易失败：
+遇到新的物体类别 接收到新的语言指令 需要理解物体用途（affordance） 换句话说：
+传统机器人策略擅长学习 运动技能，但缺乏 世界知识（world knowledge）。
+Why it matters 大型视觉语言模型（VLM）已经在 互联网规模数据 上训练，并学习到了大量语义知识，例如：
+物体类别 语言描述 物体之间的语义关系 常识推理模式 如果这些知识能够被迁移到机器人系统中，机器人可能可以：
+理解新的自然语言指令 识别未见过的物体 根据语义推理完成任务 然而传统机器人系统通常将以下模块 分开设计：
+perception → language → control
+这种结构使机器人策略无法直接利用 互联网规模的语义知识。
+Attempt RT-2 提出了一个非常简单但影响深远的想法：
+直接使用 Vision-Language Model 作为机器人策略模型。
+作者没有设计新的机器人网络结构，而是让模型直接生成 机器人动作 token。
+整体 pipeline：
+image &#43; language instruction ↓ Vision-Language Model ↓ action tokens
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span></footer>
+  <a class="entry-link" aria-label="post link to RT-2" href="http://localhost:1313/zh/reading/vla/2023rt2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">π0
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>π0：用于通用机器人控制的 Vision-Language-Action Flow 模型 机构：Physical Intelligence 年份：2024 论文：https://www.physicalintelligence.company/download/pi0.pdf
+Problem 当前许多 Vision-Language-Action (VLA) 模型将机器人动作表示为 离散 token。
+例如：
+RT-2 OpenVLA Octo 这种做法虽然能够复用语言模型架构，但也带来了一些问题：
+动作离散化可能降低控制精度 token 生成可能产生不平滑或不自然的轨迹 连续控制问题被强行转化为符号预测 而在真实机器人控制中，动作本质上是 连续轨迹（continuous trajectory）。
+因此一个关键问题是：
+是否可以在 VLA 框架中直接生成 连续动作轨迹，而不是离散动作 token？
+Why it matters 通用机器人策略通常需要同时具备三种能力：
+语义理解能力 理解语言指令、物体类别以及任务语义。
+连续控制能力 生成平滑且稳定的动作轨迹。
+跨机器人泛化能力 在不同机器人本体（embodiment）之间迁移。
+大型 Vision-Language Model 已经具备强大的语义理解能力，但它们并不擅长生成连续控制信号。
+另一方面，传统机器人策略可以生成连续动作，但缺乏语义知识。
+因此自然的问题是：
+是否可以结合 互联网规模语义知识 &#43; 连续机器人控制？
+Attempt π0 提出一种新的思路：
+使用 flow matching 来生成连续机器人动作。
+整体系统由三个核心组件组成：
+提供语义理解能力的 Vision-Language Model (VLM) 负责机器人控制的 action expert 用于连续动作生成的 flow matching 与 token-based VLA 不同，π0 并不预测离散动作符号，而是通过 连续去噪过程 生成动作轨迹。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span></footer>
+  <a class="entry-link" aria-label="post link to π0" href="http://localhost:1313/zh/reading/vla/2024pi0/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">π0.5
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>π0.5：层级式 Vision-Language-Action Flow 模型 机构：Physical Intelligence 年份：2025
+Problem 早期的 Vision-Language-Action（VLA）模型（例如 RT‑1、RT‑2 和 π0）证明：
+机器人策略可以通过 Transformer 架构学习 多模态输入（视觉 &#43; 语言）可以直接映射到动作 大规模数据可以显著提升泛化能力 然而这些系统在 长时序任务（long‑horizon tasks） 上仍然存在明显困难。
+典型问题包括：
+任务需要很多连续步骤 家庭环境复杂且变化多 在新场景中泛化能力有限 难以保持长期一致的任务规划 原因在于：
+这些模型通常直接学习
+observation → action
+而没有显式建模 任务结构。
+因此一个关键问题是：
+是否可以将 高层规划 与 低层连续控制 结合，从而提升长时序机器人任务能力？
+Why it matters 现实中的机器人任务通常具有明显的层级结构。
+例如：
+做咖啡
+可能包含以下子步骤：
+找到杯子 将杯子放在咖啡机下 按下按钮 等待咖啡完成 如果策略没有显式的子任务结构，模型必须隐式学习整条动作链。
+这会导致：
+训练难度增大 长时序任务不稳定 泛化能力下降 如果模型能够预测 高层子任务（subtask）：
+长时序规划会更稳定 新场景泛化能力更好 任务结构更加清晰 Attempt π0.5 在 π0 的基础上引入 层级式结构（hierarchical architecture）。
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-03-04 00:00:00 +0000 UTC'>2026年3月4日</span>&nbsp;·&nbsp;<span>2 分钟</span>&nbsp;·&nbsp;<span>map[name:Hongchen Ji]</span></footer>
+  <a class="entry-link" aria-label="post link to π0.5" href="http://localhost:1313/zh/reading/vla/2025pi0_5/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/zh/">HC 的笔记</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
